@@ -1,75 +1,54 @@
 <?php
-/**
- * Proxy PHP para XAMPP
- * Redireciona chamadas API para o Flask backend (porta 5000)
- */
-
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
-    exit();
+    exit;
 }
 
-$FLASK_BASE_URL = 'http://localhost:5000';
-
-$requestUri = $_SERVER['REQUEST_URI'];
-$path = parse_url($requestUri, PHP_URL_PATH);
-
-$path = preg_replace('#^/kloweekpipefy/proxy\.php#', '', $path);
-$path = preg_replace('#^/kloweekpipefy#', '', $path);
-
-if (empty($path) || $path === '/') {
-    $path = '/';
-}
-
-$apiUrl = $FLASK_BASE_URL . $path;
-
-$queryString = $_SERVER['QUERY_STRING'];
-if ($queryString) {
-    $apiUrl .= '?' . $queryString;
-}
-
-$ch = curl_init();
-
-curl_setopt_array($ch, [
-    CURLOPT_URL => $apiUrl,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_FOLLOWLOCATION => true,
-    CURLOPT_TIMEOUT => 60,
-    CURLOPT_CUSTOMREQUEST => $_SERVER['REQUEST_METHOD'],
-    CURLOPT_HTTPHEADER => [
-        'Accept: application/json',
-        'Content-Type: application/json'
-    ],
-]);
-
-if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'HEAD') {
-    $body = file_get_contents('php://input');
-    if ($body) {
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+$token = getenv('PIPEFY_TOKEN');
+if (!$token) {
+    $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), 'PIPEFY_TOKEN=') === 0) {
+            $token = substr(trim($line), strlen('PIPEFY_TOKEN='));
+            $token = trim($token, '"\'');
+            break;
+        }
     }
 }
 
+if (!$token) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Token não configurado']);
+    exit;
+}
+
+$input = json_decode(file_get_contents('php://input'), true);
+if (!$input || !isset($input['query'])) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Query não fornecida']);
+    exit;
+}
+
+$ch = curl_init('https://api.pipefy.com/graphql');
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => json_encode($input),
+    CURLOPT_HTTPHEADER => [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $token
+    ],
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_SSL_VERIFYPEER => false
+]);
+
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$curlError = curl_error($ch);
-$curlErrno = curl_errno($ch);
-
 curl_close($ch);
-
-if ($curlErrno) {
-    http_response_code(502);
-    echo json_encode([
-        'error' => 'Backend indisponível',
-        'message' => $curlError,
-        'flask_url' => $apiUrl
-    ]);
-    exit();
-}
 
 http_response_code($httpCode);
 echo $response;

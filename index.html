@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visão Geral · Kloh &amp; Co</title>
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('kloweek-theme');
+                var dark = t === 'dark' || (!t && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                if (dark) document.documentElement.classList.add('dark');
+            } catch (e) {}
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 'montserrat': ['Montserrat', 'sans-serif'] },
+                    colors: {
+                        'primary': { 'black': '#000000', 'white': '#FFFFFF' },
+                        'green': { 'dark': '#1B5E20', 'light': '#4CAF50', 'bg': '#E8F5E9' },
+                        'red': { 'dark': '#B71C1C', 'light': '#F44336', 'bg': '#FFEBEE' },
+                        'gray': {
+                            '50': '#FAFAFA', '100': '#F5F5F5', '200': '#EEEEEE', '300': '#E0E0E0',
+                            '400': '#BDBDBD', '500': '#9E9E9E', '600': '#757575', '700': '#616161',
+                            '800': '#424242', '900': '#212121', '950': '#0A0A0A',
+                            'dark': '#424242', 'light': '#9E9E9E', 'bg': '#F5F5F5', 'border': '#E0E0E0'
+                        }
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="stylesheet" href="css/style.css?v=2">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="font-montserrat">
+    <div class="min-h-screen lg:flex">
+
+        <div id="backdrop" class="fixed inset-0 z-30 bg-black/60 hidden lg:hidden"></div>
+
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 -translate-x-full transition-transform duration-300 lg:static lg:translate-x-0 lg:shrink-0 flex flex-col bg-gray-950 text-gray-100">
+            <div class="p-6">
+                <a href="index.html" class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow">
+                        <span class="text-gray-950 font-black text-xl leading-none">K</span>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-base tracking-tight">Kloh &amp; Co</h1>
+                        <p class="text-[11px] text-gray-400">Gestão de Squads · ROI Week</p>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-1.5">
+                <a href="index.html" class="nav-link active">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125L10.5 21l7.5-7.875M12 3v17.25"/></svg>
+                    Visão Geral
+                </a>
+                <a href="roi.html" class="nav-link">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.281m5.94 2.28l-2.281 5.94"/></svg>
+                    ROI
+                </a>
+                <a href="roi-report.html" class="nav-link">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                    Relatório ROI
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-gray-800">
+                <p class="text-[11px] text-gray-500 mono">dados · Google Sheets API v4</p>
+            </div>
+        </aside>
+
+        <main class="flex-1 min-w-0 flex flex-col">
+            <header class="sticky top-0 z-20 bg-gray-100/80 dark:bg-gray-950/70 backdrop-blur-md border-b border-gray-300/70 dark:border-gray-800">
+                <div class="px-4 md:px-8 py-3.5 flex items-center gap-4">
+                    <button id="btn-menu" class="btn-icon lg:hidden" aria-label="Abrir menu">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+                    </button>
+                    <div class="min-w-0">
+                        <h1 class="text-lg md:text-2xl font-extrabold tracking-tight text-primary-black dark:text-white leading-tight">Visão Geral</h1>
+                        <p class="text-xs md:text-sm text-gray-dark dark:text-gray-400">ROI Week · planilhas como fonte da verdade</p>
+                    </div>
+                    <div class="ml-auto flex items-center gap-2">
+                        <span class="badge b-ok hidden sm:inline-flex">
+                            <span class="dot"></span> Online
+                        </span>
+                        <button id="btn-theme" class="btn-icon" aria-label="Alternar tema">
+                            <svg id="icon-moon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+                            <svg id="icon-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div id="app" class="flex-1 p-4 md:p-8 w-full max-w-[1420px] mx-auto"></div>
+        </main>
+    </div>
+
+    <script src="js/theme.js?v=3"></script>
+    <script type="module" src="js/app.js?v=26"></script>
+</body>
+</html>

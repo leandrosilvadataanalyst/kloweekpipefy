@@ -111,3 +111,65 @@ class PipefyService:
         '''
         variables = {'id': card_id}
         return self.execute_query(query, variables)
+    
+    def get_all_cards_from_pipe(self, pipe_id):
+        all_cards = []
+        has_next = True
+        cursor = None
+        
+        while has_next:
+            query = '''
+            query GetCards($pipeId: ID!, $first: Int!, $after: String) {
+                cards(pipeId: $pipeId, first: $first, after: $after) {
+                    edges {
+                        node {
+                            id
+                            title
+                            created_at
+                            updated_at
+                            done
+                            expired
+                            late
+                            phases {
+                                name
+                            }
+                            fields {
+                                name
+                                value
+                            }
+                        }
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                }
+            }
+            '''
+            variables = {'pipeId': pipe_id, 'first': 100}
+            if cursor:
+                variables['after'] = cursor
+            
+            result = self.execute_query(query, variables)
+            
+            if 'errors' in result:
+                break
+            
+            cards_data = result.get('data', {}).get('cards', {})
+            edges = cards_data.get('edges', [])
+            page_info = cards_data.get('pageInfo', {})
+            
+            all_cards.extend(edges)
+            has_next = page_info.get('hasNextPage', False)
+            cursor = page_info.get('endCursor')
+        
+        return {'data': {'cards': {'edges': all_cards}}}
+    
+    def get_multiple_pipes_data(self, pipe_ids):
+        results = {}
+        for pipe_name, pipe_id in pipe_ids.items():
+            if pipe_id:
+                results[pipe_name] = self.get_all_cards_from_pipe(pipe_id)
+            else:
+                results[pipe_name] = {'data': {'cards': {'edges': []}}}
+        return results
