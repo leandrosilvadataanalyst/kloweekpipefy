@@ -3,6 +3,7 @@ import { PipefyService } from '../services/pipefy-service.js';
 import { fetchAllCockpits } from '../sheets-service.js';
 import { ExportService } from '../services/export-service.js';
 import { getPeriodoRoiWeek, periodoPorChave, periodosDisponiveis, periodoPadrao } from '../utils/periodo.js';
+import { fetchDashboardFromSupabase } from '../supabase-service.js';
 
 let CLIENTES_ELEGIVEIS = [];
 let roiDataStore = [];
@@ -320,6 +321,35 @@ async function carregarDados(meses = 3) {
     `;
     try {
         const progressEl = document.getElementById('progresso');
+
+        // Tentar Supabase primeiro
+        try {
+            progressEl.textContent = 'Carregando dados do Supabase...';
+            const data = await fetchDashboardFromSupabase(meses);
+            CLIENTES_ELEGIVEIS = data.clientes.filter(c => !c.roi || c.preenchido);
+            roiDataStore = data.clientes
+                .filter(c => c.roi)
+                .map(c => ({
+                    cliente_id: c.roi.id,
+                    cliente_nome: c.nome,
+                    projeto: c.roi.projeto,
+                    investimento: c.roi.investimento,
+                    mc: c.roi.mc,
+                    faturamento: c.roi.faturamento,
+                    vendas: c.roi.vendas,
+                    data_atualizacao: c.roi.data_atualizacao,
+                    data_obj: c.roi.data_obj ? new Date(c.roi.data_obj) : null,
+                    card_url: c.roi.card_url,
+                    created_at: c.roi.data_atualizacao
+                }));
+            periodoSelecionado = periodoPadrao(periodosDisponiveis(roiDataStore));
+            render();
+            return;
+        } catch (supabaseErr) {
+            console.warn('Supabase indisponível, usando método direto:', supabaseErr.message);
+        }
+
+        // Fallback: método original (Google Sheets + Pipefy)
         progressEl.textContent = 'Etapa 1/2: Buscando cockpits dos squads...';
         CLIENTES_ELEGIVEIS = await fetchAllCockpits(progressEl);
         progressEl.textContent = `Etapa 2/2: Buscando ROI Week (${meses} meses)...`;

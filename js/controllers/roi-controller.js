@@ -2,6 +2,7 @@ import { RoiView } from '../views/roi-view.js';
 import { PipefyService } from '../services/pipefy-service.js';
 import { fetchAllCockpits } from '../sheets-service.js';
 import { getPeriodoRoiWeek, periodoPorChave, periodoPadrao } from '../utils/periodo.js';
+import { fetchDashboardFromSupabase } from '../supabase-service.js';
 
 let clientesPorKey = {};
 let keysOrder = [];
@@ -76,13 +77,76 @@ async function init() {
 
     try {
         const progressEl = document.getElementById('progresso');
-        const [elegiveis, roi] = await Promise.all([
+
+        // Tentar Supabase primeiro
+        try {
+            progressEl.textContent = 'Carregando dados do Supabase...';
+            const data = await fetchDashboardFromSupabase(3);
+            const elegiveis = data.clientes;
+            const roi = data.clientes
+                .filter(c => c.roi)
+                .map(c => ({
+                    cliente_nome: c.nome,
+                    projeto: c.roi.projeto,
+                    investimento: c.roi.investimento,
+                    mc: c.roi.mc,
+                    faturamento: c.roi.faturamento,
+                    vendas: c.roi.vendas,
+                    data_atualizacao: c.roi.data_atualizacao,
+                    data_obj: c.roi.data_obj ? new Date(c.roi.data_obj) : null
+                }));
+
+            const grupos = {};
+            (roi || []).forEach(x => {
+                const d = new Date(x.data_obj);
+                if (isNaN(d)) return;
+                const k = chaveDeData(d);
+                if (!grupos[k]) grupos[k] = [];
+                grupos[k].push(x);
+            });
+            keysOrder = Object.keys(grupos).sort().reverse();
+            if (!keysOrder.length) keysOrder = [getPeriodoRoiWeek().key];
+            periodoKey = periodoPadrao(keysOrder.map(periodoPorChave)).key;
+
+            clientesPorKey = {};
+            keysOrder.forEach(k => {
+                const grupo = grupos[k] || [];
+                clientesPorKey[k] = elegiveis.map(c => {
+                    const r = grupo.find(x => testeMatch(c, x));
+                    if (r && (r.investimento > 0 || r.faturamento > 0 || r.mc > 0)) {
+                        const roiPercent = r.investimento > 0 ? ((r.faturamento - r.investimento) / r.investimento) * 100 : 0;
+                        return {
+                            cliente: c.nome,
+                            squad: c.squad || 'N/A',
+                            investimento_midia: r.investimento,
+                            mc: r.mc,
+                            faturamento: r.faturamento,
+                            roi: roiPercent,
+                            status: roiPercent >= 50 ? 'safe' : roiPercent >= 0 ? 'care' : 'danger'
+                        };
+                    }
+                    return {
+                        cliente: c.nome,
+                        squad: c.squad || 'N/A',
+                        investimento_midia: 0, mc: 0, faturamento: 0, roi: 0,
+                        status: 'danger'
+                    };
+                });
+            });
+            render();
+            return;
+        } catch (supabaseErr) {
+            console.warn('Supabase indisponível, usando método direto:', supabaseErr.message);
+        }
+
+        // Fallback: método original
+        const [elegiveis, roiData] = await Promise.all([
             fetchAllCockpits(progressEl),
             PipefyService.getRoiWeek(progressEl, 3)
         ]);
 
         const grupos = {};
-        (roi || []).forEach(x => {
+        (roiData || []).forEach(x => {
             const d = new Date(x.data_obj);
             if (isNaN(d)) return;
             const k = chaveDeData(d);

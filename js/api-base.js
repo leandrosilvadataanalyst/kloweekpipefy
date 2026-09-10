@@ -3,6 +3,10 @@ function onXampp() {
     return host === 'localhost' || host === '127.0.0.1';
 }
 
+export function apiBase() {
+    return onXampp() ? '/kloweekpipefy' : '/api';
+}
+
 export function pipefyEndpoint() {
     return onXampp() ? '/kloweekpipefy/proxy.php' : '/api/proxy';
 }
