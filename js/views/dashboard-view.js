@@ -104,12 +104,45 @@ export class DashboardView {
                         ${topGTs.length === 0
                             ? `<p class="section-sub py-4 text-center">Sem dados</p>`
                             : topGTs.map((g, i) => `
-                                <div class="card flex items-center justify-between px-3 py-3 card-pad" style="${i === 0 ? 'border-color:var(--border-strong)' : ''}">
-                                    <div class="flex items-center gap-3">
-                                        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" style="background:var(--text);color:var(--surface)">${i + 1}</span>
-                                        <div><p class="text-sm font-bold" style="color:var(--text)">${g.nome}</p><p class="text-xs" style="color:var(--faint)">${String(g.squad).toUpperCase()} · ${g.totalClientes} clientes</p></div>
+                                <div class="gt-row-container">
+                                    <div class="card flex items-center justify-between px-3 py-3 card-pad gt-row-clickable" data-gt="${i}" style="cursor:pointer;${i === 0 ? 'border-color:var(--border-strong)' : ''}">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold" style="background:var(--text);color:var(--surface)">${i + 1}</span>
+                                            <div><p class="text-sm font-bold" style="color:var(--text)">${g.nome}</p><p class="text-xs" style="color:var(--faint)">${String(g.squad).toUpperCase()} · ${g.totalClientes} clientes</p></div>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="text-right"><p class="text-sm font-extrabold" style="color:${g.roiMedio > 1 ? 'var(--green)' : 'var(--red)'}">${g.roiMedio.toFixed(2)}x</p><p class="text-xs" style="color:var(--faint)">ROAS ${g.roasMedio.toFixed(2)}x</p></div>
+                                            <svg class="gt-chevron w-4 h-4 transition-transform" style="color:var(--faint)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                        </div>
                                     </div>
-                                    <div class="text-right"><p class="text-sm font-extrabold" style="color:${g.roiMedio > 1 ? 'var(--green)' : 'var(--red)'}">${g.roiMedio.toFixed(2)}x</p><p class="text-xs" style="color:var(--faint)">ROAS ${g.roasMedio.toFixed(2)}x</p></div>
+                                    <div class="gt-expand hidden" id="gt-expand-${i}">
+                                        <div class="px-3 py-2 overflow-x-auto">
+                                            <table class="w-full text-xs" style="color:var(--text)">
+                                                <thead>
+                                                    <tr style="color:var(--faint);border-bottom:1px solid var(--border)">
+                                                        <th class="text-left py-1 pr-2 font-semibold">Cliente</th>
+                                                        <th class="text-right py-1 px-2 font-semibold">Faturamento</th>
+                                                        <th class="text-right py-1 px-2 font-semibold">MC</th>
+                                                        <th class="text-right py-1 px-2 font-semibold">Receita</th>
+                                                        <th class="text-right py-1 px-2 font-semibold">ROAS</th>
+                                                        <th class="text-right py-1 pl-2 font-semibold">ROI</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    ${g.clientes.map(c => `
+                                                        <tr style="border-bottom:1px solid var(--border)">
+                                                            <td class="py-1.5 pr-2 font-medium max-w-[140px] truncate" title="${c.nome}">${c.nome}</td>
+                                                            <td class="text-right py-1.5 px-2">R$ ${c.faturamento.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
+                                                            <td class="text-right py-1.5 px-2">${(c.mc * 100).toFixed(0)}%</td>
+                                                            <td class="text-right py-1.5 px-2">R$ ${c.receita.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
+                                                            <td class="text-right py-1.5 px-2" style="color:${c.roas > 1 ? 'var(--green)' : 'var(--red)'}">${c.roas.toFixed(2)}x</td>
+                                                            <td class="text-right py-1.5 pl-2 font-bold" style="color:${c.roi > 1 ? 'var(--green)' : 'var(--red)'}">${c.roi.toFixed(2)}x</td>
+                                                        </tr>
+                                                    `).join('')}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>`).join('')}
                     </div>
                 </div>

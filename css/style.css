@@ -137,6 +137,14 @@ body {
 .b-pending { background: var(--red-bg); color: var(--red); border-color: var(--red-line); }
 .b-ok { background: var(--green-bg); color: var(--green); border-color: var(--green-line); }
 
+/* ---------- GT Expandable List ---------- */
+.gt-row-container { border-radius: var(--radius-md); overflow: hidden; }
+.gt-row-clickable { transition: background 0.15s; }
+.gt-row-clickable:hover { background: var(--surface-2); }
+.gt-expand { background: var(--surface-2); border-top: 1px solid var(--border); }
+.gt-expand table { border-collapse: collapse; }
+.gt-chevron { transition: transform 0.2s ease; }
+
 /* ---------- Controls ---------- */
 .ctl {
   width: 100%;

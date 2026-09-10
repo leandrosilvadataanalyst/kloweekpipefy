@@ -128,7 +128,17 @@ function calcularTopGTs(lista) {
     const gtLista = Object.values(map).map(g => {
         const avgRoi = g.clientes.reduce((a, c) => a + c.roi, 0) / g.clientes.length;
         const avgRoas = g.clientes.reduce((a, c) => a + c.roas, 0) / g.clientes.length;
-        return { nome: g.nome, squad: g.squad, totalClientes: g.clientes.length, roiMedio: avgRoi, roasMedio: avgRoas, faturamento: g.faturamento };
+        const clientesSorted = g.clientes
+            .map(c => ({
+                nome: c.nome,
+                faturamento: c.faturamento,
+                mc: c.mc,
+                receita: c.faturamento * c.mc,
+                roas: c.roas,
+                roi: c.roi
+            }))
+            .sort((a, b) => b.roi - a.roi);
+        return { nome: g.nome, squad: g.squad, totalClientes: g.clientes.length, roiMedio: avgRoi, roasMedio: avgRoas, faturamento: g.faturamento, clientes: clientesSorted };
     });
     return gtLista.sort((a, b) => b.roiMedio - a.roiMedio).slice(0, 5);
 }
@@ -304,6 +314,18 @@ function render() {
     document.getElementById('btn-export-json')?.addEventListener('click', () => ExportService.exportToJSON(getFiltradosExport(), 'relatorio_roi.json'));
     document.getElementById('btn-export-csv')?.addEventListener('click', () => ExportService.exportToCSV(getFiltradosExport(), 'relatorio_roi.csv'));
     document.getElementById('btn-export-excel')?.addEventListener('click', () => ExportService.exportToExcel(getFiltradosExport(), 'relatorio_roi.xls'));
+
+    document.querySelectorAll('.gt-row-clickable').forEach(row => {
+        row.addEventListener('click', () => {
+            const idx = row.dataset.gt;
+            const expand = document.getElementById(`gt-expand-${idx}`);
+            const chevron = row.querySelector('.gt-chevron');
+            if (!expand) return;
+            const isHidden = expand.classList.contains('hidden');
+            expand.classList.toggle('hidden');
+            if (chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : '';
+        });
+    });
 }
 
 async function carregarDados(meses = 3) {
