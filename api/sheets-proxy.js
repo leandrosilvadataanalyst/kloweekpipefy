@@ -20,12 +20,15 @@ export default async function handler(req, res) {
     }
 
     const apiKey = process.env.GOOGLE_SHEETS_API_KEY;
-    if (!apiKey) return res.status(401).json({ error: 'GOOGLE_SHEETS_API_KEY não configurada' });
+    if (!apiKey) {
+        console.error('SheetsProxy: GOOGLE_SHEETS_API_KEY não configurada');
+        return res.status(401).json({ error: 'GOOGLE_SHEETS_API_KEY não configurada. Adicione a env var no painel da Vercel.' });
+    }
 
     const range = encodeURIComponent(`${title}!A1:Z500`);
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${range}?key=${encodeURIComponent(apiKey)}`;
 
-    console.log(`SheetsProxy REQ: id=${id} title=${title} gid=${gid}`);
+    console.log(`SheetsProxy REQ: id=${id} title=${title} gid=${gid} key=${apiKey.substring(0, 8)}...`);
 
     try {
         const upRes = await fetch(url, {
@@ -40,7 +43,7 @@ export default async function handler(req, res) {
                 if (decoded.error && decoded.error.message) googleError = ': ' + decoded.error.message;
             } catch (e) {}
             console.error(`SheetsProxy FAIL: ${id} title=${title} gid=${gid} http=${upRes.status} resp=${text.slice(0, 500)}`);
-            return res.status(502).json({ error: `Google Sheets retornou HTTP ${upRes.status}${googleError}. Dados da planilha indisponíveis.` });
+            return res.status(502).json({ error: `Google Sheets retornou HTTP ${upRes.status}${googleError}. Verifique se a API key tem acesso a esta planilha.` });
         }
         const data = JSON.parse(text);
         const rows = data.values || [];

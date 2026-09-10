@@ -2,11 +2,5 @@
   "version": 2,
   "framework": null,
   "buildCommand": null,
-  "outputDirectory": ".",
-  "crons": [
-    {
-      "path": "/api/sync-to-backup",
-      "schedule": "0 * * * *"
-    }
-  ]
+  "outputDirectory": "."
 }
