@@ -1,6 +1,5 @@
-const { replaceAll, appendRow, ensureSheetExists } = require('./sheets-writer');
-
 const BACKUP_SPREADSHEET_ID = process.env.GOOGLE_SHEETS_BACKUP_ID || '13GcuQBrOhsGJO0T39UQS8xoGAVKoZOsesAtgt4Xqhek';
+const APPS_SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL || '';
 const PIPEFY_TOKEN = process.env.PIPEFY_TOKEN || '';
 const GOOGLE_API_KEY = process.env.GOOGLE_SHEETS_API_KEY || '';
 
@@ -13,9 +12,9 @@ const PIPES = {
 
 const COCKPITS = [
     { id: '1zMpTklO0jLCZcMFan_KKTctbgMySRqd_pVxsrHdsz5U', title: '[Cockpit - Teste]', gid: '330387776', squad: 'wall-street', nome: 'Wall Street' },
-    { id: '1U7ciY_zNsbb6esFMMgwSOC-R16kFO5Z4ddACdBNhDtA', title: '[Cockpit - Teste]', gid: '5', squad: 'romans', nome: 'Romans' },
+    { id: '1U7ciY_zNsbb6esFMMgwSOC-R16kFO5Z4ddACdBNhDtA', title: '[Cockpit - Teste]', gid: '330387776', squad: 'romans', nome: 'Romans' },
     { id: '17y3rdmRMO3moQP9haBJOg5Z8bv-4T4BVtfvMowm3jv8', title: '[ Cockpit ]', gid: '330387776', squad: 'legacy', nome: 'Legacy' },
-    { id: '1Oj971TOsgJQ_3A5sBRGHcEgx53y2r-PuZeOd_E002Ao', title: '[COCKPIT]', gid: '3', squad: 'monsters-sa', nome: 'Monsters S/A' }
+    { id: '1Oj971TOsgJQ_3A5sBRGHcEgx53y2r-PuZeOd_E002Ao', title: '[COCKPIT]', gid: '330387776', squad: 'monsters-sa', nome: 'Monsters S/A' }
 ];
 
 const COCKPIT_HEADER = [
@@ -31,7 +30,20 @@ const ROI_WEEK_HEADER = [
 
 const DB_CLIENTES_HEADER = ['ID', 'Nome', 'Fee', 'Produto', 'Data Assinatura', 'Sincronizado Em'];
 const DB_PROJETO_HEADER = ['ID', 'Nome', 'Status', 'Fase', 'Sincronizado Em'];
-const SYNC_LOG_HEADER = ['Timestamp', 'Origem', 'Ação', 'Registros', 'Status', 'Detalhes'];
+
+async function sendToAppsScript(sheetName, action, rows) {
+    if (!APPS_SCRIPT_URL) {
+        console.log(`Apps Script skip: ${sheetName} (${rows.length} rows)`);
+        return { ok: true, skipped: true };
+    }
+    const resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sheet: sheetName, action, rows }),
+        signal: AbortSignal.timeout(60000)
+    });
+    return await resp.json();
+}
 
 async function pipefyQuery(query) {
     const res = await fetch('https://api.pipefy.com/graphql', {
@@ -108,10 +120,11 @@ async function syncRoiWeek() {
     const edges = await getAllCards(PIPES.ROI_WEEK);
     const now = new Date().toISOString();
 
-    const rows = edges.map(e => {
+    const rows = [ROI_WEEK_HEADER];
+    for (const e of edges) {
         const dataRaw = extractField(e.node, 'Data de Atualização') || e.node.createdAt;
         const dataObj = parseDate(dataRaw);
-        return [
+        rows.push([
             e.node.id,
             e.node.title,
             extractField(e.node, 'Projeto [USAR ESTE]') || '',
@@ -125,12 +138,12 @@ async function syncRoiWeek() {
             e.node.current_phase?.name || '',
             `https://app.pipefy.com/open-cards/${e.node.id}`,
             now
-        ];
-    });
+        ]);
+    }
 
-    await replaceAll(BACKUP_SPREADSHEET_ID, 'ROI Week', ROI_WEEK_HEADER, rows);
-    console.log(`Sync: ROI Week - ${rows.length} cards gravados`);
-    return rows.length;
+    const result = await sendToAppsScript('ROI Week', 'replace', rows);
+    console.log(`Sync: ROI Week - ${edges.length} cards gravados`);
+    return edges.length;
 }
 
 async function syncCockpit(cockpit) {
@@ -142,10 +155,10 @@ async function syncCockpit(cockpit) {
     if (!res.ok) throw new Error(`Google retornou ${res.status} para ${cockpit.nome}`);
 
     const data = await res.json();
-    const rows = data.values || [];
-    if (rows.length < 2) return 0;
+    const srcRows = data.values || [];
+    if (srcRows.length < 2) return 0;
 
-    const headers = rows[0];
+    const headers = srcRows[0];
     const now = new Date().toISOString();
 
     const findCol = (...candidates) => {
@@ -169,9 +182,9 @@ async function syncCockpit(cockpit) {
     const statusIdx = findCol('customer care status');
     const atualizacaoIdx = findCol('data de atualização', 'data atualização', 'atualizado');
 
-    const dataRows = [];
-    for (let i = 1; i < rows.length; i++) {
-        const row = rows[i];
+    const rows = [COCKPIT_HEADER];
+    for (let i = 1; i < srcRows.length; i++) {
+        const row = srcRows[i];
         const name = nameIdx >= 0 ? row[nameIdx] : '';
         if (!name) continue;
         const churnRaw = churnIdx >= 0 ? (row[churnIdx] || '').toLowerCase().trim() : '';
@@ -183,7 +196,7 @@ async function syncCockpit(cockpit) {
             if (isNaN(fee)) fee = 0;
         }
 
-        dataRows.push([
+        rows.push([
             idIdx >= 0 ? row[idIdx] : '',
             String(name).toUpperCase().trim(),
             cockpit.squad,
@@ -199,9 +212,9 @@ async function syncCockpit(cockpit) {
         ]);
     }
 
-    await replaceAll(BACKUP_SPREADSHEET_ID, `Cockpit ${cockpit.nome}`, COCKPIT_HEADER, dataRows);
-    console.log(`Sync: ${cockpit.nome} - ${dataRows.length} clientes gravados`);
-    return dataRows.length;
+    const result = await sendToAppsScript(`Cockpit ${cockpit.nome}`, 'replace', rows);
+    console.log(`Sync: ${cockpit.nome} - ${rows.length - 1} clientes gravados`);
+    return rows.length - 1;
 }
 
 async function syncDatabasePipes() {
@@ -209,33 +222,39 @@ async function syncDatabasePipes() {
     const clientesEdges = await getAllCards(PIPES.DATABASE_CLIENTES);
     const now = new Date().toISOString();
 
-    const clientesRows = clientesEdges.map(e => [
-        e.node.id,
-        e.node.title,
-        extractFloat(e.node, 'Valor do Fee'),
-        extractField(e.node, 'Produto') || '',
-        extractField(e.node, 'Data da assinatura do contrato') || '',
-        now
-    ]);
+    const clientesRows = [DB_CLIENTES_HEADER];
+    for (const e of clientesEdges) {
+        clientesRows.push([
+            e.node.id,
+            e.node.title,
+            extractFloat(e.node, 'Valor do Fee'),
+            extractField(e.node, 'Produto') || '',
+            extractField(e.node, 'Data da assinatura do contrato') || '',
+            now
+        ]);
+    }
 
-    await replaceAll(BACKUP_SPREADSHEET_ID, 'Database Clientes', DB_CLIENTES_HEADER, clientesRows);
-    console.log(`Sync: DATABASE_CLIENTES - ${clientesRows.length} registros`);
+    await sendToAppsScript('Database Clientes', 'replace', clientesRows);
+    console.log(`Sync: DATABASE_CLIENTES - ${clientesEdges.length} registros`);
 
     console.log('Sync: Buscando DATABASE_PROJETO...');
     const projetoEdges = await getAllCards(PIPES.DATABASE_PROJETO);
 
-    const projetoRows = projetoEdges.map(e => [
-        e.node.id,
-        e.node.title,
-        e.node.current_phase?.name || '',
-        extractField(e.node, 'Produto') || '',
-        now
-    ]);
+    const projetoRows = [DB_PROJETO_HEADER];
+    for (const e of projetoEdges) {
+        projetoRows.push([
+            e.node.id,
+            e.node.title,
+            e.node.current_phase?.name || '',
+            extractField(e.node, 'Produto') || '',
+            now
+        ]);
+    }
 
-    await replaceAll(BACKUP_SPREADSHEET_ID, 'Database Projeto', DB_PROJETO_HEADER, projetoRows);
-    console.log(`Sync: DATABASE_PROJETO - ${projetoRows.length} registros`);
+    await sendToAppsScript('Database Projeto', 'replace', projetoRows);
+    console.log(`Sync: DATABASE_PROJETO - ${projetoEdges.length} registros`);
 
-    return { clientes: clientesRows.length, projetos: projetoRows.length };
+    return { clientes: clientesEdges.length, projetos: projetoEdges.length };
 }
 
 export default async function handler(req, res) {
@@ -244,12 +263,6 @@ export default async function handler(req, res) {
     }
 
     const results = { start: new Date().toISOString(), tasks: [], errors: [] };
-
-    try {
-        await ensureSheetExists(BACKUP_SPREADSHEET_ID, 'Sync Log');
-    } catch (e) {
-        console.error('Erro ao criar Sync Log:', e.message);
-    }
 
     try {
         const roiCount = await syncRoiWeek();
@@ -288,14 +301,14 @@ export default async function handler(req, res) {
     results.success = results.errors.length === 0;
 
     try {
-        await appendRow(BACKUP_SPREADSHEET_ID, 'Sync Log', [
+        await sendToAppsScript('Sync Log', 'append', [[
             results.end,
             'Cron Sync',
             'full-sync',
             String(totalRecords),
             results.success ? 'OK' : 'ERRO PARCIAL',
             results.errors.length > 0 ? results.errors.join('; ') : 'Todas as fontes sincronizadas'
-        ]);
+        ]]);
     } catch (e) {
         console.error('Erro ao logar:', e.message);
     }

@@ -1,6 +1,5 @@
-const { replaceAll, appendRow } = require('./sheets-writer');
-
 const BACKUP_SPREADSHEET_ID = process.env.GOOGLE_SHEETS_BACKUP_ID || '13GcuQBrOhsGJO0T39UQS8xoGAVKoZOsesAtgt4Xqhek';
+const APPS_SCRIPT_URL = process.env.GOOGLE_APPS_SCRIPT_URL || '';
 
 const ROI_WEEK_HEADER = [
     'ID', 'Cliente', 'Projeto', 'Investimento', 'MC (%)',
@@ -59,6 +58,21 @@ function formatRow(card) {
     ];
 }
 
+async function sendToBackup(sheetName, action, rows) {
+    if (!APPS_SCRIPT_URL) {
+        console.log(`Backup skipped (no Apps Script URL): ${sheetName} ${rows.length} rows`);
+        return;
+    }
+    const resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sheet: sheetName, action, rows })
+    });
+    const result = await resp.json();
+    if (!result.ok) throw new Error(result.error || 'Apps Script failed');
+    return result;
+}
+
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -85,33 +99,32 @@ export default async function handler(req, res) {
         console.log(`PipefyWebhook: action=${action} card=${card.id} title=${card.title}`);
 
         const row = formatRow(card);
-        const spreadsheetId = BACKUP_SPREADSHEET_ID;
 
         if (action === 'card.create' || action === 'card.move' || action === 'card.update') {
-            await appendRow(spreadsheetId, 'ROI Week', row);
+            await sendToBackup('ROI Week', 'append', [row]);
         }
 
-        await appendRow(spreadsheetId, 'Sync Log', [
+        await sendToBackup('Sync Log', 'append', [[
             new Date().toISOString(),
             'Pipefy Webhook',
             action,
             '1',
             'OK',
             `Card: ${card.title} (${card.id})`
-        ]);
+        ]]);
 
         return res.status(200).json({ ok: true, action, cardId: card.id });
     } catch (e) {
         console.error(`PipefyWebhook ERR: ${e.message}`);
         try {
-            await appendRow(BACKUP_SPREADSHEET_ID, 'Sync Log', [
+            await sendToBackup('Sync Log', 'append', [[
                 new Date().toISOString(),
                 'Pipefy Webhook',
                 req.body?.action || 'unknown',
                 '0',
                 'ERRO',
                 e.message
-            ]);
+            ]]);
         } catch (logErr) {
             console.error('Falha ao logar erro:', logErr.message);
         }
