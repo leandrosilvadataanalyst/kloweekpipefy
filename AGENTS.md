@@ -100,18 +100,15 @@ kloweekpipefy/
 ├── .gitignore              # Ignorar .env
 ├── AGENTS.md               # Este arquivo
 ├── CONTEXT_LOG.md          # Log de contexto
-├── app.py                  # Rotas Flask
-├── config.py               # Configurações
-├── proxy.php               # Proxy PHP (XAMPP)
-├── requirements.txt        # Dependências Python
+├── proxy.php               # Proxy PHP (XAMPP local)
 ├── vercel.json             # Config Vercel
+├── api/                    # Funções serverless Node (deploy Vercel)
 ├── controllers/            # Controllers
 ├── models/                 # Models
 ├── services/               # Services
 ├── templates/              # Templates HTML
 ├── static/                 # CSS/JS
 ├── tests/                  # Testes unitários
-├── api/                    # Endpoint Vercel
 └── .opencode/skills/       # Skills
 ```
 

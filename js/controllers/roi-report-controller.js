@@ -53,7 +53,7 @@ function render() {
     }
     document.getElementById('filtro-periodo')?.addEventListener('change', e => { periodoKey = e.target.value; render(); });
     document.getElementById('btn-copiar')?.addEventListener('click', async () => {
-        const msg = RoiReportView.gerarMensagem(vigenteFaltantes, vigente);
+        const msg = RoiReportView.gerarMensagem(vigenteFaltantes);
         await navigator.clipboard.writeText(msg);
         const btn = document.getElementById('btn-copiar');
         btn.textContent = 'Copiado!';
@@ -105,11 +105,11 @@ async function init() {
                 if (r && (r.investimento > 0 || r.mc > 0 || r.faturamento > 0)) {
                     const roiPercent = r.investimento > 0 ? ((r.faturamento - r.investimento) / r.investimento) * 100 : 0;
                     preenchidosPorKey[k].push({
-                        id: c.id, nome_fantasia: c.nome, squad: c.squad, gt: c.gt,
+                        id: c.id, nome_fantasia: c.nome, squad: c.squad, gt: c.gt, coordenador: c.coordenador,
                         saude: { roi: roiPercent, status: roiPercent >= 50 ? 'safe' : roiPercent >= 0 ? 'care' : 'danger' }
                     });
                 } else {
-                    faltantesPorKey[k].push({ id: c.id, nome_fantasia: c.nome, squad: c.squad, gt: c.gt });
+                    faltantesPorKey[k].push({ id: c.id, nome_fantasia: c.nome, squad: c.squad, gt: c.gt, coordenador: c.coordenador });
                 }
             });
         });

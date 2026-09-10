@@ -229,6 +229,46 @@
 - **Autor:** opencode
 - **Prevenção:** período selecionável sempre via `periodoPorChave`/`periodosDisponiveis` (nunca montar mês manualmente); mensagens de cobrança SEMPRE do vigente (`getPeriodoRoiWeek()`), nunca do filtro; tema sem reload exige `refreshCharts` em toda view com Chart.js (destruir/recriar lendo cores dos tokens); margem exibida como % com regra `mc > 1 ? mc : mc*100` compartilhada entre view e exports; atualizar pytest futuramente para o backend `services/*.py` (remover dependência de `config.py`).
 
+### [05/09/2026] - 🐛 Fix: Deploy Vercel (No Flask entrypoint found)
+- **Descrição:** O deploy na Vercel falhava com "No Flask entrypoint found" porque o projeto era detectado como Python/Flask (existia `requirements.txt` com flask/gunicorn + fontes `.py`), mas o backend Flask foi removido na migração (sem `app.py`/`config.py`). Além disso, o frontend dependia de proxies PHP (`proxy.php`, `sheets-proxy.php`) que **não rodam na Vercel**, e `js/config.js` expunha o `PIPEFY_TOKEN` hardcoded.
+- **O que mudou:**
+  1. `api/proxy.js` (novo): função serverless Node — POST `/api/proxy` → GraphQL do Pipefy com `process.env.PIPEFY_TOKEN` (espelha `proxy.php`).
+  2. `api/sheets-proxy.js` (novo): GET `/api/sheets-proxy?id&title&gid` → Google Sheets API v4 com `process.env.GOOGLE_SHEETS_API_KEY` (espelha `sheets-proxy.php`; mesmo shape de resposta `{id,title,gid,rows,total_rows}` e erros 400/401/502).
+  3. `js/api-base.js` (novo): `pipefyEndpoint()`/`sheetsEndpoint()` — em `localhost/127.0.0.1` retornam os caminhos XAMPP (`/kloweekpipefy/...php`); em qualquer outro host retornam `/api/proxy` e `/api/sheets-proxy` (Vercel).
+  4. `js/services/pipefy-service.js` e `js/sheets-service.js` passam a usar os endpoints via `api-base` (removido o `/kloweekpipefy/...` hardcoded).
+  5. `vercel.json` (novo): `{ version: 2, framework: null, buildCommand: null, outputDirectory: "." }` — força estático; `/api/*` vira função automaticamente.
+  6. `requirements.txt` **removido** — era o gatilho da detecção Python/Flask na Vercel.
+  7. 🔒 `js/config.js`: `PIPEFY_TOKEN` hardcoded **removido** (segredo agora só em `.env` local / env vars da Vercel). **Ação recomendada: rotacionar o token do Pipefy** (estava exposto no repositório/histórico).
+  8. `AGENTS.md`: estrutura atualizada (remove `app.py`/`config.py`/`requirements.txt`, documenta `api/`).
+- **Env vars a configurar na Vercel (dashboard/CLI):** `PIPEFY_TOKEN`, `GOOGLE_SHEETS_API_KEY` (+ `PIPES` e abas já vêm no `js/config.js`). `.env` permanece fora do git.
+- **Validação:** `node --check` nos 4 arquivos novos/editados; mock offline dos handlers (`API-MOCKS-OK`: OPTIONS/405, 400, 401 sem token/chave); smoke views `SMOKE-OK`; assets 200 via `php -S`. Bumps: **index v=27, roi/report v=14**.
+- **Status:** ✅ Concluído
+- **Autor:** opencode
+- **Prevenção:** nunca hardcode de token/API key em `js/*` — segredos só em `.env` (XAMPP) e env vars (Vercel); qualquer proxy novo para a Vercel é função Node em `api/` com `process.env`; o frontend NUNCA deve referenciar caminhos `*php` diretamente — usar `js/api-base.js`; se o `requirements.txt` voltar, a Vercel volta a detectar Python (manter removido ou configurar Framework Preset = "Other" no dashboard).
+
+### [05/09/2026] - Feature: Cobrança por Dupla (Squad · Coord · GT) + Verificação de Consistência das Planilhas
+- **Descrição:** Refinamento das mensagens de cobrança e da confiabilidade dos dados de equipes, para capturar mudanças de função (ex.: Jaqueline Ventura). As planilhas cockpit continuam sendo a **fonte da verdade** para squad/coordenador/account/gt.
+- **O que mudou:**
+  1. `dashboard-controller.js` (`gerarMensagemGTs→gerarMensagem`): a mensagem agora agrupa os clientes pendentes por **dupla** (Squad + Coordenador + GT), não mais só por GT. Formato:
+     ```
+     romans: Coord Giullio | GT: Luca Nakazima
+     Clientes com ROI Week pendente de preenchimento:
+     - Cliente 1
+     - Cliente 2
+     ```
+     Ordenada por squad → coordenador → gt. Contexto da dupla: Account cuida de prazos, GT fica à frente das campanhas de mídia.
+  2. `dashboard-view.js`: título da seção de cobrança atualizado para "por dupla (Squad · Coord · GT)".
+  3. `roi-report-view.js` (`gerarMensagem`): alinhado ao mesmo formato de agrupamento por dupla do dashboard (antes era lista flat sem agrupamento). Removidos parâmetro `periodo` não usado.
+  4. `roi-report-controller.js`: passa a incluir `coordenador` nos itens de preenchidos/faltantes para viabilizar o agrupamento.
+  5. `sheets-service.js`: 
+     - `normalizeClient` captura coluna opcional **"data de atualização"** (aliases: 'data de atualização', 'data atualização', 'atualizado', 'última atualização') → `dataAtualizacao`.
+     - Novo `validarConsistencia(all)` roda após carregar os cockpits e `console.warn` sobre: (a) clientes sem coordenador/GT preenchido (dupla incompleta na planilha), (b) uma mesma pessoa (coordenador/GT) aparecendo em **múltiplas squads** → sinal de mudança de função não refletida nas planilhas (ex.: Jaqueline Ventura).
+- **Contratos alterados:** `RoiReportView.gerarMensagem(faltantes)` (parâmetro `periodo` removido — controller atualizado); `normalizeClient()` retorna campo adicional `dataAtualizacao` (não quebra consumidores existentes). `gerarMensagemGTs` renomeada para `gerarMensagem` internamente (não exportada).
+- **Validação:** `node --check` OK em todos os 10 JS; smoke test em Node do formato de mensagem (agrupamento correto e ordenação por squad→coord→gt) e do `validarConsistencia` (detecta 1 cliente sem GT + pessoa "Jaqueline Ventura" em 2 squads). pytest continua não aplicável (bug pré-existente: backend Flask removido, ver entrada 227).
+- **Status:** ✅ Concluído
+- **Autor:** opencode
+- **Prevenção:** sempre que uma pessoa mudar de squad/função, atualizar as colunas coordenador/GT da planilha da nova squad (e remover da antiga) — o `validarConsistencia` avisa se a mesma pessoa ficou em 2 squads. Para dados ainda mais assertivos (ex.: rastrear histórico de mudança), considerar futuramente uma planilha/tab de mapeamento Pessoas→Squad/Dupla/Data.
+
 ---
 
 ## Decisões Arquiteturais

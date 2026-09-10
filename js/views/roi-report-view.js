@@ -119,19 +119,31 @@ export class RoiReportView {
         return `<span class="badge ${s.cls}"><span class="dot"></span>${s.label}</span>`;
     }
 
-    static gerarMensagem(faltantes, periodo) {
+    static gerarMensagem(faltantes) {
         if (!faltantes || faltantes.length === 0) return 'Todos os clientes já preencheram!';
-        const nomePeriodo = (periodo && periodo.roiWeek) || 'em aberto';
-        const referencia = (periodo && periodo.referencia) || '';
-        const nomes = faltantes.map(c => `- ${c.nome_fantasia}`).join('\n');
-        return `Olá GTs!
 
-Os seguintes clientes ainda não preencheram o ROI Week ${nomePeriodo}${referencia ? ` (Ref: ${referencia}; janela 01-03)` : ''}:
+        const norm = (v) => (v || '').toString().trim().replace(/\s+/g, ' ');
+        const grupos = new Map();
+        faltantes.forEach(c => {
+            const squad = norm(c.squad) || 'Sem Squad';
+            const coord = norm(c.coordenador) || 'Sem Coord';
+            const gt = norm(c.gt) || 'Sem GT';
+            const chave = `${squad}||${coord}||${gt}`;
+            if (!grupos.has(chave)) grupos.set(chave, { squad, coord, gt, nomes: [] });
+            grupos.get(chave).nomes.push(c.nome_fantasia);
+        });
 
-${nomes}
+        const ordenados = [...grupos.values()].sort((a, b) =>
+            a.squad.localeCompare(b.squad) || a.coord.localeCompare(b.coord) || a.gt.localeCompare(b.gt)
+        );
 
-Por favor, preencham o mais breve possível.
-
-Obrigado!`;
+        let msg = '';
+        ordenados.forEach((g, i) => {
+            if (i > 0) msg += '\n';
+            msg += `${g.squad}: Coord ${g.coord} | GT: ${g.gt}\n`;
+            msg += `Clientes com ROI Week pendente de preenchimento:\n`;
+            g.nomes.forEach(n => msg += `- ${n}\n`);
+        });
+        return msg;
     }
 }

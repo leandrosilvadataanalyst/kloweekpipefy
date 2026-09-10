@@ -1,7 +1,8 @@
 import { CONFIG } from '../config.js';
+import { pipefyEndpoint } from '../api-base.js';
 
 export class PipefyService {
-    static API_URL = '/kloweekpipefy/proxy.php';
+    static API_URL = pipefyEndpoint();
 
     static async query(graphqlQuery) {
         const response = await fetch(this.API_URL, {

@@ -192,23 +192,36 @@ function calcularCharts(lista, stats) {
     return { temporal, pareto, descritiva, pizza, barras };
 }
 
+function normalizarNome(nome) {
+    return (nome || '').trim().replace(/\s+/g, ' ');
+}
+
 function gerarMensagemGTs(lista) {
     const faltantes = lista.filter(c => !c.preenchido);
     if (faltantes.length === 0) return 'Todos os clientes já preencheram o ROI Week!';
     const vigente = getPeriodoRoiWeek();
-    const porGT = {};
+
+    const grupos = new Map();
     faltantes.forEach(c => {
-        const gt = (c.gt || 'Sem GT').trim();
-        if (!porGT[gt]) porGT[gt] = [];
-        porGT[gt].push(c.nome);
+        const squad = normalizarNome(c.squad) || 'Sem Squad';
+        const coord = normalizarNome(c.coordenador) || 'Sem Coord';
+        const gt = normalizarNome(c.gt) || 'Sem GT';
+        const chave = `${squad}||${coord}||${gt}`;
+        if (!grupos.has(chave)) grupos.set(chave, { squad, coord, gt, nomes: [] });
+        grupos.get(chave).nomes.push(c.nome);
     });
-    let msg = `Olá! \n\nOs seguintes clientes ainda não preencheram o ROI Week ${vigente.roiWeek} (Ref: ${vigente.referencia}; janela 01-03):\n\n`;
-    for (const [gt, nomes] of Object.entries(porGT).sort((a, b) => a[0].localeCompare(b[0]))) {
-        msg += `${gt}:\n`;
-        nomes.forEach(n => msg += `- ${n}\n`);
-        msg += '\n';
-    }
-    msg += 'Por favor, preencham o mais breve possível.\n\nObrigado!';
+
+    const gruposOrdenados = [...grupos.values()].sort((a, b) =>
+        a.squad.localeCompare(b.squad) || a.coord.localeCompare(b.coord) || a.gt.localeCompare(b.gt)
+    );
+
+    let msg = '';
+    gruposOrdenados.forEach((g, i) => {
+        if (i > 0) msg += '\n';
+        msg += `${g.squad}: Coord ${g.coord} | GT: ${g.gt}\n`;
+        msg += `Clientes com ROI Week pendente de preenchimento:\n`;
+        g.nomes.forEach(n => msg += `- ${n}\n`);
+    });
     return msg;
 }
 
