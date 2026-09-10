@@ -1,0 +1,1943 @@
+{
+    "generated_at": "2026-09-10T20:23:46+02:00",
+    "stats": {
+        "clientes": 825,
+        "projetos": 597,
+        "razao_mappings": 225,
+        "fantasia_mappings": 214
+    },
+    "razao_to_fantasia": {
+        "DRA CRISTIANE TONIN": [
+            "ORTO MASTER"
+        ],
+        "ARAGON COMERCIO DE ROUPAS EIRELI": [
+            "ARAGON"
+        ],
+        "PAULISTA DOCUMENTAAO E NEGCIOS IMOBILIRIOS EIRELI": [
+            "PAULISTA IMOBI"
+        ],
+        "INFOCELL ANGELO ABRAO BORTOLIN": [
+            "MOBI UP"
+        ],
+        "A3E COMERCIO DE OCULOS E LENTES DE CONTATO LTDA": [
+            "LENTESDECONTATONET"
+        ],
+        "NUTICO FRONTEIRA PARQUE LTDA": [
+            "NUTICO FRONTEIRA PARQUE"
+        ],
+        "VERTICALE SA": [
+            "VERTICALE"
+        ],
+        "REALVALE ASSOCIACAO": [
+            "REALVALE"
+        ],
+        "GRUPO QDP FRUTA ETC": [
+            "GRUPO QDP"
+        ],
+        "BALAGUER SIMOES ITIBAM BUSINESS MARKETING E EVENTOS LTDA": [
+            "ITIBAM BUSINESS"
+        ],
+        "PLATOLANDIA INDUSTIRA COMERCIO E EXPORTAO LTDA": [
+            "PLATOLANDIA"
+        ],
+        "MAREI MARCENARIA E INTERIORES EIRELI": [
+            "MAREI"
+        ],
+        "DROGRARIA MATRIZ LTDA FARMAIS": [
+            "FARMAIS"
+        ],
+        "PAULO GIULIANO DIOGENES DE BESSA ROSADO 91644399415": [
+            "NEGOCIO ANIMAL"
+        ],
+        "ESSENCE LIFE CENTRO DE ESPECIALIDADES ICOLL": [
+            "ICOLL"
+        ],
+        "ERP FLEX SMART": [
+            "FLEX SMART"
+        ],
+        "NEW MOBLLY MOVEIS EM GERAL LTDA": [
+            "NEW MOBLLY"
+        ],
+        "DISTYLO SERVICOS ADMINISTRATIVOS EIRELI STYLO FARMA": [
+            "STYLO FARMA"
+        ],
+        "TECAD TECNICA EM ADMINISTRACAO LTDA": [
+            "TECAD"
+        ],
+        "HLS PECAS": [
+            "HLS PNEUS"
+        ],
+        "SOLAR LAB ENERGIAS RENOVAVEIS LTDA": [
+            "SOLAR LAB ENERGIAS"
+        ],
+        "WISHBOX TECHNOLOGIES LTDA": [
+            "WISHBOX"
+        ],
+        "SOL BRASIL VITORIA INSTALACOES DE ENERGIA SOLAR LTDA": [
+            "SOL BRASIL VITORIA"
+        ],
+        "ZANELLA VEICULOS LTDA": [
+            "IBIZA MULTIMARCAS"
+        ],
+        "AUTO MOTORDIESEL LTDA": [
+            "MOTORDIESEL MOTORGASOLINA"
+        ],
+        "JD AUTOPECAS SERVICOS E LOCACOES EIRELI": [
+            "LOJAO DO CARRO"
+        ],
+        "PAPILLON INDUSTRIA E COMERCIO DE SUVENIRS LTDA": [
+            "PAPILON"
+        ],
+        "MEL MORANGO": [
+            "MEL E MORANGO MODAS"
+        ],
+        "KRUGER E HUBNER ACADEMIA LTDA BLUEFIT CASCAVEL": [
+            "BLUEFIT CASCAVEL"
+        ],
+        "SOCIEDADE EDUCACIONAL TRES DE MAIO": [
+            "SETREM"
+        ],
+        "VINICOLA FAMILIA VIEL": [
+            "ADEGAVIEL"
+        ],
+        "ATO ENERGIA SOLUCOES LTDA 2": [
+            "ATO ENERGIA SOLAR"
+        ],
+        "RX SOLAR": [
+            "RX ENERGIA SOLAR"
+        ],
+        "SOLO CORRETAGEM DE SEGUROS LTDA": [
+            "LAGOA CONSORCIOS"
+        ],
+        "ECKOSOL ENERGIA SOLAR": [
+            "ECKOSOL"
+        ],
+        "LUCAS FAVERO CLINICA DE ESTETICA FACIAL": [
+            "DR LUCAS FAVERO"
+        ],
+        "SANTOS EPIS LTDA": [
+            "SANTOS EPIS"
+        ],
+        "CLINICA DE ODONTOLOGIA NEUROMUSCULAR EIRL": [
+            "CLINICA DE ODONTOLOGIA NEUROMUSCULAR"
+        ],
+        "CENTRO DE TECNOLOGIA EM ENERGIAS RENOVAVEIS LTDA": [
+            "GRUPO CTER"
+        ],
+        "DISCFONE COMERCIO E SERVICOS LTDA": [
+            "DISCFONE"
+        ],
+        "VANGOGH EMPREENDIMENTOS IMOBILIARIOS LTDA": [
+            "MIP IMOBILIARIA"
+        ],
+        "GLAYCE JOSY SASAKI ACACIO SEDREZ SERVICOS MEDICOS LTDA": [
+            "GLAYCE JOSY SASAKI"
+        ],
+        "WFE ENERGIA SOLAR EIRELI": [
+            "SOS ENERGIA SOLAR"
+        ],
+        "BARRA CONFECCOES INDUSTRIA E COMERCIO LTDA": [
+            "BARRA CONFECCOES"
+        ],
+        "SOLUMENS COMERCIO E SERVICOS LTDA": [
+            "SOLUMENS ENERGIA SOLAR"
+        ],
+        "HAVANT ENGENHARIA E ENERGIA SOLAR LTDA": [
+            "HAVANT"
+        ],
+        "VIABILIZA CONSULTORIA LTDA": [
+            "VIABILIZA"
+        ],
+        "ONETECH SERVICOS DE COMUNICACAO E MULTIMIDIA LTDA": [
+            "ONETECH TELECOM"
+        ],
+        "RAFAEL LANGHOFF 2": [
+            "RAFAEL LANGHOFF"
+        ],
+        "OPTICA PONTUAL PRIME LTDA": [
+            "PONTUAL PRIME"
+        ],
+        "DIEGO CORNELIO RIBEIRO": [
+            "PONTUAL PRIME"
+        ],
+        "VERDI IMOVEIS LTDA": [
+            "VERDI IMOVEIS"
+        ],
+        "FK COMERCIO E SERVICOS DE INFORMATICA LTDA": [
+            "WCOM INFORMATICA"
+        ],
+        "HOTEL QNN": [
+            "HOTAL 1001 CEILANDIA"
+        ],
+        "GRF ASSESSORIA CONTBIL LTDA BLUKE": [
+            "NEO INTELLIGENCE"
+        ],
+        "MAGALHAES PIRES SERVICOS DE PAGAMENTO LTDA": [
+            "MAPIPAY"
+        ],
+        "RPP PARTICIPACOES LTDA": [
+            "R60"
+        ],
+        "ATACADO KIDS CHAPEC": [
+            "ATACADAO MOVEIS CHAPECO"
+        ],
+        "YOUCON ARQUITETURA E ENGENHARIA LTDA": [
+            "YOUCON PROJETOS"
+        ],
+        "YEAH ENTRETENIMENTO E PARTICIPACOES EIRELI": [
+            "YEAH ENTRETENIMENTO"
+        ],
+        "TAURI ENERGIA SOLAR FOTOVOLTAICA LTDA ME": [
+            "TAURI SOLAR"
+        ],
+        "LUMINATEC SOLUCOES EM ENERGIA LTDA": [
+            "LUMINATEC"
+        ],
+        "LIVIERO DISTRIBUIDORA DE MEDICAMENTOS LTDA": [
+            "LIVIERO"
+        ],
+        "GREEN SOL ENERGIA SOLAR LTDA": [
+            "GREEN SOL"
+        ],
+        "FISIOVITAL COMERCIO DE ARTIGOS ORTOPEDICOS LTDA": [
+            "FISIOVITAL"
+        ],
+        "LUZ POWER ENERGIA SOLAR ELETRICA LTDA": [
+            "LUZ POWER SOLAR"
+        ],
+        "RACCO DECOR": [
+            "RACCO ARQUITETURA"
+        ],
+        "KAYAN CORREIA AZEVEDO": [
+            "EDINHO PNEUS"
+        ],
+        "REAL BUCO MAXILO FACIAL LTDA": [
+            "CLINICA ODONTO SPAZZIO"
+        ],
+        "LUMA PARAFUSOS E FERRAMENTAS LTDA": [
+            "LUMA PARAFUSOS"
+        ],
+        "SAMANTHA BUSNELLO": [
+            "DRA SAMANTHA BUSNELLO"
+        ],
+        "BARRAVOLT ENERGIA SOLAR": [
+            "BARRAVOLT"
+        ],
+        "PLUR CASA NOTURNA": [
+            "PLUR"
+        ],
+        "PIZZARIA FAMIGLIA COMERCIO DE ALIMENTOS LTDA": [
+            "PIZZARIA FAMIGLIA"
+        ],
+        "THE HOUSE PUB BAR LTDA": [
+            "THE HOUSE"
+        ],
+        "JUST A LITTLE DATA": [
+            "JUST A LITTLE"
+        ],
+        "MS XAVIER": [
+            "NOTORIUM EVENTOS"
+        ],
+        "ROSANO TECNHOLOGY INDUSTRIA COMERCIO E SERVICOSLTDA": [
+            "ALTA GAMA PRIME",
+            "ALTA GAMA PRIME"
+        ],
+        "PADRONIZA CONSULTORIA EM QUALIDADE E SEGURANCA DOS ALIMENTOS LTDA": [
+            "PADRONIZA CONSULTORIA"
+        ],
+        "ANGULOS SUPRIMENTOS LTDA": [
+            "ANGULOS SUPRIMENTOS E LOGISTICA"
+        ],
+        "DATA CENTER LINNKE TELECOMUNICACOES LTDA": [
+            "DATA CENTER"
+        ],
+        "CAPITAL VEICULOS 1 LTDA": [
+            "CAPITAL VEICULOS"
+        ],
+        "PINPOINT TECNOLOGIA E PESQUISA EM SOFTWARE LTDA": [
+            "PINPOINT"
+        ],
+        "CARMELLITA MODA AUTORAL LTDA": [
+            "CARMELLITA ARTESANAL"
+        ],
+        "HOE VIEIRA E ALVES CLINICA ODONTOLOGICA LTDA": [
+            "SO RISO CENTRO ODONTOLOGICO"
+        ],
+        "8SYS DESENVOLVIMENTO DE PROGRAMAS LTDA": [
+            "8SYS DESENVOLVIMENTO DE PROGRAMAS"
+        ],
+        "AMO SISTEMAS": [
+            "AMO DELIVERY"
+        ],
+        "JVL ENERGIA SOLAR LTDA": [
+            "JVL ENERGIA SOLAR"
+        ],
+        "BRASUL EMPREENDIMENTOS ENERGETICOS LTDA": [
+            "SOL BRASIL CURITIBA"
+        ],
+        "BUSS COMERCIO DE APARELHOS AUDITIVOS LTDA": [
+            "BUSS"
+        ],
+        "LIKE COMERCIO DE COSMETICOS E UTENSILIOS LTDA": [
+            "LIKE COSMETICOS"
+        ],
+        "MATERNA PREV ASSESSORIA LTDA": [
+            "MATERNA"
+        ],
+        "OCCA TECNOLOGIA ESTETICA E BEM ESTAR LTDA": [
+            "OCCA"
+        ],
+        "GP SKY COMUNICACAO VISUAL LTDA": [
+            "NO AR MIDIAS"
+        ],
+        "MTEC MAQUINAS LTDA": [
+            "MTEC MAQUINAS"
+        ],
+        "SERAPPI PECAS E SERVICOS": [
+            "SERAPPI"
+        ],
+        "R R ZORZ": [
+            "PADRONIZA SEGURANCA DE ALIMENTOS"
+        ],
+        "ALMAQ REPRESENTACOES COMERCIAIS LTDA": [
+            "ALMAQ"
+        ],
+        "REPASSES FINANCEIROS E SOLUCOES TECNOLOGICAS INSTITUICAO DE PAGAMENTO SA": [
+            "AARIN"
+        ],
+        "FELIPE MACHADO DOS REIS": [
+            "PRIVATE ASSESSORIA"
+        ],
+        "FM HOME AGENCIA DE TURISMO LTDA": [
+            "FM HOME"
+        ],
+        "BULLPOWER EQUIPAMENTOS E LOGSTICA": [
+            "BULLPOWER"
+        ],
+        "GREENV MOBILIDADE ELETRICA BRASIL SA": [
+            "GREEN V"
+        ],
+        "KELLY LUCAS GARRONI": [
+            "PESQUEIRO DO NEY"
+        ],
+        "BRDRIVE TECNOLOGIA LTDA": [
+            "BRDRIVE"
+        ],
+        "COOPERATIVA AGROPECUARIA DE FAXINAL DOS GUEDES": [
+            "COMFAG"
+        ],
+        "ENERGYTEC SOLUCOES EM ELETRECIDADE LTDA": [
+            "ENERGYTEC SOLUCOES"
+        ],
+        "THIAGO CHINI EIFERT": [
+            "REDE BRASIL SOLAR"
+        ],
+        "CENTRO AUTOMOTIVO BROTHERS LTDA": [
+            "BROTHERS PNEUS"
+        ],
+        "SOL BRASIL SAO PAULO INSTALACOES DE ENERGIA SOLAR LTDA": [
+            "SOL BRASIL SAO PAULO"
+        ],
+        "VERTICAL RIGGING SOLUTIONS IMPORTACAO E EXPORTACAO LTDA": [
+            "VERTICAL RIGGING"
+        ],
+        "CNI CENTRO DE NEGOCIOS INTEGRADOS E IMPORTACAO E EXPORTACAO LTDA": [
+            "GRUPOPAY"
+        ],
+        "SOL BRASIL DOURADOS INSTALACOES DE ENERGIA SOLAR LTDA": [
+            "SOL BRASIL DOURADOS"
+        ],
+        "MERCOAGRO COMERCIO DE DEFENSIVOS AGRICOLAS LTDA ASSESSORIA": [
+            "MERCOAGRO"
+        ],
+        "RODRIGO FREITAS COELHO": [
+            "MR SOLAR ENGENHARIA"
+        ],
+        "NONNO BEPPE PIZZARIA LTDA": [
+            "NONNO BEPPE PIZZARIA"
+        ],
+        "ALAN MARCELO DA SILVA LTDA": [
+            "NETW"
+        ],
+        "GENTIL ZANCHET": [
+            "METALURGICA ZANCHET"
+        ],
+        "AUTO POSTO DIAMANTE DO NORTE LTDA": [
+            "REDE DE POSTOS RODOFOZ"
+        ],
+        "JA INTELIGENCIA IMOBILIARIA LTDA": [
+            "MEU IMOVEL PARCELADO"
+        ],
+        "YES FOCO ASSESSORIA EMPRESARIAL LTDA": [
+            "YES FOCUS"
+        ],
+        "J Q REALE RACOES E SEMENTES LTDA": [
+            "J Q REALE"
+        ],
+        "CLEAN ASSESSORIA EMPRESARIAL LTDA": [
+            "CLEAN ASSESSORIA EMPRESARIAL E JURIDICA"
+        ],
+        "SWR REFRIGERACAO COMERCIAL LTDA": [
+            "SWR REFRIGERACAO"
+        ],
+        "NOBRE SUL MOVEIS RUSTICOS LTDA": [
+            "NOBRE SUL"
+        ],
+        "P A PORTOES AUTOMATICOS LTDA": [
+            "P A PORTOES"
+        ],
+        "ANEL EMPREENDIMENTOS IMOBILIARIOS LTDA ASSESSORIA": [
+            "ANEL CONSTRUTORA"
+        ],
+        "TCFT EMPRESARIAL LTDA": [
+            "INSTITUTO TRATA ITC VERTEBRAL"
+        ],
+        "HOXTER AUTOMASOL LTDA": [
+            "HOXTER DATAENG"
+        ],
+        "45400997 IZAIAS ALVES BICALHO": [
+            "FACULDADE UNINECTAR"
+        ],
+        "TDKOM INFORMTICA LTDA": [
+            "TDKOM"
+        ],
+        "FORTE SOLUCOES AMBIENTAIS LTDA": [
+            "FORTE"
+        ],
+        "49922497 LUIZ HENRIQUE PAES DECORHOME INTERIORES": [
+            "DECORHOME INTERIORES"
+        ],
+        "GOOD TIMES BRAND ANA PAULA QUERINO DE ALMEIDA TEIXEIRA": [
+            "GOOD TIMES BRAND"
+        ],
+        "CAPITAL AGRO INVESTORS PRODUTOS QUIMICOS LTDA": [
+            "CAPITAL AGRO"
+        ],
+        "PORTELA CONSULTORIA JURIDICA": [
+            "PORTELA SJ"
+        ],
+        "CENTRO DE TERAPIA CAPILAR CMS LTDA": [
+            "MARIA SPA DO CABELO"
+        ],
+        "REALIZE PRODUCOES CULTURAIS LTDA": [
+            "REALIZE PRODUCOES"
+        ],
+        "GENUX TECNOLOGIA DA INFORMACAO LTDA": [
+            "GENUX"
+        ],
+        "CETRIC CENTRAL DE TRATAMENTO DE RESIDUOS SOLIDOS INDS E COMS DE CHAPECO LTDA ASSESSORIA": [
+            "CETRIC"
+        ],
+        "DAQUINTA CARNES E CHARCUTARIA ARTESANAL LTDA": [
+            "DAQUINTA CARNES"
+        ],
+        "SANTOS SANTOS REPRESENTACAO E DISTRIBUIDORA DE ALIMENTOS CONGELADOS LTDA": [
+            "SEGREDO GOIANO",
+            "SEGREDO GOIANO"
+        ],
+        "HABILE SERVICOS TERCEIRIZADOS LTDA": [
+            "GRUPO JSA"
+        ],
+        "NT SOLUCOES AGRICOLAS LTDA": [
+            "NT FERTILIZANTES"
+        ],
+        "RIONORTE COMERCIO DE VEICULOS LTDA": [
+            "RIONORTE COMERCIO"
+        ],
+        "LIKINDO BRASIL LTDA": [
+            "LIKINDO"
+        ],
+        "A L GALLACCI LTDA": [
+            "FIBRA PLUS"
+        ],
+        "BASE TECNOLOGIA E CURSOS LTDA": [
+            "VIDA BOX"
+        ],
+        "INDUSTELAS COMERCIO DE TELAS E ARAMES": [
+            "TELAS REAL"
+        ],
+        "G2 CONSULTORIA LTDA": [
+            "G2 TECNOLOGIA"
+        ],
+        "GLOBALTEK WINDOW FILMS BRASIL IMPORTACAO E DISTRIBUICAO LTDA": [
+            "GLOBALTEK"
+        ],
+        "RUBI SPA URBANO LTDA": [
+            "RUBI SPA"
+        ],
+        "AGRONERI SISTEMAS DE IRRIGACAO LTDA ASSESSORIA": [
+            "AGRONERI"
+        ],
+        "MATPARCG": [
+            "MATPAR"
+        ],
+        "ARASOL ENERGIA FOTOVOLTAICA LTDA": [
+            "ARASOL"
+        ],
+        "EDUCATIVA PAULISTA": [
+            "CAMPOS SALLES"
+        ],
+        "PORTAL VALE CORRETORA DE SEGUROS LTDA": [
+            "PORTAL VALE"
+        ],
+        "MAJO CONFECCOES E ACESSORIOS LTDA": [
+            "MAJO"
+        ],
+        "SANTER EMPREENDIMENTOS": [
+            "RESIDENCIAL PRISMA E PDI"
+        ],
+        "IDEALNET FIBRA LTDA": [
+            "IDEALNET"
+        ],
+        "HEVILE LOGISTICA E CONSULTORIA INTERNACIONAL LTDA ASSESSORIA": [
+            "HEVILE"
+        ],
+        "JETFRIO REFRIGERACAO LTDA": [
+            "JETFRIO"
+        ],
+        "RVIDAL EDUCACAO PROFISSIONAL LTDA": [
+            "RVIDAL"
+        ],
+        "POLIPISO DO BRASIL LTDA": [
+            "POLIPISO"
+        ],
+        "PCR LABOR COMERCIO EXTERIOR LTDA": [
+            "PCR LABOR"
+        ],
+        "HIDEMI": [
+            "HIDEMI TRANSPORTES"
+        ],
+        "CASA PASCARIELLO": [
+            "CASA GELATO"
+        ],
+        "MARTHA LANG": [
+            "DRA MARTHA LANG"
+        ],
+        "CAMPOS SALLES ASSESSORIA": [
+            "CAMPOS SALLES"
+        ],
+        "MYTEC ASSESSORIA": [
+            "MYTEC"
+        ],
+        "SERVICO DE CIRURGIA DO JOELHO AKVK LTDA ASSESSORIA": [
+            "DRANDREKUHN"
+        ],
+        "INDT INSTITUTO DE DESENVOLVIMENTO TECNOLGICO": [
+            "INDT"
+        ],
+        "SIMONE JACQUELINE MARQUES RODRIGUES": [
+            "SEGREDOS DA TURQUIA"
+        ],
+        "WR TECNOLOGIA LTDA": [
+            "WEBROTA"
+        ],
+        "CAMPOS SALLES ISAAS": [
+            "CAMPOS SALLES"
+        ],
+        "PROJETO TELHAS E REVESTIMENTOS LTDA": [
+            "PROJETOS MATERIAIS"
+        ],
+        "VILAR CARVALHO IMOBILIARIA LTDA": [
+            "VILAR AMP CARVALHO IMOBILIARIA LTDA"
+        ],
+        "VINICIUS AUGUSTO BARROS COSDA": [
+            "BR TRANSMISSOES AUTO PECAS"
+        ],
+        "ALBERTO JORGE LOIOLA RIBEIRO SILVA LTDA": [
+            "NACAO RUBRO NEGRA"
+        ],
+        "E7 COMERCIO DE CONFECCOES LTDA": [
+            "OUTFITER"
+        ],
+        "MCCOY IMMIGRATION ASSESSORIA": [
+            "MCCOY IMMIGRATION"
+        ],
+        "MCCOY IMMIGRATION SOCIAL MEDIA": [
+            "MCCOY IMMIGRATION"
+        ],
+        "VFB BRASIL ASSESSORIA": [
+            "VFB BRASIL"
+        ],
+        "VIAX TECNOLOGIA LTDA": [
+            "VIAX"
+        ],
+        "AGRONERI SISTEMAS DE IRRIGACAO LTDA SOCIAL MEDIA": [
+            "AGRONERI"
+        ],
+        "ANEL EMPREENDIMENTOS IMOBILIARIOS LTDA ISAAS": [
+            "ANEL"
+        ],
+        "MYTEC SOCIAL MEDIA": [
+            "MYTEC"
+        ],
+        "SERVICO DE CIRURGIA DO JOELHO AKVK LTDA SOCIAL MEDIA": [
+            "DRANDREKUHN"
+        ],
+        "AMAZON MOTORS BRASIL LTDA": [
+            "AMAZOM MOTORS BRASIL LTDA"
+        ],
+        "RAFAEL PIMENTA RIBEIRO LTDA": [
+            "ELMAG USINAGEM E MECNICA INDUSTRIAL"
+        ],
+        "HEVILE LOGISTICA E CONSULTORIA INTERNACIONAL LTDA SOCIAL MEDIA": [
+            "HEVILE LOGISTICA E CONSULTORIA INTERNACIONAL LTDA"
+        ],
+        "MERIDIAN BNK PAGAMENTOS GESTAO CORPORATIVA E MARKETING LTDA": [
+            "U VERSE"
+        ],
+        "HUGO DANIEL FRETES IMPORTACAO E EXPORTACAO ASSESSORIA": [
+            "PINK21"
+        ],
+        "YOUSAFER ASSISTENCIA LTDA ASSESSORIA": [
+            "YOUSAFER ASSISTENCIA LTDA"
+        ],
+        "RONEELY FEITOSA SOCIEDADE DE ADVOGADOS": [
+            "RONEELY FEITOSA AMP SOCIEDADE DE ADVOGADOS"
+        ],
+        "LEMES PIMENTEL DISTRIBUIDORA DE COSMETICOS EIRELI": [
+            "PIMENTA ESTETICA PROFISSIONAL"
+        ],
+        "NUBIA AIANNA SOUTO SILVA HONORIO": [
+            "ODONTOPRIMME"
+        ],
+        "TECSYSTEM COMERCIO E SERVICOS DE INFORMATICA LTDA": [
+            "TECSYSTEM"
+        ],
+        "MERCOAGRO COMERCIO DE DEFENSIVOS AGRICOLAS LTDA SOCIAL MEDIA": [
+            "MERCOAGRO COMERCIO DE DEFENSIVOS AGRICOLAS LTDA"
+        ],
+        "MATEUS ISHIKAWA BETINI": [
+            "BEAUTY ENXOVAIS"
+        ],
+        "CLINICA DR NIMIO": [
+            "CLINIPREVENT"
+        ],
+        "WALL STREET ASSESSORIA": [
+            "WALL STREET"
+        ],
+        "FLORIPA EMERGENCIAS SOCIAL MEDIA": [
+            "FLORIPA EMERGENCIAS"
+        ],
+        "VFB BRASIL SOCIAL MEDIA": [
+            "VFB BRASIL"
+        ],
+        "CETRIC SOCIAL MEDIA": [
+            "CETRIC"
+        ],
+        "CETRIC SITE": [
+            "CETRIC"
+        ],
+        "YOUSAFER SOCIAL MEDIA": [
+            "YOUSAFER"
+        ],
+        "WALL STREET SOCIAL MEDIA": [
+            "WALL STREET"
+        ],
+        "MAXTRUCK AUTOPECAS LTDA": [
+            "MAXTRUCK AUTOPECAS"
+        ],
+        "ASSISTENCIA BEM MELHOR LTDA": [
+            "BEM MELHOR"
+        ],
+        "ECOBUILDERS CONSTRUCOES LTDA": [
+            "ECOBUILDERS CONSTRUES"
+        ],
+        "PILAR FACILITIES LTDA": [
+            "PILAR FACILITIES"
+        ],
+        "JS DISTRIBUIDORA DE PECAS SA": [
+            "JS PEAS"
+        ],
+        "J MARTINS DA CRUZ MOVEIS LTDA": [
+            "CLIQUE E DECORE"
+        ],
+        "LA FEMME MODA NTIMA": [
+            "ANNA CAROLINA R BORCAR"
+        ],
+        "ROSANO TECNHOLOGY INDUSTRIA COMERCIO E SERVICOS LTDA": [
+            "CARTAO FACIL"
+        ],
+        "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS184BCX92BD4NCXJPYZXZZ1ZK2PYAVHP5U": [
+            "G2 CONSULTORIA LTDA"
+        ],
+        "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1FLEZED3GXX9HXH8LR7WPWOSILLGIXUB": [
+            "DF COMERCIO DE EPIS FERRAMENTAS E EQUIPAMENTOS INDUSTRIAIS LTDA"
+        ],
+        "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1UX4TTRVISFTUSTS7HQDXGSJ0IDTO0MW": [
+            "CRYSTAL SOLAR"
+        ],
+        "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1O8S1ANKYYIJZO5OYNEGGVSIN21EIOEKT": [
+            "WRM ADVOCACIA"
+        ],
+        "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1XOVRSFKGKL5W3SSLYA_IO3OGUBXPYFB5": [
+            "SENA ARQUITETURA"
+        ],
+        "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1QQVRZRZ_DJMFXLXSWQPQFWKYMWRTVVO1": [
+            "PALIE CONCEPT"
+        ],
+        "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1LQRUWJ_QMLECPMBSMG4AUQ6EEXMONLFK": [
+            "SALLY RAMOS DECOR"
+        ],
+        "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1YO4G3E3GVKQITSWRMXQ2YZOWZNLGNPBU": [
+            "VITALPETS"
+        ],
+        "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1M4_BEO7ALMP3ZC8T_JW6FQ44JSPZDBU": [
+            "ARSENAL FOGOS E BEBIDAS"
+        ],
+        "RIO PET DA GVEA": [
+            "PAIXAO PET"
+        ]
+    },
+    "fantasia_to_razao": {
+        "ORTO MASTER": "DRA CRISTIANE TONIN",
+        "ARAGON": "ARAGON COMERCIO DE ROUPAS EIRELI",
+        "PAULISTA IMOBI": "PAULISTA DOCUMENTAAO E NEGCIOS IMOBILIRIOS EIRELI",
+        "MOBI UP": "INFOCELL ANGELO ABRAO BORTOLIN",
+        "LENTESDECONTATONET": "A3E COMERCIO DE OCULOS E LENTES DE CONTATO LTDA",
+        "NUTICO FRONTEIRA PARQUE": "NUTICO FRONTEIRA PARQUE LTDA",
+        "VERTICALE": "VERTICALE SA",
+        "REALVALE": "REALVALE ASSOCIACAO",
+        "GRUPO QDP": "GRUPO QDP FRUTA ETC",
+        "ITIBAM BUSINESS": "BALAGUER SIMOES ITIBAM BUSINESS MARKETING E EVENTOS LTDA",
+        "PLATOLANDIA": "PLATOLANDIA INDUSTIRA COMERCIO E EXPORTAO LTDA",
+        "MAREI": "MAREI MARCENARIA E INTERIORES EIRELI",
+        "FARMAIS": "DROGRARIA MATRIZ LTDA FARMAIS",
+        "NEGOCIO ANIMAL": "PAULO GIULIANO DIOGENES DE BESSA ROSADO 91644399415",
+        "ICOLL": "ESSENCE LIFE CENTRO DE ESPECIALIDADES ICOLL",
+        "FLEX SMART": "ERP FLEX SMART",
+        "NEW MOBLLY": "NEW MOBLLY MOVEIS EM GERAL LTDA",
+        "STYLO FARMA": "DISTYLO SERVICOS ADMINISTRATIVOS EIRELI STYLO FARMA",
+        "TECAD": "TECAD TECNICA EM ADMINISTRACAO LTDA",
+        "HLS PNEUS": "HLS PECAS",
+        "SOLAR LAB ENERGIAS": "SOLAR LAB ENERGIAS RENOVAVEIS LTDA",
+        "WISHBOX": "WISHBOX TECHNOLOGIES LTDA",
+        "SOL BRASIL VITORIA": "SOL BRASIL VITORIA INSTALACOES DE ENERGIA SOLAR LTDA",
+        "IBIZA MULTIMARCAS": "ZANELLA VEICULOS LTDA",
+        "MOTORDIESEL MOTORGASOLINA": "AUTO MOTORDIESEL LTDA",
+        "LOJAO DO CARRO": "JD AUTOPECAS SERVICOS E LOCACOES EIRELI",
+        "PAPILON": "PAPILLON INDUSTRIA E COMERCIO DE SUVENIRS LTDA",
+        "MEL E MORANGO MODAS": "MEL MORANGO",
+        "BLUEFIT CASCAVEL": "KRUGER E HUBNER ACADEMIA LTDA BLUEFIT CASCAVEL",
+        "SETREM": "SOCIEDADE EDUCACIONAL TRES DE MAIO",
+        "ADEGAVIEL": "VINICOLA FAMILIA VIEL",
+        "ATO ENERGIA SOLAR": "ATO ENERGIA SOLUCOES LTDA 2",
+        "RX ENERGIA SOLAR": "RX SOLAR",
+        "LAGOA CONSORCIOS": "SOLO CORRETAGEM DE SEGUROS LTDA",
+        "ECKOSOL": "ECKOSOL ENERGIA SOLAR",
+        "DR LUCAS FAVERO": "LUCAS FAVERO CLINICA DE ESTETICA FACIAL",
+        "SANTOS EPIS": "SANTOS EPIS LTDA",
+        "CLINICA DE ODONTOLOGIA NEUROMUSCULAR": "CLINICA DE ODONTOLOGIA NEUROMUSCULAR EIRL",
+        "GRUPO CTER": "CENTRO DE TECNOLOGIA EM ENERGIAS RENOVAVEIS LTDA",
+        "DISCFONE": "DISCFONE COMERCIO E SERVICOS LTDA",
+        "MIP IMOBILIARIA": "VANGOGH EMPREENDIMENTOS IMOBILIARIOS LTDA",
+        "GLAYCE JOSY SASAKI": "GLAYCE JOSY SASAKI ACACIO SEDREZ SERVICOS MEDICOS LTDA",
+        "SOS ENERGIA SOLAR": "WFE ENERGIA SOLAR EIRELI",
+        "BARRA CONFECCOES": "BARRA CONFECCOES INDUSTRIA E COMERCIO LTDA",
+        "SOLUMENS ENERGIA SOLAR": "SOLUMENS COMERCIO E SERVICOS LTDA",
+        "HAVANT": "HAVANT ENGENHARIA E ENERGIA SOLAR LTDA",
+        "VIABILIZA": "VIABILIZA CONSULTORIA LTDA",
+        "ONETECH TELECOM": "ONETECH SERVICOS DE COMUNICACAO E MULTIMIDIA LTDA",
+        "RAFAEL LANGHOFF": "RAFAEL LANGHOFF 2",
+        "PONTUAL PRIME": "DIEGO CORNELIO RIBEIRO",
+        "VERDI IMOVEIS": "VERDI IMOVEIS LTDA",
+        "WCOM INFORMATICA": "FK COMERCIO E SERVICOS DE INFORMATICA LTDA",
+        "HOTAL 1001 CEILANDIA": "HOTEL QNN",
+        "NEO INTELLIGENCE": "GRF ASSESSORIA CONTBIL LTDA BLUKE",
+        "MAPIPAY": "MAGALHAES PIRES SERVICOS DE PAGAMENTO LTDA",
+        "R60": "RPP PARTICIPACOES LTDA",
+        "ATACADAO MOVEIS CHAPECO": "ATACADO KIDS CHAPEC",
+        "YOUCON PROJETOS": "YOUCON ARQUITETURA E ENGENHARIA LTDA",
+        "YEAH ENTRETENIMENTO": "YEAH ENTRETENIMENTO E PARTICIPACOES EIRELI",
+        "TAURI SOLAR": "TAURI ENERGIA SOLAR FOTOVOLTAICA LTDA ME",
+        "LUMINATEC": "LUMINATEC SOLUCOES EM ENERGIA LTDA",
+        "LIVIERO": "LIVIERO DISTRIBUIDORA DE MEDICAMENTOS LTDA",
+        "GREEN SOL": "GREEN SOL ENERGIA SOLAR LTDA",
+        "FISIOVITAL": "FISIOVITAL COMERCIO DE ARTIGOS ORTOPEDICOS LTDA",
+        "LUZ POWER SOLAR": "LUZ POWER ENERGIA SOLAR ELETRICA LTDA",
+        "RACCO ARQUITETURA": "RACCO DECOR",
+        "EDINHO PNEUS": "KAYAN CORREIA AZEVEDO",
+        "CLINICA ODONTO SPAZZIO": "REAL BUCO MAXILO FACIAL LTDA",
+        "LUMA PARAFUSOS": "LUMA PARAFUSOS E FERRAMENTAS LTDA",
+        "DRA SAMANTHA BUSNELLO": "SAMANTHA BUSNELLO",
+        "BARRAVOLT": "BARRAVOLT ENERGIA SOLAR",
+        "PLUR": "PLUR CASA NOTURNA",
+        "PIZZARIA FAMIGLIA": "PIZZARIA FAMIGLIA COMERCIO DE ALIMENTOS LTDA",
+        "THE HOUSE": "THE HOUSE PUB BAR LTDA",
+        "JUST A LITTLE": "JUST A LITTLE DATA",
+        "NOTORIUM EVENTOS": "MS XAVIER",
+        "ALTA GAMA PRIME": "ROSANO TECNHOLOGY INDUSTRIA COMERCIO E SERVICOSLTDA",
+        "PADRONIZA CONSULTORIA": "PADRONIZA CONSULTORIA EM QUALIDADE E SEGURANCA DOS ALIMENTOS LTDA",
+        "ANGULOS SUPRIMENTOS E LOGISTICA": "ANGULOS SUPRIMENTOS LTDA",
+        "DATA CENTER": "DATA CENTER LINNKE TELECOMUNICACOES LTDA",
+        "CAPITAL VEICULOS": "CAPITAL VEICULOS 1 LTDA",
+        "PINPOINT": "PINPOINT TECNOLOGIA E PESQUISA EM SOFTWARE LTDA",
+        "CARMELLITA ARTESANAL": "CARMELLITA MODA AUTORAL LTDA",
+        "SO RISO CENTRO ODONTOLOGICO": "HOE VIEIRA E ALVES CLINICA ODONTOLOGICA LTDA",
+        "8SYS DESENVOLVIMENTO DE PROGRAMAS": "8SYS DESENVOLVIMENTO DE PROGRAMAS LTDA",
+        "AMO DELIVERY": "AMO SISTEMAS",
+        "JVL ENERGIA SOLAR": "JVL ENERGIA SOLAR LTDA",
+        "SOL BRASIL CURITIBA": "BRASUL EMPREENDIMENTOS ENERGETICOS LTDA",
+        "BUSS": "BUSS COMERCIO DE APARELHOS AUDITIVOS LTDA",
+        "LIKE COSMETICOS": "LIKE COMERCIO DE COSMETICOS E UTENSILIOS LTDA",
+        "MATERNA": "MATERNA PREV ASSESSORIA LTDA",
+        "OCCA": "OCCA TECNOLOGIA ESTETICA E BEM ESTAR LTDA",
+        "NO AR MIDIAS": "GP SKY COMUNICACAO VISUAL LTDA",
+        "MTEC MAQUINAS": "MTEC MAQUINAS LTDA",
+        "SERAPPI": "SERAPPI PECAS E SERVICOS",
+        "PADRONIZA SEGURANCA DE ALIMENTOS": "R R ZORZ",
+        "ALMAQ": "ALMAQ REPRESENTACOES COMERCIAIS LTDA",
+        "AARIN": "REPASSES FINANCEIROS E SOLUCOES TECNOLOGICAS INSTITUICAO DE PAGAMENTO SA",
+        "PRIVATE ASSESSORIA": "FELIPE MACHADO DOS REIS",
+        "FM HOME": "FM HOME AGENCIA DE TURISMO LTDA",
+        "BULLPOWER": "BULLPOWER EQUIPAMENTOS E LOGSTICA",
+        "GREEN V": "GREENV MOBILIDADE ELETRICA BRASIL SA",
+        "PESQUEIRO DO NEY": "KELLY LUCAS GARRONI",
+        "BRDRIVE": "BRDRIVE TECNOLOGIA LTDA",
+        "COMFAG": "COOPERATIVA AGROPECUARIA DE FAXINAL DOS GUEDES",
+        "ENERGYTEC SOLUCOES": "ENERGYTEC SOLUCOES EM ELETRECIDADE LTDA",
+        "REDE BRASIL SOLAR": "THIAGO CHINI EIFERT",
+        "BROTHERS PNEUS": "CENTRO AUTOMOTIVO BROTHERS LTDA",
+        "SOL BRASIL SAO PAULO": "SOL BRASIL SAO PAULO INSTALACOES DE ENERGIA SOLAR LTDA",
+        "VERTICAL RIGGING": "VERTICAL RIGGING SOLUTIONS IMPORTACAO E EXPORTACAO LTDA",
+        "GRUPOPAY": "CNI CENTRO DE NEGOCIOS INTEGRADOS E IMPORTACAO E EXPORTACAO LTDA",
+        "SOL BRASIL DOURADOS": "SOL BRASIL DOURADOS INSTALACOES DE ENERGIA SOLAR LTDA",
+        "MERCOAGRO": "MERCOAGRO COMERCIO DE DEFENSIVOS AGRICOLAS LTDA ASSESSORIA",
+        "MR SOLAR ENGENHARIA": "RODRIGO FREITAS COELHO",
+        "NONNO BEPPE PIZZARIA": "NONNO BEPPE PIZZARIA LTDA",
+        "NETW": "ALAN MARCELO DA SILVA LTDA",
+        "METALURGICA ZANCHET": "GENTIL ZANCHET",
+        "REDE DE POSTOS RODOFOZ": "AUTO POSTO DIAMANTE DO NORTE LTDA",
+        "MEU IMOVEL PARCELADO": "JA INTELIGENCIA IMOBILIARIA LTDA",
+        "YES FOCUS": "YES FOCO ASSESSORIA EMPRESARIAL LTDA",
+        "J Q REALE": "J Q REALE RACOES E SEMENTES LTDA",
+        "CLEAN ASSESSORIA EMPRESARIAL E JURIDICA": "CLEAN ASSESSORIA EMPRESARIAL LTDA",
+        "SWR REFRIGERACAO": "SWR REFRIGERACAO COMERCIAL LTDA",
+        "NOBRE SUL": "NOBRE SUL MOVEIS RUSTICOS LTDA",
+        "P A PORTOES": "P A PORTOES AUTOMATICOS LTDA",
+        "ANEL CONSTRUTORA": "ANEL EMPREENDIMENTOS IMOBILIARIOS LTDA ASSESSORIA",
+        "INSTITUTO TRATA ITC VERTEBRAL": "TCFT EMPRESARIAL LTDA",
+        "HOXTER DATAENG": "HOXTER AUTOMASOL LTDA",
+        "FACULDADE UNINECTAR": "45400997 IZAIAS ALVES BICALHO",
+        "TDKOM": "TDKOM INFORMTICA LTDA",
+        "FORTE": "FORTE SOLUCOES AMBIENTAIS LTDA",
+        "DECORHOME INTERIORES": "49922497 LUIZ HENRIQUE PAES DECORHOME INTERIORES",
+        "GOOD TIMES BRAND": "GOOD TIMES BRAND ANA PAULA QUERINO DE ALMEIDA TEIXEIRA",
+        "CAPITAL AGRO": "CAPITAL AGRO INVESTORS PRODUTOS QUIMICOS LTDA",
+        "PORTELA SJ": "PORTELA CONSULTORIA JURIDICA",
+        "MARIA SPA DO CABELO": "CENTRO DE TERAPIA CAPILAR CMS LTDA",
+        "REALIZE PRODUCOES": "REALIZE PRODUCOES CULTURAIS LTDA",
+        "GENUX": "GENUX TECNOLOGIA DA INFORMACAO LTDA",
+        "CETRIC": "CETRIC SITE",
+        "DAQUINTA CARNES": "DAQUINTA CARNES E CHARCUTARIA ARTESANAL LTDA",
+        "SEGREDO GOIANO": "SANTOS SANTOS REPRESENTACAO E DISTRIBUIDORA DE ALIMENTOS CONGELADOS LTDA",
+        "GRUPO JSA": "HABILE SERVICOS TERCEIRIZADOS LTDA",
+        "NT FERTILIZANTES": "NT SOLUCOES AGRICOLAS LTDA",
+        "RIONORTE COMERCIO": "RIONORTE COMERCIO DE VEICULOS LTDA",
+        "LIKINDO": "LIKINDO BRASIL LTDA",
+        "FIBRA PLUS": "A L GALLACCI LTDA",
+        "VIDA BOX": "BASE TECNOLOGIA E CURSOS LTDA",
+        "TELAS REAL": "INDUSTELAS COMERCIO DE TELAS E ARAMES",
+        "G2 TECNOLOGIA": "G2 CONSULTORIA LTDA",
+        "GLOBALTEK": "GLOBALTEK WINDOW FILMS BRASIL IMPORTACAO E DISTRIBUICAO LTDA",
+        "RUBI SPA": "RUBI SPA URBANO LTDA",
+        "AGRONERI": "AGRONERI SISTEMAS DE IRRIGACAO LTDA SOCIAL MEDIA",
+        "MATPAR": "MATPARCG",
+        "ARASOL": "ARASOL ENERGIA FOTOVOLTAICA LTDA",
+        "CAMPOS SALLES": "CAMPOS SALLES ISAAS",
+        "PORTAL VALE": "PORTAL VALE CORRETORA DE SEGUROS LTDA",
+        "MAJO": "MAJO CONFECCOES E ACESSORIOS LTDA",
+        "RESIDENCIAL PRISMA E PDI": "SANTER EMPREENDIMENTOS",
+        "IDEALNET": "IDEALNET FIBRA LTDA",
+        "HEVILE": "HEVILE LOGISTICA E CONSULTORIA INTERNACIONAL LTDA ASSESSORIA",
+        "JETFRIO": "JETFRIO REFRIGERACAO LTDA",
+        "RVIDAL": "RVIDAL EDUCACAO PROFISSIONAL LTDA",
+        "POLIPISO": "POLIPISO DO BRASIL LTDA",
+        "PCR LABOR": "PCR LABOR COMERCIO EXTERIOR LTDA",
+        "HIDEMI TRANSPORTES": "HIDEMI",
+        "CASA GELATO": "CASA PASCARIELLO",
+        "DRA MARTHA LANG": "MARTHA LANG",
+        "MYTEC": "MYTEC SOCIAL MEDIA",
+        "DRANDREKUHN": "SERVICO DE CIRURGIA DO JOELHO AKVK LTDA SOCIAL MEDIA",
+        "INDT": "INDT INSTITUTO DE DESENVOLVIMENTO TECNOLGICO",
+        "SEGREDOS DA TURQUIA": "SIMONE JACQUELINE MARQUES RODRIGUES",
+        "WEBROTA": "WR TECNOLOGIA LTDA",
+        "PROJETOS MATERIAIS": "PROJETO TELHAS E REVESTIMENTOS LTDA",
+        "VILAR AMP CARVALHO IMOBILIARIA LTDA": "VILAR CARVALHO IMOBILIARIA LTDA",
+        "BR TRANSMISSOES AUTO PECAS": "VINICIUS AUGUSTO BARROS COSDA",
+        "NACAO RUBRO NEGRA": "ALBERTO JORGE LOIOLA RIBEIRO SILVA LTDA",
+        "OUTFITER": "E7 COMERCIO DE CONFECCOES LTDA",
+        "MCCOY IMMIGRATION": "MCCOY IMMIGRATION SOCIAL MEDIA",
+        "VFB BRASIL": "VFB BRASIL SOCIAL MEDIA",
+        "VIAX": "VIAX TECNOLOGIA LTDA",
+        "ANEL": "ANEL EMPREENDIMENTOS IMOBILIARIOS LTDA ISAAS",
+        "AMAZOM MOTORS BRASIL LTDA": "AMAZON MOTORS BRASIL LTDA",
+        "ELMAG USINAGEM E MECNICA INDUSTRIAL": "RAFAEL PIMENTA RIBEIRO LTDA",
+        "HEVILE LOGISTICA E CONSULTORIA INTERNACIONAL LTDA": "HEVILE LOGISTICA E CONSULTORIA INTERNACIONAL LTDA SOCIAL MEDIA",
+        "U VERSE": "MERIDIAN BNK PAGAMENTOS GESTAO CORPORATIVA E MARKETING LTDA",
+        "PINK21": "HUGO DANIEL FRETES IMPORTACAO E EXPORTACAO ASSESSORIA",
+        "YOUSAFER ASSISTENCIA LTDA": "YOUSAFER ASSISTENCIA LTDA ASSESSORIA",
+        "RONEELY FEITOSA AMP SOCIEDADE DE ADVOGADOS": "RONEELY FEITOSA SOCIEDADE DE ADVOGADOS",
+        "PIMENTA ESTETICA PROFISSIONAL": "LEMES PIMENTEL DISTRIBUIDORA DE COSMETICOS EIRELI",
+        "ODONTOPRIMME": "NUBIA AIANNA SOUTO SILVA HONORIO",
+        "TECSYSTEM": "TECSYSTEM COMERCIO E SERVICOS DE INFORMATICA LTDA",
+        "MERCOAGRO COMERCIO DE DEFENSIVOS AGRICOLAS LTDA": "MERCOAGRO COMERCIO DE DEFENSIVOS AGRICOLAS LTDA SOCIAL MEDIA",
+        "BEAUTY ENXOVAIS": "MATEUS ISHIKAWA BETINI",
+        "CLINIPREVENT": "CLINICA DR NIMIO",
+        "WALL STREET": "WALL STREET SOCIAL MEDIA",
+        "FLORIPA EMERGENCIAS": "FLORIPA EMERGENCIAS SOCIAL MEDIA",
+        "YOUSAFER": "YOUSAFER SOCIAL MEDIA",
+        "MAXTRUCK AUTOPECAS": "MAXTRUCK AUTOPECAS LTDA",
+        "BEM MELHOR": "ASSISTENCIA BEM MELHOR LTDA",
+        "ECOBUILDERS CONSTRUES": "ECOBUILDERS CONSTRUCOES LTDA",
+        "PILAR FACILITIES": "PILAR FACILITIES LTDA",
+        "JS PEAS": "JS DISTRIBUIDORA DE PECAS SA",
+        "CLIQUE E DECORE": "J MARTINS DA CRUZ MOVEIS LTDA",
+        "ANNA CAROLINA R BORCAR": "LA FEMME MODA NTIMA",
+        "CARTAO FACIL": "ROSANO TECNHOLOGY INDUSTRIA COMERCIO E SERVICOS LTDA",
+        "G2 CONSULTORIA LTDA": "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS184BCX92BD4NCXJPYZXZZ1ZK2PYAVHP5U",
+        "DF COMERCIO DE EPIS FERRAMENTAS E EQUIPAMENTOS INDUSTRIAIS LTDA": "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1FLEZED3GXX9HXH8LR7WPWOSILLGIXUB",
+        "CRYSTAL SOLAR": "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1UX4TTRVISFTUSTS7HQDXGSJ0IDTO0MW",
+        "WRM ADVOCACIA": "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1O8S1ANKYYIJZO5OYNEGGVSIN21EIOEKT",
+        "SENA ARQUITETURA": "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1XOVRSFKGKL5W3SSLYA_IO3OGUBXPYFB5",
+        "PALIE CONCEPT": "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1QQVRZRZ_DJMFXLXSWQPQFWKYMWRTVVO1",
+        "SALLY RAMOS DECOR": "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1LQRUWJ_QMLECPMBSMG4AUQ6EEXMONLFK",
+        "VITALPETS": "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1YO4G3E3GVKQITSWRMXQ2YZOWZNLGNPBU",
+        "ARSENAL FOGOS E BEBIDAS": "HTTPSDRIVEGOOGLECOMDRIVEFOLDERS1M4_BEO7ALMP3ZC8T_JW6FQ44JSPZDBU",
+        "PAIXAO PET": "RIO PET DA GVEA"
+    },
+    "match_results": [
+        {
+            "cockpit": "SIMPLES READ",
+            "normalized": "SIMPLES READ",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "FIMAQ (CAIU)",
+            "normalized": "FIMAQ CAIU",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "EMPORIO MERLO (CAIU)",
+            "normalized": "EMPORIO MERLO CAIU",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "A B MORAES",
+            "normalized": "A B MORAES",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "PLATA SERVIÇOS",
+            "normalized": "PLATA SERVIOS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MOSSORÓ EMPRESARIAL",
+            "normalized": "MOSSOR EMPRESARIAL",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "SUÍTES VISTA PRO MAR",
+            "normalized": "SUTES VISTA PRO MAR",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MUDE",
+            "normalized": "MUDE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ELOTECH",
+            "normalized": "ELOTECH",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "LEAO XIII MOTOS",
+            "normalized": "LEAO XIII MOTOS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CF MOTOS",
+            "normalized": "CF MOTOS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CÃOSELHEIRO",
+            "normalized": "COSELHEIRO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "FORNERIA",
+            "normalized": "FORNERIA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "RIO PET DA GÁVEA",
+            "normalized": "RIO PET DA GVEA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "PERFOMANCELAB",
+            "normalized": "PERFOMANCELAB",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "EMPORIUM DAS ALIANÇAS",
+            "normalized": "EMPORIUM DAS ALIANAS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "LIFE OPTION",
+            "normalized": "LIFE OPTION",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "BEITY",
+            "normalized": "BEITY",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "BELA ÓPTICA",
+            "normalized": "BELA PTICA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "DUE STUDIO PERSONAL",
+            "normalized": "DUE STUDIO PERSONAL",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "NEW MOBLLY MOVEIS EM GERAL LTDA",
+            "normalized": "NEW MOBLLY MOVEIS EM GERAL LTDA",
+            "hasExactMatch": true,
+            "aliases": [
+                "NEW MOBLLY"
+            ],
+            "partialMatch": null
+        },
+        {
+            "cockpit": "GB INSURANCE GROUP LTDA",
+            "normalized": "GB INSURANCE GROUP LTDA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CLIMBER RMS",
+            "normalized": "CLIMBER RMS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "SANVIMAX",
+            "normalized": "SANVIMAX",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "FIMAQ",
+            "normalized": "FIMAQ",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "TEM DISNEY EM PARIS",
+            "normalized": "TEM DISNEY EM PARIS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CASA DUE HAIR CONCEPT",
+            "normalized": "CASA DUE HAIR CONCEPT",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "BIKE4U",
+            "normalized": "BIKE4U",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "EMPORIO MERLO",
+            "normalized": "EMPORIO MERLO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MATEUS SUPLEMENTOS",
+            "normalized": "MATEUS SUPLEMENTOS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "UNIVERSE",
+            "normalized": "UNIVERSE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "DE PAULA ODONTOLOGIA",
+            "normalized": "DE PAULA ODONTOLOGIA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "DOROTY",
+            "normalized": "DOROTY",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "TEKSEA",
+            "normalized": "TEKSEA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "POINT MOTORS",
+            "normalized": "POINT MOTORS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CASA AO LADO",
+            "normalized": "CASA AO LADO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ODONTO EXCELLENCE",
+            "normalized": "ODONTO EXCELLENCE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "TARSUS",
+            "normalized": "TARSUS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "VERTIQ CORRETORA DE SEGUROS E CAMBIO LTDA",
+            "normalized": "VERTIQ CORRETORA DE SEGUROS E CAMBIO LTDA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "LAR PARAGUAY",
+            "normalized": "LAR PARAGUAY",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MEDJUS",
+            "normalized": "MEDJUS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "JUSTPET",
+            "normalized": "JUSTPET",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "KOMFORT VISION",
+            "normalized": "KOMFORT VISION",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "NILOS DO BRASIL LTDA",
+            "normalized": "NILOS DO BRASIL LTDA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "HODIE SEMPER REAL ESTATE LTDA",
+            "normalized": "HODIE SEMPER REAL ESTATE LTDA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ZIPBUM",
+            "normalized": "ZIPBUM",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "STRUTURAL",
+            "normalized": "STRUTURAL",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "FORD SPERANDIO",
+            "normalized": "FORD SPERANDIO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "JS PEÇAS",
+            "normalized": "JS PEAS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ELARA",
+            "normalized": "ELARA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "OCTOPUS GROUP",
+            "normalized": "OCTOPUS GROUP",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "GBC GLOBAL FOODS",
+            "normalized": "GBC GLOBAL FOODS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MÓVEIS 3D",
+            "normalized": "MVEIS 3D",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "SHOPPING PIRATAS",
+            "normalized": "SHOPPING PIRATAS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "VERDEN BIKES",
+            "normalized": "VERDEN BIKES",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "FINO INOX",
+            "normalized": "FINO INOX",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "L DIAS CORRETORA",
+            "normalized": "L DIAS CORRETORA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "GUARDIÃO AZUL",
+            "normalized": "GUARDIO AZUL",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "COMIN EQUIPAMENTOS",
+            "normalized": "COMIN EQUIPAMENTOS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "AFABB",
+            "normalized": "AFABB",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "X1 - FIBRA",
+            "normalized": "X1 FIBRA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "VIVA BEM",
+            "normalized": "VIVA BEM",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "DR ERNESTO DIAS",
+            "normalized": "DR ERNESTO DIAS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ULTRAFARMA CAPELINHA",
+            "normalized": "ULTRAFARMA CAPELINHA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "PRIME MECANICA [STANDBY]",
+            "normalized": "PRIME MECANICA STANDBY",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "SEG ELETRONIC",
+            "normalized": "SEG ELETRONIC",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ESPAÇO MASTER",
+            "normalized": "ESPAO MASTER",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ALPHAVILLE",
+            "normalized": "ALPHAVILLE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "LAMARCA 3",
+            "normalized": "LAMARCA 3",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "FGND",
+            "normalized": "FGND",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CONCREART",
+            "normalized": "CONCREART",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ARMAZÉM DA COSTURA",
+            "normalized": "ARMAZM DA COSTURA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "REDE CONVEM",
+            "normalized": "REDE CONVEM",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CIACOLLOR",
+            "normalized": "CIACOLLOR",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "GAAFER CHOCOLATES",
+            "normalized": "GAAFER CHOCOLATES",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "AMO OFERTAS",
+            "normalized": "AMO OFERTAS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "BACKYARDZ COMPANY",
+            "normalized": "BACKYARDZ COMPANY",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "INTILE DESIGNS",
+            "normalized": "INTILE DESIGNS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "RS CONSTRUCTION AND LANDSCAPING INC",
+            "normalized": "RS CONSTRUCTION AND LANDSCAPING INC",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ALPHA AUTOMOTIVE SALES LLC (ALPHA AUTOMOTIVE SALES LLC)",
+            "normalized": "ALPHA AUTOMOTIVE SALES LLC ALPHA AUTOMOTIVE SALES LLC",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CLICK PETRÓLEO E GÁS",
+            "normalized": "CLICK PETRLEO E GS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "METALFORTE",
+            "normalized": "METALFORTE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "METALFORTE E-COMM",
+            "normalized": "METALFORTE ECOMM",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "URANO TECNOLOGIA LTDA",
+            "normalized": "URANO TECNOLOGIA LTDA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ICATU BRASIL SERVICOS LTDA",
+            "normalized": "ICATU BRASIL SERVICOS LTDA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "GLOBAL SEGURANçA EM MAQUINAS E EQUIPAMENTOS",
+            "normalized": "GLOBAL SEGURANA EM MAQUINAS E EQUIPAMENTOS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "RE\/MAX",
+            "normalized": "REMAX",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CAPITAL BROKERS",
+            "normalized": "CAPITAL BROKERS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "BIOZHEN",
+            "normalized": "BIOZHEN",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "BLASTEC",
+            "normalized": "BLASTEC",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "OPTUS TECNOLOGIA",
+            "normalized": "OPTUS TECNOLOGIA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "SERRA MINEIRA",
+            "normalized": "SERRA MINEIRA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MIKE RENOVATIONS",
+            "normalized": "MIKE RENOVATIONS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "PASTELARIA DA ESTAÇÃO",
+            "normalized": "PASTELARIA DA ESTAO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "RENOVAÚLTIL",
+            "normalized": "RENOVALTIL",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "PSG PERICIA EM ENGENHARIA",
+            "normalized": "PSG PERICIA EM ENGENHARIA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "TRIER WAILER",
+            "normalized": "TRIER WAILER",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "INFRAID",
+            "normalized": "INFRAID",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "POLIPISO DO BRASIL LTDA",
+            "normalized": "POLIPISO DO BRASIL LTDA",
+            "hasExactMatch": true,
+            "aliases": [
+                "POLIPISO"
+            ],
+            "partialMatch": null
+        },
+        {
+            "cockpit": "SLEEP HOUSE",
+            "normalized": "SLEEP HOUSE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "APOENA",
+            "normalized": "APOENA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "SLEEP HOUSE IPIRANGA",
+            "normalized": "SLEEP HOUSE IPIRANGA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "HIPER CHECK",
+            "normalized": "HIPER CHECK",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ST1 INTERNET",
+            "normalized": "ST1 INTERNET",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "FAMERTEC",
+            "normalized": "FAMERTEC",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "SUA CASA NA PLANTA",
+            "normalized": "SUA CASA NA PLANTA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "DIVINO VICIO",
+            "normalized": "DIVINO VICIO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "IGHER",
+            "normalized": "IGHER",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CONNTA CRÉDITO",
+            "normalized": "CONNTA CRDITO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ON SYSTEM",
+            "normalized": "ON SYSTEM",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "TUDDO CRED",
+            "normalized": "TUDDO CRED",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "SPEEDCLOUD",
+            "normalized": "SPEEDCLOUD",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "EMEC",
+            "normalized": "EMEC",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MUVY",
+            "normalized": "MUVY",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "INFINITY",
+            "normalized": "INFINITY",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "NIKA SECURITIZADORA S\/A",
+            "normalized": "NIKA SECURITIZADORA SA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ALLINI CLOSET",
+            "normalized": "ALLINI CLOSET",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "INSTITUTO VITTA CORPUS",
+            "normalized": "INSTITUTO VITTA CORPUS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CONCLAVE",
+            "normalized": "CONCLAVE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "POSTO DE MOLAS TAGUATINGA",
+            "normalized": "POSTO DE MOLAS TAGUATINGA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ATACADÃO BOAVENTURA",
+            "normalized": "ATACADO BOAVENTURA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "INSTITUTO CAPIXABA",
+            "normalized": "INSTITUTO CAPIXABA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "PARISENTI",
+            "normalized": "PARISENTI",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CAMPINAS SHOPPING DECORAÇÕES",
+            "normalized": "CAMPINAS SHOPPING DECORAES",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "FAZENDA SAN FRANCISCO",
+            "normalized": "FAZENDA SAN FRANCISCO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MADEIRA DE DEMOLIÇÃO",
+            "normalized": "MADEIRA DE DEMOLIO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MOTO CHEFE",
+            "normalized": "MOTO CHEFE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "STOP FIRE",
+            "normalized": "STOP FIRE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "BRUT ROSÉ & GARDEN",
+            "normalized": "BRUT ROS GARDEN",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "PALIE CONCEPT",
+            "normalized": "PALIE CONCEPT",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "PERFORMANCE AUDIO VISUAL",
+            "normalized": "PERFORMANCE AUDIO VISUAL",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "GIO ESTÉTICA SUZANO",
+            "normalized": "GIO ESTTICA SUZANO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "CAMPANA DISTRIBUIDORA",
+            "normalized": "CAMPANA DISTRIBUIDORA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "TARSUS (IDEAL INDUSTRIA)",
+            "normalized": "TARSUS IDEAL INDUSTRIA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "VERTIQ",
+            "normalized": "VERTIQ",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "EXP BRASIL ARQUITETOS",
+            "normalized": "EXP BRASIL ARQUITETOS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "OPORTUNIDADES IMÓVEIS",
+            "normalized": "OPORTUNIDADES IMVEIS",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "GM PHARM",
+            "normalized": "GM PHARM",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "MENFIS IMOBILIÁRIA",
+            "normalized": "MENFIS IMOBILIRIA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "BOOM FORCE SERVICE",
+            "normalized": "BOOM FORCE SERVICE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "INSTITUTO SANTÉ",
+            "normalized": "INSTITUTO SANT",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "REAL E CEREZA ADVOCACIA",
+            "normalized": "REAL E CEREZA ADVOCACIA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "WWIN CONSULTORIA",
+            "normalized": "WWIN CONSULTORIA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "HMJ ADVOCACIA",
+            "normalized": "HMJ ADVOCACIA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "IPEL DISTRIBUIDORA",
+            "normalized": "IPEL DISTRIBUIDORA",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "ELETRO COMBO",
+            "normalized": "ELETRO COMBO",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        },
+        {
+            "cockpit": "TESTE",
+            "normalized": "TESTE",
+            "hasExactMatch": false,
+            "aliases": null,
+            "partialMatch": null
+        }
+    ]
+}

@@ -342,3 +342,21 @@ CREATE TRIGGER trg_db_clientes_updated
 CREATE TRIGGER trg_db_projeto_updated
     BEFORE UPDATE ON database_projeto
     FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ============================================================
+-- Tabela: client_aliases (razão social ↔ nome fantasia)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS client_aliases (
+    id BIGSERIAL PRIMARY KEY,
+    cockpit_name TEXT NOT NULL,           -- nome no cockpit (razão social)
+    pipefy_name TEXT NOT NULL,            -- nome no Pipefy (nome fantasia/título)
+    source TEXT DEFAULT 'auto',           -- 'auto' (DATABASE_CLIENTES) ou 'manual'
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(cockpit_name, pipefy_name)
+);
+
+CREATE INDEX IF NOT EXISTS idx_client_aliases_cockpit ON client_aliases (cockpit_name);
+CREATE INDEX IF NOT EXISTS idx_client_aliases_pipefy ON client_aliases (pipefy_name);
+
+ALTER TABLE client_aliases ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow all" ON client_aliases FOR ALL USING (true);

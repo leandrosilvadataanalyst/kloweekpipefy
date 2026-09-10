@@ -1,4 +1,18 @@
 const { getSupabase } = require('./supabase-client');
+const fs = require('fs');
+const path = require('path');
+
+// Carregar aliases de nomes
+let aliases = {};
+try {
+    const aliasesPath = path.join(process.cwd(), 'data', 'client-aliases.json');
+    if (fs.existsSync(aliasesPath)) {
+        const aliasesData = JSON.parse(fs.readFileSync(aliasesPath, 'utf8'));
+        aliases = aliasesData.razao_to_fantasia || {};
+    }
+} catch (e) {
+    console.warn('Aliases não carregados:', e.message);
+}
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -35,17 +49,36 @@ export default async function handler(req, res) {
         const clientes = cockpits.map(c => {
             const cLower = c.nome.toLowerCase();
             const cClean = cLower.replace(/[^\w\s]/g, '');
+            const cNorm = c.nome.trim().toUpperCase();
+            const cNormClean = cNorm.replace(/[^\w\s]/g, '');
+            const aliasNames = aliases[cNormClean] || [];
+
             const matches = roiWeek.filter(r => {
-                const rNome = (r.cliente_nome || '').toLowerCase();
-                const rProj = (r.projeto || '').toLowerCase();
-                if (rNome.includes(cLower) || cLower.includes(rNome) ||
-                    rProj.includes(cLower) || cLower.includes(rProj)) {
-                    return true;
+                const rNome = (r.cliente_nome || '').trim().toLowerCase();
+                const rProj = (r.projeto || '').trim().toLowerCase();
+                const rProjClean = rProj.replace(/[[\]"']/g, '').trim();
+
+                if (rNome && (rNome.includes(cLower) || cLower.includes(rNome))) return true;
+                if (rProjClean && (rProjClean.includes(cLower) || cLower.includes(rProjClean))) return true;
+
+                if (aliasNames.length > 0) {
+                    const rNomeUpper = rNome.toUpperCase();
+                    const rProjUpper = rProjClean.toUpperCase();
+                    for (const alias of aliasNames) {
+                        const aliasUpper = alias.trim().toUpperCase();
+                        if (rNomeUpper === aliasUpper || rProjUpper === aliasUpper ||
+                            rNomeUpper.includes(aliasUpper) || aliasUpper.includes(rNomeUpper) ||
+                            rProjUpper.includes(aliasUpper) || aliasUpper.includes(rProjUpper)) {
+                            return true;
+                        }
+                    }
                 }
+
                 const rNomeClean = rNome.replace(/[^\w\s]/g, '');
-                const rProjClean = rProj.replace(/[^\w\s]/g, '');
-                return rNomeClean.includes(cClean) || cClean.includes(rNomeClean) ||
-                       rProjClean.includes(cClean) || cClean.includes(rProjClean);
+                const rProjClean2 = rProjClean.replace(/[^\w\s]/g, '');
+                if (rNomeClean && (rNomeClean.includes(cClean) || cClean.includes(rNomeClean))) return true;
+                if (rProjClean2 && (rProjClean2.includes(cClean) || cClean.includes(rProjClean2))) return true;
+                return false;
             });
 
             if (matches.length === 0) {
