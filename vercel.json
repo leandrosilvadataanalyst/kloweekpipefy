@@ -2,5 +2,11 @@
   "version": 2,
   "framework": null,
   "buildCommand": null,
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "functions": {
+    "api/proxy.js": { "runtime": "@vercel/node@3", "maxDuration": 30 },
+    "api/sheets-proxy.js": { "runtime": "@vercel/node@3", "maxDuration": 30 },
+    "api/pipefy-webhook.js": { "runtime": "@vercel/node@3", "maxDuration": 30 },
+    "api/sync-to-backup.js": { "runtime": "@vercel/node@3", "maxDuration": 60 }
+  }
 }
