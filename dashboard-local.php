@@ -88,12 +88,20 @@ $roiWeek = json_decode($roiResp, true);
 $clientes = [];
 foreach ($cockpits as $c) {
     $matches = [];
+    $cLower = strtolower($c['nome']);
+    $cClean = preg_replace('/[^\w\s]/', '', $cLower);
     foreach ($roiWeek as $r) {
-        $cLower = strtolower($c['nome']);
         $rNome = strtolower($r['cliente_nome'] ?? '');
         $rProj = strtolower($r['projeto'] ?? '');
         if (strpos($rNome, $cLower) !== false || strpos($cLower, $rNome) !== false ||
             strpos($rProj, $cLower) !== false || strpos($cLower, $rProj) !== false) {
+            $matches[] = $r;
+            continue;
+        }
+        $rNomeClean = preg_replace('/[^\w\s]/', '', $rNome);
+        $rProjClean = preg_replace('/[^\w\s]/', '', $rProj);
+        if (strpos($rNomeClean, $cClean) !== false || strpos($cClean, $rNomeClean) !== false ||
+            strpos($rProjClean, $cClean) !== false || strpos($cClean, $rProjClean) !== false) {
             $matches[] = $r;
         }
     }

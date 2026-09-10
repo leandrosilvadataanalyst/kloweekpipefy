@@ -33,12 +33,19 @@ export default async function handler(req, res) {
 
         // Montar resposta
         const clientes = cockpits.map(c => {
+            const cLower = c.nome.toLowerCase();
+            const cClean = cLower.replace(/[^\w\s]/g, '');
             const matches = roiWeek.filter(r => {
-                const cLower = c.nome.toLowerCase();
                 const rNome = (r.cliente_nome || '').toLowerCase();
                 const rProj = (r.projeto || '').toLowerCase();
-                return rNome.includes(cLower) || cLower.includes(rNome) ||
-                       rProj.includes(cLower) || cLower.includes(rProj);
+                if (rNome.includes(cLower) || cLower.includes(rNome) ||
+                    rProj.includes(cLower) || cLower.includes(rProj)) {
+                    return true;
+                }
+                const rNomeClean = rNome.replace(/[^\w\s]/g, '');
+                const rProjClean = rProj.replace(/[^\w\s]/g, '');
+                return rNomeClean.includes(cClean) || cClean.includes(rNomeClean) ||
+                       rProjClean.includes(cClean) || cClean.includes(rProjClean);
             });
 
             if (matches.length === 0) {
