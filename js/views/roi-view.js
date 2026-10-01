@@ -12,9 +12,7 @@ export class RoiView {
                 <div class="md:ml-auto flex flex-wrap items-center gap-2">
                     <div class="flex items-center gap-2">
                         <span class="stat-label hidden sm:inline">Período</span>
-                        <select id="filtro-periodo" class="ctl">
-                            ${periodoOptions.map(o => `<option value="${o.key}" ${o.key === periodoKey ? 'selected' : ''}>${o.opcao}</option>`).join('')}
-                        </select>
+                        <span class="badge b-ok" title="Histórico será disponibilizado depois"><span class="dot"></span>ROI Week ${periodoVigente.roiWeekCurto} · Ref: ${periodoVigente.referenciaCurta} (atual)</span>
                     </div>
                     <select id="filtro-squad" class="ctl">
                         <option value="">Todos os squads</option>

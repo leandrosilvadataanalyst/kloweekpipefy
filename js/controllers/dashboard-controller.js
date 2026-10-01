@@ -4,6 +4,8 @@ import { fetchAllCockpits } from '../sheets-service.js';
 import { ExportService } from '../services/export-service.js';
 import { getPeriodoRoiWeek, periodoPorChave, periodosDisponiveis, periodoPadrao } from '../utils/periodo.js';
 import { fetchDashboardFromSupabase } from '../supabase-service.js';
+import { encontrarCards, cardPreenchido } from '../utils/match-cliente.js';
+import { gerarMensagemCobranca, naoIdentificados } from '../utils/cobranca.js';
 
 let CLIENTES_ELEGIVEIS = [];
 let roiDataStore = [];
@@ -15,20 +17,10 @@ let chartData = {};
 let mesesRetroativos = 3;
 let periodoSelecionado = getPeriodoRoiWeek();
 
-function testeMatch(cliente, r) {
-    if (!r) return false;
-    const cNomeLower = cliente.nome.toLowerCase();
-    const projetoLower = (r.projeto || '').toLowerCase();
-    const nomeLower = (r.cliente_nome || '').toLowerCase();
-    return nomeLower.includes(cNomeLower) ||
-        cNomeLower.includes(nomeLower) ||
-        projetoLower.includes(cNomeLower) ||
-        cNomeLower.includes(projetoLower);
-}
-
+// Card do período tem prioridade; razão social (cockpit) é a chave mais confiável — ver utils/match-cliente.js
 function encontrarRoi(cliente, roiLista, periodo) {
-    const matches = (roiLista || []).filter(r => testeMatch(cliente, r));
-    return matches.find(r => periodo.ehDoPeriodo(r?.data_obj)) || matches[0] || undefined;
+    const doPeriodo = (roiLista || []).filter(r => periodo.ehDoPeriodo(r?.data_obj));
+    return encontrarCards(cliente, doPeriodo)[0] || encontrarCards(cliente, roiLista)[0] || undefined;
 }
 
 function calcularMetricasCliente(roi) {
@@ -59,7 +51,7 @@ function calcularPrazo(dataObj, preenchido, periodo) {
 function processarDados(roiData, periodo) {
     return CLIENTES_ELEGIVEIS.map(c => {
         const roi = encontrarRoi(c, roiData, periodo);
-        const temValores = !!(roi && (roi.investimento > 0 || roi.faturamento > 0 || roi.mc > 0));
+        const temValores = cardPreenchido(roi);
         const preenchido = temValores && periodo.ehDoPeriodo(roi.data_obj);
         if (preenchido) {
             const { roiVal, roasVal, cacVal, faturamento, investimento } = calcularMetricasCliente(roi);
@@ -203,37 +195,83 @@ function calcularCharts(lista, stats) {
     return { temporal, pareto, descritiva, pizza, barras };
 }
 
-function normalizarNome(nome) {
-    return (nome || '').trim().replace(/\s+/g, ' ');
+// ─── Cobrança ao vivo ─────────────────────────────────────
+// A cobrança lista só os clientes ainda não identificados no Pipefy (ROI Week vigente).
+// A cada 2 min buscamos direto do Pipefy os cards alterados no mês vigente e re-renderizamos
+// só o bloco #cobranca: quem o GT acabou de preencher sai da lista sem recarregar a página.
+const INTERVALO_COBRANCA_MS = 2 * 60 * 1000;
+let cobrancaTimer = null;
+let cobrancaAtualizadaEm = null;
+let cobrancaErro = '';
+let cobrancaEmAndamento = false;
+
+function dadosCobranca() {
+    const vigente = getPeriodoRoiWeek();
+    const vigentes = processarDados(roiDataStore, vigente);
+    return {
+        mensagem: gerarMensagemCobranca(vigentes),
+        faltantesCount: naoIdentificados(vigentes).length,
+        totalClientes: vigentes.length,
+        periodoVigente: vigente
+    };
 }
 
-function gerarMensagemGTs(lista) {
-    const faltantes = lista.filter(c => !c.preenchido);
-    if (faltantes.length === 0) return 'Todos os clientes já preencheram o ROI Week!';
-    const vigente = getPeriodoRoiWeek();
+function mesclarCards(atualizados) {
+    const porId = new Map(roiDataStore.map(r => [String(r.cliente_id), r]));
+    atualizados.forEach(r => porId.set(String(r.cliente_id), r));
+    roiDataStore = [...porId.values()];
+}
 
-    const grupos = new Map();
-    faltantes.forEach(c => {
-        const squad = normalizarNome(c.squad) || 'Sem Squad';
-        const coord = normalizarNome(c.coordenador) || 'Sem Coord';
-        const gt = normalizarNome(c.gt) || 'Sem GT';
-        const chave = `${squad}||${coord}||${gt}`;
-        if (!grupos.has(chave)) grupos.set(chave, { squad, coord, gt, nomes: [] });
-        grupos.get(chave).nomes.push(c.nome);
+function bindCobranca(mensagem) {
+    document.getElementById('btn-copiar')?.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(mensagem);
+        const btn = document.getElementById('btn-copiar');
+        const original = btn.innerHTML;
+        btn.innerHTML = 'Copiado!';
+        setTimeout(() => { btn.innerHTML = original; }, 2000);
     });
+    document.getElementById('btn-atualizar-cobranca')?.addEventListener('click', () => atualizarCobranca());
+}
 
-    const gruposOrdenados = [...grupos.values()].sort((a, b) =>
-        a.squad.localeCompare(b.squad) || a.coord.localeCompare(b.coord) || a.gt.localeCompare(b.gt)
-    );
+// A tela inteira mostra o ROI Week vigente: a atualização ao vivo re-renderiza tudo (quadros, tabela
+// e cobrança), preservando os filtros que o usuário escolheu na tabela.
+const FILTROS_TABELA = ['filtro-busca', 'filtro-squad', 'filtro-gt', 'filtro-status', 'filtro-roi', 'filtro-prazo'];
 
-    let msg = '';
-    gruposOrdenados.forEach((g, i) => {
-        if (i > 0) msg += '\n';
-        msg += `${g.squad}: Coord ${g.coord} | GT: ${g.gt}\n`;
-        msg += `Clientes com ROI Week pendente de preenchimento:\n`;
-        g.nomes.forEach(n => msg += `- ${n}\n`);
+function renderPreservandoFiltros() {
+    const valores = Object.fromEntries(FILTROS_TABELA.map(id => [id, document.getElementById(id)?.value || '']));
+    render();
+    FILTROS_TABELA.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = valores[id];
     });
-    return msg;
+    document.getElementById('filtro-busca')?.dispatchEvent(new Event('input'));
+}
+
+async function atualizarCobranca() {
+    if (cobrancaEmAndamento) return;
+    cobrancaEmAndamento = true;
+    const btn = document.getElementById('btn-atualizar-cobranca');
+    if (btn) { btn.disabled = true; btn.textContent = 'Atualizando...'; }
+    try {
+        const vigente = getPeriodoRoiWeek();
+        mesclarCards(await PipefyService.getRoiWeekAtualizadosDesde(vigente.inicio));
+        cobrancaAtualizadaEm = new Date();
+        cobrancaErro = '';
+    } catch (e) {
+        console.warn('[Cobrança] Falha ao atualizar do Pipefy:', e.message);
+        cobrancaErro = e.message;
+    } finally {
+        cobrancaEmAndamento = false;
+        renderPreservandoFiltros();
+    }
+}
+
+function iniciarCobrancaAoVivo(atualizarAgora) {
+    if (cobrancaTimer) clearInterval(cobrancaTimer);
+    cobrancaTimer = setInterval(() => {
+        if (!document.hidden) atualizarCobranca();
+    }, INTERVALO_COBRANCA_MS);
+    if (atualizarAgora) atualizarCobranca();
 }
 
 function aplicarFiltros() {
@@ -266,9 +304,7 @@ function render() {
     chartData = calcularCharts(clientesConsolidados, squadStats);
 
     const vigente = getPeriodoRoiWeek();
-    const vigentes = processarDados(roiDataStore, vigente);
-    const mensagem = gerarMensagemGTs(vigentes);
-    const faltantesCount = vigentes.filter(c => !c.preenchido).length;
+    const { mensagem, faltantesCount, totalClientes } = dadosCobranca();
 
     const gtsList = [...new Set(clientesConsolidados.map(c => c.gt).filter(Boolean))].sort((a, b) => a.localeCompare(b));
     const squadsList = [...new Set(clientesConsolidados.map(c => c.squad).filter(Boolean))].sort();
@@ -277,6 +313,7 @@ function render() {
     const data = {
         metricas, topGTs, squadStats, squadsList, gtsList,
         mensagemGTs: mensagem, clientes: clientesConsolidados, faltantesCount,
+        totalVigente: totalClientes, cobrancaAtualizadaEm, cobrancaErro,
         chartData,
         periodo: periodoSelecionado, periodoVigente: vigente,
         periodoOptions, periodoKey: periodoSelecionado.key
@@ -298,13 +335,7 @@ function render() {
         periodoSelecionado = periodoPorChave(e.target.value);
         render();
     });
-    document.getElementById('btn-copiar')?.addEventListener('click', async () => {
-        await navigator.clipboard.writeText(mensagem);
-        const btn = document.getElementById('btn-copiar');
-        const original = btn.innerHTML;
-        btn.innerHTML = 'Copiado!';
-        setTimeout(() => { btn.innerHTML = original; }, 2000);
-    });
+    bindCobranca(mensagem);
     document.getElementById('btn-recarregar')?.addEventListener('click', () => {
         const select = document.getElementById('filtro-meses');
         mesesRetroativos = parseInt(select.value);
@@ -366,6 +397,8 @@ async function carregarDados(meses = 3) {
                 }));
             periodoSelecionado = periodoPadrao(periodosDisponiveis(roiDataStore));
             render();
+            // Supabase só muda quando o sync roda: completa já com o Pipefy ao vivo
+            iniciarCobrancaAoVivo(true);
             return;
         } catch (supabaseErr) {
             console.warn('Supabase indisponível, usando método direto:', supabaseErr.message);
@@ -376,8 +409,10 @@ async function carregarDados(meses = 3) {
         CLIENTES_ELEGIVEIS = await fetchAllCockpits(progressEl);
         progressEl.textContent = `Etapa 2/2: Buscando ROI Week (${meses} meses)...`;
         roiDataStore = await PipefyService.getRoiWeek(progressEl, meses);
+        cobrancaAtualizadaEm = new Date();
         periodoSelecionado = periodoPadrao(periodosDisponiveis(roiDataStore));
         render();
+        iniciarCobrancaAoVivo(false);
     } catch (e) {
         console.error('Erro:', e);
         document.getElementById('app').innerHTML = `

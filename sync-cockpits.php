@@ -12,6 +12,7 @@
  * Execute: http://localhost/kloweekpipefy/sync-cockpits.php
  */
 header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/api/match-cliente.php';
 
 $env = [];
 $lines = file(__DIR__ . '/.env', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -72,7 +73,7 @@ function supabaseRequest($method, $path, $body = null) {
 
 function fetchGoogleSheet($spreadsheetId, $title, $apiKey, $retry = 3) {
     for ($attempt = 1; $attempt <= $retry; $attempt++) {
-        $range = rawurlencode($title . '!A1:Z500');
+        $range = rawurlencode("'" . str_replace("'", "''", $title) . "'"); // aba inteira (todas as colunas)
         $url = "https://sheets.googleapis.com/v4/spreadsheets/{$spreadsheetId}/values/{$range}?key={$apiKey}";
         $ch = curl_init($url);
         curl_setopt_array($ch, [
@@ -227,6 +228,10 @@ foreach ($COCKPITS as $cockpit) {
             $dataIdx = findCol($headers, 'data de atualização', 'data atualização', 'atualizado', 'data atualizacao dos dados');
             $dataAtualizacao = $dataIdx >= 0 ? trim($row[$dataIdx] ?? '') : '';
 
+            // 'Razão Social/Nome card Pipefy' + CNPJ: chave principal do cruzamento com o ROI Week
+            $razaoIdx = mc_indice_coluna_razao($headers);
+            $cnpjIdx = mc_indice_coluna_cnpj($headers);
+
             $allCockpitRows[] = [
                 'nome' => strtoupper(trim($name)),
                 'squad' => $cockpit['squad'],
@@ -239,7 +244,9 @@ foreach ($COCKPITS as $cockpit) {
                 'customer_care_status' => (findCol($headers, 'customer care status') >= 0) ? trim($row[findCol($headers, 'customer care status')] ?? '') : '',
                 'data_atualizacao' => $dataAtualizacao,
                 'data_atualizacao_obj' => parseDate($dataAtualizacao),
-                'churn' => $isChurn
+                'churn' => $isChurn,
+                'razao_social' => $razaoIdx >= 0 ? trim($row[$razaoIdx] ?? '') : '',
+                'cnpj' => $cnpjIdx >= 0 ? trim($row[$cnpjIdx] ?? '') : ''
             ];
         }
         echo "    " . count($allCockpitRows) . " registros totais até agora\n";
@@ -323,13 +330,6 @@ try {
     echo "  ERRO Pipefy: " . $e->getMessage() . "\n";
 }
 
-// Indexar Pipefy por nome normalizado
-$pipefyByName = [];
-foreach ($pipefyCards as $card) {
-    $key = normalizeClientName($card['cliente_nome']);
-    if (!isset($pipefyByName[$key])) $pipefyByName[$key] = [];
-    $pipefyByName[$key][] = $card;
-}
 
 // ─── FASE 4: Montar registros finais (cockpit + pipefy) ───
 echo "\n=== FASE 4: Montando registros consolidados ===\n";
@@ -340,7 +340,7 @@ $pipefyEnriched = 0;
 
 foreach ($deduped as $cockpit) {
     $cKey = normalizeClientName($cockpit['nome']);
-    $pipefyMatches = $pipefyByName[$cKey] ?? [];
+    $pipefyMatches = mc_encontrar_cards($cockpit, $pipefyCards);
 
     $bestCard = null;
     if (!empty($pipefyMatches)) {
@@ -374,7 +374,9 @@ foreach ($deduped as $cockpit) {
         'health' => $cockpit['health'],
         'customer_care_status' => $cockpit['customer_care_status'],
         'data_atualizacao' => $cockpit['data_atualizacao'],
-        'churn' => $cockpit['churn']
+        'churn' => $cockpit['churn'],
+        'razao_social' => $cockpit['razao_social'],
+        'cnpj' => $cockpit['cnpj']
     ];
 }
 
@@ -384,6 +386,16 @@ echo "  Enriquecidos com dados Pipefy: {$pipefyEnriched}\n";
 
 // ─── FASE 5: Salvar no Supabase ────────────────────────────
 echo "\n=== FASE 5: Salvando no Supabase ===\n";
+
+// Colunas razao_social/cnpj só existem após a migração do schema.sql (ALTER TABLE cockpits).
+// Checar ANTES de limpar a tabela: um insert com coluna inexistente deixaria a tabela vazia.
+try {
+    supabaseRequest('GET', 'cockpits?select=razao_social,cnpj&limit=1');
+} catch (Exception $e) {
+    echo "  AVISO: colunas razao_social/cnpj ausentes no Supabase — rode a migração do schema.sql. Salvando sem elas.\n";
+    $results['errors'][] = 'Supabase sem colunas razao_social/cnpj (migração pendente)';
+    $finalRows = array_map(function ($r) { unset($r['razao_social'], $r['cnpj']); return $r; }, $finalRows);
+}
 
 // Limpar tabela
 supabaseRequest('DELETE', 'cockpits?id=neq.00000000-0000-0000-0000-000000000000');

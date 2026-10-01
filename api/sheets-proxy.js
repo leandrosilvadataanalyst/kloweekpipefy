@@ -25,7 +25,8 @@ export default async function handler(req, res) {
         return res.status(401).json({ error: 'GOOGLE_SHEETS_API_KEY não configurada. Adicione a env var no painel da Vercel.' });
     }
 
-    const range = encodeURIComponent(`${title}!A1:Z500`);
+    // Aba inteira (todas as colunas): "Razão Social/Nome card Pipefy" e CNPJ ficam após a coluna Z
+    const range = encodeURIComponent(`'${title.replace(/'/g, "''")}'`);
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${id}/values/${range}?key=${encodeURIComponent(apiKey)}`;
 
     console.log(`SheetsProxy REQ: id=${id} title=${title} gid=${gid} key=${apiKey.substring(0, 8)}...`);

@@ -52,7 +52,8 @@ if (!$apiKey) {
     sheetsFail(401, 'GOOGLE_SHEETS_API_KEY não configurada no .env');
 }
 
-$range = rawurlencode($title . '!A1:Z500');
+// Aba inteira (todas as colunas): 'Razão Social/Nome card Pipefy' e CNPJ ficam após a coluna Z
+$range = rawurlencode("'" . str_replace("'", "''", $title) . "'");
 $url = "https://sheets.googleapis.com/v4/spreadsheets/{$id}/values/{$range}?key=" . rawurlencode($apiKey);
 
 error_log("SheetsProxy REQ: id={$id} title={$title} gid={$gid}");

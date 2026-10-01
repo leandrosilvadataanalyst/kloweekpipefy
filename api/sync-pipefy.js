@@ -1,4 +1,5 @@
 const { getSupabase } = require('./supabase-client');
+import { indiceColunaRazao, indiceColunaCnpj } from '../js/utils/match-cliente.js';
 
 const PIPEFY_TOKEN = process.env.PIPEFY_TOKEN || '';
 const PIPES = {
@@ -173,7 +174,7 @@ async function syncCockpitsFromGoogle(supabase) {
     let totalRows = 0;
     for (const cockpit of COCKPITS) {
         try {
-            const range = encodeURIComponent(`${cockpit.title}!A1:Z500`);
+            const range = encodeURIComponent(`'${cockpit.title.replace(/'/g, "''")}'`); // aba inteira (todas as colunas)
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${cockpit.id}/values/${range}?key=${apiKey}`;
             const res = await fetch(url);
             if (!res.ok) continue;
@@ -203,6 +204,8 @@ async function syncCockpitsFromGoogle(supabase) {
             const healthIdx = findCol('health', 'pontuação');
             const statusIdx = findCol('customer care status');
             const atualizacaoIdx = findCol('data de atualização', 'data atualização', 'atualizado');
+            const razaoIdx = indiceColunaRazao(headers);
+            const cnpjIdx = indiceColunaCnpj(headers);
 
             const rows = [];
             for (let i = 1; i < srcRows.length; i++) {
@@ -230,13 +233,23 @@ async function syncCockpitsFromGoogle(supabase) {
                     health: healthIdx >= 0 ? row[healthIdx] : '',
                     customer_care_status: statusIdx >= 0 ? row[statusIdx] : '',
                     data_atualizacao: atualizacaoIdx >= 0 ? row[atualizacaoIdx] : '',
-                    churn: isChurn
+                    churn: isChurn,
+                    razao_social: razaoIdx >= 0 ? String(row[razaoIdx] || '').trim() : '',
+                    cnpj: cnpjIdx >= 0 ? String(row[cnpjIdx] || '').trim() : ''
                 });
             }
 
-            const { error } = await supabase
+            let { error } = await supabase
                 .from('cockpits')
                 .upsert(rows, { onConflict: 'id' });
+
+            // Migração do schema.sql (razao_social/cnpj) ainda não aplicada: salva sem as colunas novas
+            if (error && /razao_social|cnpj/.test(error.message)) {
+                console.warn('Sync: colunas razao_social/cnpj ausentes no Supabase — rode a migração do schema.sql');
+                ({ error } = await supabase
+                    .from('cockpits')
+                    .upsert(rows.map(({ razao_social, cnpj, ...resto }) => resto), { onConflict: 'id' }));
+            }
 
             if (error) console.error(`Cockpit ${cockpit.nome} upsert error:`, error.message);
             else {

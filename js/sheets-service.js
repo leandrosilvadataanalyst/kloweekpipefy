@@ -1,6 +1,7 @@
 import { CONFIG } from './config.js';
 import { sheetsEndpoint } from './api-base.js';
 import { fetchAllCockpitsFromBackup } from './backup-service.js';
+import { indiceColunaRazao, indiceColunaCnpj } from './utils/match-cliente.js';
 
 const COCKPIT_URLS = [
     { ...CONFIG.SHEETS.WALL_STREET, nome: 'Wall Street' },
@@ -30,6 +31,8 @@ function normalizeClient(row, headers, squad) {
     const healthIdx = findColIndex(headers, 'health', 'pontuação');
     const statusIdx = findColIndex(headers, 'customer care status');
     const atualizacaoIdx = findColIndex(headers, 'data de atualização', 'data atualização', 'atualizado', 'última atualização', 'ultima atualizacao');
+    const razaoIdx = indiceColunaRazao(headers);
+    const cnpjIdx = indiceColunaCnpj(headers);
 
     const id = idIdx >= 0 ? row[idIdx] : '';
     const name = nameIdx >= 0 ? row[nameIdx] : '';
@@ -42,6 +45,8 @@ function normalizeClient(row, headers, squad) {
     const health = healthIdx >= 0 ? row[healthIdx] : '';
     const customerCareStatus = statusIdx >= 0 ? row[statusIdx] : '';
     const dataAtualizacao = atualizacaoIdx >= 0 ? row[atualizacaoIdx] : '';
+    const razaoSocial = razaoIdx >= 0 ? String(row[razaoIdx] || '').trim() : '';
+    const cnpj = cnpjIdx >= 0 ? String(row[cnpjIdx] || '').trim() : '';
 
     if (!name) return null;
     if (churnRaw && churnRaw !== 'não' && churnRaw !== 'nao' && churnRaw !== 'n' && churnRaw !== '') return null;
@@ -63,7 +68,9 @@ function normalizeClient(row, headers, squad) {
         flag,
         health,
         customerCareStatus,
-        dataAtualizacao
+        dataAtualizacao,
+        razaoSocial,
+        cnpj
     };
 }
 

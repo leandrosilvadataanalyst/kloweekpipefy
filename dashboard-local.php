@@ -7,6 +7,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/api/match-cliente.php';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -37,116 +38,47 @@ if (!$supabaseUrl || !$supabaseKey) {
     exit;
 }
 
-// Buscar cockpits
-$ch = curl_init("{$supabaseUrl}/rest/v1/cockpits?churn=eq.false&select=*");
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => [
-        "apikey: {$supabaseKey}",
-        "Authorization: Bearer {$supabaseKey}",
-        "Content-Type: application/json"
-    ],
-    CURLOPT_TIMEOUT => 30
-]);
-$cockpitsResp = curl_exec($ch);
-$cockpitsCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
-
-if ($cockpitsCode !== 200) {
-    http_response_code(502);
-    echo json_encode(['error' => "Supabase cockpits: HTTP {$cockpitsCode}"]);
-    exit;
+function supabaseGet($path) {
+    global $supabaseUrl, $supabaseKey;
+    $ch = curl_init("{$supabaseUrl}/rest/v1/{$path}");
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            "apikey: {$supabaseKey}",
+            "Authorization: Bearer {$supabaseKey}",
+            "Content-Type: application/json"
+        ],
+        CURLOPT_TIMEOUT => 30
+    ]);
+    $resp = curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if ($code !== 200) return null;
+    return json_decode($resp, true);
 }
 
-$cockpits = json_decode($cockpitsResp, true);
+// Buscar cockpits
+$cockpits = supabaseGet('cockpits?churn=eq.false&select=*');
+if ($cockpits === null) {
+    http_response_code(502);
+    echo json_encode(['error' => 'Falha ao buscar cockpits']);
+    exit;
+}
 
 // Buscar ROI Week
 $dataLimite = date('Y-m-d', strtotime("-{$months} months"));
-$ch2 = curl_init("{$supabaseUrl}/rest/v1/roi_week?data_obj=gte.{$dataLimite}&order=data_obj.desc&select=*");
-curl_setopt_array($ch2, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => [
-        "apikey: {$supabaseKey}",
-        "Authorization: Bearer {$supabaseKey}",
-        "Content-Type: application/json"
-    ],
-    CURLOPT_TIMEOUT => 30
-]);
-$roiResp = curl_exec($ch2);
-$roiCode = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
-curl_close($ch2);
-
-if ($roiCode !== 200) {
+$roiWeek = supabaseGet("roi_week?data_obj=gte.{$dataLimite}&order=data_obj.desc&select=*");
+if ($roiWeek === null) {
     http_response_code(502);
-    echo json_encode(['error' => "Supabase roi_week: HTTP {$roiCode}"]);
+    echo json_encode(['error' => 'Falha ao buscar ROI Week']);
     exit;
 }
 
-$roiWeek = json_decode($roiResp, true);
-
-function normalizeName($name) {
-    $clean = preg_replace('/[^\w\s]/', '', strtoupper(trim($name)));
-    $clean = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $clean);
-    return preg_replace('/\s+/', ' ', trim($clean));
-}
-
-// Carregar aliases de nomes
-$aliasesFile = __DIR__ . '/data/client-aliases.json';
-$aliases = [];
-if (file_exists($aliasesFile)) {
-    $aliasesData = json_decode(file_get_contents($aliasesFile), true);
-    $aliases = $aliasesData['razao_to_fantasia'] ?? [];
-}
-
-// Montar clientes consolidados
+// ─── Montar clientes consolidados ──────────────────────────
 $clientes = [];
 foreach ($cockpits as $c) {
-    $matches = [];
-    $cLower = strtolower($c['nome']);
-    $cClean = preg_replace('/[^\w\s]/', '', $cLower);
-
-    // Buscar aliases para este cliente
-    $cNorm = normalizeName($c['nome']);
-    $aliasNames = $aliases[$cNorm] ?? [];
-
-    foreach ($roiWeek as $r) {
-        $rNome = strtolower(trim($r['cliente_nome'] ?? ''));
-        $rProj = strtolower(trim($r['projeto'] ?? ''));
-        $rProjClean = preg_replace('/[\[\]"\']/', '', $rProj);
-        $rProjClean = trim($rProjClean);
-
-        // Match direto por nome
-        if ($rNome && (strpos($rNome, $cLower) !== false || strpos($cLower, $rNome) !== false)) {
-            $matches[] = $r;
-            continue;
-        }
-        // Match por projeto (normalizado)
-        if ($rProjClean && (strpos($rProjClean, $cLower) !== false || strpos($cLower, $rProjClean) !== false)) {
-            $matches[] = $r;
-            continue;
-        }
-        // Match via aliases (nome fantasia)
-        if (!empty($aliasNames)) {
-            $rNomeUpper = strtoupper($rNome);
-            $rProjUpper = strtoupper($rProjClean);
-            foreach ($aliasNames as $alias) {
-                $aliasUpper = strtoupper(trim($alias));
-                if ($rNomeUpper === $aliasUpper || $rProjUpper === $aliasUpper ||
-                    strpos($rNomeUpper, $aliasUpper) !== false || strpos($aliasUpper, $rNomeUpper) !== false ||
-                    strpos($rProjUpper, $aliasUpper) !== false || strpos($aliasUpper, $rProjUpper) !== false) {
-                    $matches[] = $r;
-                    continue 2;
-                }
-            }
-        }
-        // Match sem pontuação
-        $rNomeClean = preg_replace('/[^\w\s]/', '', $rNome);
-        $rProjClean2 = preg_replace('/[^\w\s]/', '', $rProjClean);
-        if (($rNomeClean && (strpos($rNomeClean, $cClean) !== false || strpos($cClean, $rNomeClean) !== false)) ||
-            ($rProjClean2 && (strpos($rProjClean2, $cClean) !== false || strpos($cClean, $rProjClean2) !== false))) {
-            $matches[] = $r;
-        }
-    }
+    // Razão social do cockpit é a chave principal; ver api/match-cliente.php
+    $matches = mc_encontrar_cards($c, $roiWeek);
 
     if (empty($matches)) {
         $clientes[] = [
@@ -156,6 +88,7 @@ foreach ($cockpits as $c) {
             'flag' => $c['flag'] ?? '', 'health' => $c['health'] ?? '',
             'customer_care_status' => $c['customer_care_status'] ?? '',
             'data_atualizacao' => $c['data_atualizacao'] ?? '',
+            'razao_social' => $c['razao_social'] ?? '', 'cnpj' => $c['cnpj'] ?? '',
             'roi' => null, 'preenchido' => false
         ];
         continue;
@@ -175,6 +108,7 @@ foreach ($cockpits as $c) {
         'flag' => $c['flag'] ?? '', 'health' => $c['health'] ?? '',
         'customer_care_status' => $c['customer_care_status'] ?? '',
         'data_atualizacao' => $c['data_atualizacao'] ?? '',
+        'razao_social' => $c['razao_social'] ?? '', 'cnpj' => $c['cnpj'] ?? '',
         'roi' => [
             'id' => $roi['id'], 'projeto' => $roi['projeto'] ?? '',
             'investimento' => $investimento, 'mc' => $mcRaw,

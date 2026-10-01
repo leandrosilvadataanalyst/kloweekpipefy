@@ -1,0 +1,13 @@
+# Força o navegador a revalidar HTML/JS/CSS a cada carregamento (resposta 304 barata via ETag).
+# Sem isso, os módulos ES importados por js/app.js (controllers, views, utils) ficam em cache
+# heurístico e a tela roda código antigo mesmo após bump do ?v= no HTML.
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|js|mjs|css)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+# .env, CONTEXT_LOG e afins nunca devem ser servidos pelo Apache
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>

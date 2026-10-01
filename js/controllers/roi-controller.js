@@ -1,6 +1,7 @@
 import { RoiView } from '../views/roi-view.js';
 import { PipefyService } from '../services/pipefy-service.js';
 import { fetchAllCockpits } from '../sheets-service.js';
+import { encontrarCards, cardPreenchido } from '../utils/match-cliente.js';
 import { getPeriodoRoiWeek, periodoPorChave, periodoPadrao } from '../utils/periodo.js';
 import { fetchDashboardFromSupabase } from '../supabase-service.js';
 
@@ -14,16 +15,6 @@ function chaveDeData(d) {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
-function testeMatch(cliente, r) {
-    if (!r) return false;
-    const cNomeLower = cliente.nome.toLowerCase();
-    const projetoLower = (r.projeto || '').toLowerCase();
-    const nomeLower = (r.cliente_nome || '').toLowerCase();
-    return nomeLower.includes(cNomeLower) ||
-        cNomeLower.includes(nomeLower) ||
-        projetoLower.includes(cNomeLower) ||
-        cNomeLower.includes(projetoLower);
-}
 
 function calcularMetricas(clientes) {
     const total = clientes.length;
@@ -104,16 +95,16 @@ async function init() {
                 if (!grupos[k]) grupos[k] = [];
                 grupos[k].push(x);
             });
-            keysOrder = Object.keys(grupos).sort().reverse();
-            if (!keysOrder.length) keysOrder = [getPeriodoRoiWeek().key];
+            // Vigente sempre presente, mesmo sem cards (senão a tabela do vigente ficaria vazia)
+            keysOrder = [...new Set([getPeriodoRoiWeek().key, ...Object.keys(grupos)])].sort().reverse();
             periodoKey = periodoPadrao(keysOrder.map(periodoPorChave)).key;
 
             clientesPorKey = {};
             keysOrder.forEach(k => {
                 const grupo = grupos[k] || [];
                 clientesPorKey[k] = elegiveis.map(c => {
-                    const r = grupo.find(x => testeMatch(c, x));
-                    if (r && (r.investimento > 0 || r.faturamento > 0 || r.mc > 0)) {
+                    const r = encontrarCards(c, grupo)[0];
+                    if (cardPreenchido(r)) {
                         const roiPercent = r.investimento > 0 ? ((r.faturamento - r.investimento) / r.investimento) * 100 : 0;
                         return {
                             cliente: c.nome,
@@ -153,16 +144,16 @@ async function init() {
             if (!grupos[k]) grupos[k] = [];
             grupos[k].push(x);
         });
-        keysOrder = Object.keys(grupos).sort().reverse();
-        if (!keysOrder.length) keysOrder = [getPeriodoRoiWeek().key];
+        // Vigente sempre presente, mesmo sem cards (senão a tabela do vigente ficaria vazia)
+        keysOrder = [...new Set([getPeriodoRoiWeek().key, ...Object.keys(grupos)])].sort().reverse();
         periodoKey = periodoPadrao(keysOrder.map(periodoPorChave)).key;
 
         clientesPorKey = {};
         keysOrder.forEach(k => {
             const grupo = grupos[k] || [];
             clientesPorKey[k] = elegiveis.map(c => {
-                const r = grupo.find(x => testeMatch(c, x));
-                if (r && (r.investimento > 0 || r.faturamento > 0 || r.mc > 0)) {
+                const r = encontrarCards(c, grupo)[0];
+                if (cardPreenchido(r)) {
                     const roiPercent = r.investimento > 0 ? ((r.faturamento - r.investimento) / r.investimento) * 100 : 0;
                     return {
                         cliente: c.nome,

@@ -9,12 +9,9 @@ function _destroyCharts() {
 export class DashboardView {
     static render(data, mesesRetroativos) {
         const { metricas, topGTs, squadStats, squadsList, gtsList, mensagemGTs, clientes, faltantesCount, chartData, periodo, periodoVigente, periodoOptions, periodoKey } = data;
-        const janelaState = periodo.vigente
-            ? (periodo.dentroJanela ? 'Janela aberta' : 'Janela fechada')
-            : 'Período histórico';
-        const janelaTone = periodo.vigente
-            ? (periodo.dentroJanela ? 'b-ok' : 'b-care')
-            : 'b-care';
+        // Card da janela: SEMPRE o ROI Week vigente (ex.: "ROI Week Out/2026 · Ref: Set/2026"),
+        // independente do período escolhido no filtro.
+        const pv = periodoVigente;
         const alerta = `
             <div class="card card-pad flex flex-col sm:flex-row sm:items-center gap-3 mb-6" style="border-left:4px solid var(--text)">
                 <span class="stat-icon shrink-0">
@@ -22,16 +19,15 @@ export class DashboardView {
                 </span>
                 <div class="min-w-0 flex-1">
                     <div class="flex flex-wrap items-center gap-2">
-                        <h3 class="section-title">${periodo.vigente ? 'Janela de preenchimento' : 'Período selecionado'} — ROI Week ${periodo.roiWeek}</h3>
-                        <span class="badge ${janelaTone}"><span class="dot"></span>${janelaState}</span>
+                        <h3 class="section-title">ROI Week ${pv.roiWeekCurto} · Ref: ${pv.referenciaCurta}</h3>
+                        <span class="badge ${pv.dentroJanela ? 'b-ok' : 'b-care'}"><span class="dot"></span>${pv.dentroJanela ? 'Janela aberta' : 'Janela fechada'}</span>
                     </div>
                     <p class="section-sub mt-1">
-                        ${periodo.vigente
-                            ? `Coleta vigente. Os dados em todos os quadros e tabelas correspondem ao dia <strong style="color:var(--text)">${periodo.dataAtual}</strong> · <strong style="color:var(--text)">ROI Week ${periodo.roiWeek}</strong> · <strong style="color:var(--text)">Ref: ${periodo.referencia}</strong> · janela de preenchimento: 01 a 03 de cada mês (referente ao mês anterior). ${metricas.alerta_prazo ? `<strong style="color:var(--red)">${metricas.alerta_prazo}</strong>` : ''}`
-                            : `Você está analisando um período histórico: <strong style="color:var(--text)">ROI Week ${periodo.roiWeek}</strong> · <strong style="color:var(--text)">Ref: ${periodo.referencia}</strong>. A cobrança de pendências abaixo continua referente ao ROI Week vigente (<strong style="color:var(--text)">${periodoVigente.roiWeek}</strong>).`}
+                        Janela de preenchimento: 01 a 03 de cada mês (referente ao mês anterior) · hoje ${pv.dataAtual}
+                        <span id="janela-pendentes">${this.renderPendentesJanela(faltantesCount, pv)}</span>
                     </p>
                 </div>
-                ${periodo.vigente ? `<span class="badge b-care shrink-0">Dia ${metricas.dia_atual}</span>` : ''}
+                <span class="badge b-care shrink-0">Dia ${metricas.dia_atual}</span>
             </div>`;
 
         return `
@@ -43,9 +39,7 @@ export class DashboardView {
                 <div class="md:ml-auto flex flex-wrap items-center gap-2">
                     <div class="flex items-center gap-2">
                         <span class="stat-label hidden sm:inline">Período</span>
-                        <select id="filtro-periodo" class="ctl md:w-auto">
-                            ${periodoOptions.map(o => `<option value="${o.key}" ${o.key === periodoKey ? 'selected' : ''}>${o.opcao}</option>`).join('')}
-                        </select>
+                        ${this.renderPeriodoFixo(periodoVigente)}
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="stat-label hidden sm:inline">Buscar</span>
@@ -243,24 +237,63 @@ export class DashboardView {
                 </div>
             </div>
 
-            ${faltantesCount > 0 ? `
+            <div id="cobranca">${this.renderCobranca({ mensagem: mensagemGTs, faltantesCount, totalClientes: data.totalVigente, periodoVigente, atualizadoEm: data.cobrancaAtualizadaEm, erro: data.cobrancaErro })}</div>
+        `;
+    }
+
+    // Seletor de histórico desativado por ora: as telas mostram só o ROI Week vigente.
+    static renderPeriodoFixo(periodoVigente) {
+        return `<span class="badge b-ok" title="Histórico será disponibilizado depois"><span class="dot"></span>ROI Week ${periodoVigente.roiWeekCurto} · Ref: ${periodoVigente.referenciaCurta} (atual)</span>`;
+    }
+
+    static renderPendentesJanela(faltantesCount, periodoVigente) {
+        if (!faltantesCount) return '';
+        const texto = periodoVigente.dentroJanela
+            ? `Janela aberta: ${faltantesCount} cliente(s) pendente(s)`
+            : `${faltantesCount} cliente(s) pendente(s) fora da janela 01-03`;
+        return ` · <strong style="color:var(--red)">${texto}</strong>`;
+    }
+
+    // Bloco isolado: o controller o re-renderiza sozinho a cada atualização ao vivo do Pipefy.
+    static renderCobranca({ mensagem, faltantesCount, totalClientes, periodoVigente, atualizadoEm, erro }) {
+        const hora = atualizadoEm ? new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(atualizadoEm) : '';
+        const status = erro
+            ? `<span style="color:var(--red)">Falha ao atualizar do Pipefy (${erro}) — exibindo últimos dados carregados</span>`
+            : hora ? `Atualizado do Pipefy às ${hora} · atualiza sozinho a cada 2 min` : '';
+        const btnAtualizar = `<button id="btn-atualizar-cobranca" class="btn btn-ghost btn-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                        Atualizar agora
+                    </button>`;
+        if (faltantesCount === 0) {
+            return `<div class="card card-pad mb-6" style="background:var(--green-bg);border-color:var(--green-line)">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-bold mb-0" style="color:var(--green)">Todos os clientes preencheram o ROI Week vigente (${periodoVigente.roiWeek}).</p>
+                        <p class="text-xs mt-1 mb-0" style="color:var(--muted)">${status}</p>
+                    </div>
+                    ${btnAtualizar}
+                </div>
+              </div>`;
+        }
+        const identificados = Math.max(0, (totalClientes || 0) - faltantesCount);
+        return `
             <div class="card card-pad mb-6">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
                     <div>
-                        <h3 class="section-title">Cobrança — clientes pendentes por dupla (Squad · Coord · GT)</h3>
-                        <p class="section-sub">Referente ao ROI Week vigente (${periodoVigente.roiWeek} · Ref: ${periodoVigente.referencia}) · mensagem pronta para enviar às duplas de cada squad</p>
+                        <h3 class="section-title">Cobrança — ${faltantesCount} cliente(s) não identificados no Pipefy, por dupla (Squad · Coord · GT)</h3>
+                        <p class="section-sub">ROI Week vigente (${periodoVigente.roiWeek} · Ref: ${periodoVigente.referencia}) · ${identificados} de ${totalClientes || 0} já identificados · cada cliente sai da lista assim que o card é preenchido</p>
+                        <p class="text-xs mt-1 mb-0" style="color:var(--faint)">${status}</p>
                     </div>
-                    <button id="btn-copiar" class="btn btn-primary btn-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/></svg>
-                        Copiar mensagem
-                    </button>
+                    <div class="flex gap-2">
+                        ${btnAtualizar}
+                        <button id="btn-copiar" class="btn btn-primary btn-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/></svg>
+                            Copiar mensagem
+                        </button>
+                    </div>
                 </div>
-                <pre class="rounded-lg p-4 text-xs whitespace-pre-wrap mono" style="background:var(--surface-2);border:1px solid var(--border)">${mensagemGTs}</pre>
-            </div>`
-            : `<div class="card card-pad mb-6" style="background:var(--green-bg);border-color:var(--green-line)">
-                <p class="text-sm font-bold" style="color:var(--green)">Todos os clientes preencheram o ROI Week vigente (${periodoVigente.roiWeek}) dentro da janela.</p>
-              </div>`}
-        `;
+                <pre class="rounded-lg p-4 text-xs whitespace-pre-wrap mono" style="background:var(--surface-2);border:1px solid var(--border)">${mensagem}</pre>
+            </div>`;
     }
 
     static renderTabelaResumo(clientes) {

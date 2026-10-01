@@ -70,23 +70,46 @@ export class PipefyService {
                 const d = this._parseDate(v) || new Date(v);
                 return d && !isNaN(d) && d >= dataLimite;
             })
-            .map(e => {
-                const dataRaw = this._getField(e.node, 'Data de Atualização') || e.node.createdAt;
-                const dataObj = this._parseDate(dataRaw) || new Date(dataRaw);
-                return {
-                    cliente_id: e.node.id,
-                    cliente_nome: e.node.title,
-                    projeto: this._getField(e.node, 'Projeto [USAR ESTE]'),
-                    investimento: this._getFieldFloat(e.node, 'Investimento em mídia no mês'),
-                    mc: this._getFieldFloat(e.node, 'Margem de contribuição'),
-                    faturamento: this._getFieldFloat(e.node, 'Faturamento (vendas V4)'),
-                    vendas: this._getFieldFloat(e.node, 'Vendas realizadas (apenas geradas pela V4)'),
-                    data_atualizacao: dataRaw,
-                    data_obj: isNaN(dataObj) ? null : dataObj,
-                    card_url: `https://app.pipefy.com/open-cards/${e.node.id}`,
-                    created_at: e.node.createdAt
-                };
-            });
+            .map(e => this._mapRoiCard(e.node));
+    }
+
+    // Cards do ROI Week criados/editados desde `desde` (Date), direto do Pipefy — usado para atualizar
+    // a cobrança ao vivo sem baixar o pipe inteiro (allCards aceita filtro por updated_at).
+    static async getRoiWeekAtualizadosDesde(desde) {
+        const desdeIso = desde.toISOString();
+        let cards = [];
+        let cursor = null;
+        let hasNext = true;
+        while (hasNext) {
+            const after = cursor ? `, after: "${cursor}"` : '';
+            const q = `{ allCards(pipeId: "${CONFIG.PIPES.ROI_WEEK}", first: 50${after}, filter: { field: "updated_at", operator: gt, value: "${desdeIso}" }) { edges { node { id title current_phase { id name } createdAt fields { name value float_value datetime_value } } } pageInfo { hasNextPage endCursor } } }`;
+            const r = await this.query(q);
+            const edges = r?.allCards?.edges || [];
+            if (!edges.length) break;
+            cards = cards.concat(edges.map(e => this._mapRoiCard(e.node)));
+            hasNext = r.allCards.pageInfo.hasNextPage;
+            cursor = r.allCards.pageInfo.endCursor;
+            if (cards.length > 2000) break;
+        }
+        return cards;
+    }
+
+    static _mapRoiCard(node) {
+        const dataRaw = this._getField(node, 'Data de Atualização') || node.createdAt;
+        const dataObj = this._parseDate(dataRaw) || new Date(dataRaw);
+        return {
+            cliente_id: node.id,
+            cliente_nome: node.title,
+            projeto: this._getField(node, 'Projeto [USAR ESTE]'),
+            investimento: this._getFieldFloat(node, 'Investimento em mídia no mês'),
+            mc: this._getFieldFloat(node, 'Margem de contribuição'),
+            faturamento: this._getFieldFloat(node, 'Faturamento (vendas V4)'),
+            vendas: this._getFieldFloat(node, 'Vendas realizadas (apenas geradas pela V4)'),
+            data_atualizacao: dataRaw,
+            data_obj: isNaN(dataObj) ? null : dataObj,
+            card_url: `https://app.pipefy.com/open-cards/${node.id}`,
+            created_at: node.createdAt
+        };
     }
 
     static _getClienteName(node) {

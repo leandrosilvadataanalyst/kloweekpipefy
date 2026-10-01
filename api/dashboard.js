@@ -1,6 +1,7 @@
 const { getSupabase } = require('./supabase-client');
 const fs = require('fs');
 const path = require('path');
+import { encontrarCards } from '../js/utils/match-cliente.js';
 
 // Carregar aliases de nomes
 let aliases = {};
@@ -47,39 +48,16 @@ export default async function handler(req, res) {
 
         // Montar resposta
         const clientes = cockpits.map(c => {
-            const cLower = c.nome.toLowerCase();
-            const cClean = cLower.replace(/[^\w\s]/g, '');
-            const cNorm = c.nome.trim().toUpperCase();
-            const cNormClean = cNorm.replace(/[^\w\s]/g, '');
-            const aliasNames = aliases[cNormClean] || [];
-
-            const matches = roiWeek.filter(r => {
-                const rNome = (r.cliente_nome || '').trim().toLowerCase();
-                const rProj = (r.projeto || '').trim().toLowerCase();
-                const rProjClean = rProj.replace(/[[\]"']/g, '').trim();
-
-                if (rNome && (rNome.includes(cLower) || cLower.includes(rNome))) return true;
-                if (rProjClean && (rProjClean.includes(cLower) || cLower.includes(rProjClean))) return true;
-
-                if (aliasNames.length > 0) {
-                    const rNomeUpper = rNome.toUpperCase();
-                    const rProjUpper = rProjClean.toUpperCase();
-                    for (const alias of aliasNames) {
-                        const aliasUpper = alias.trim().toUpperCase();
-                        if (rNomeUpper === aliasUpper || rProjUpper === aliasUpper ||
-                            rNomeUpper.includes(aliasUpper) || aliasUpper.includes(rNomeUpper) ||
-                            rProjUpper.includes(aliasUpper) || aliasUpper.includes(rProjUpper)) {
-                            return true;
-                        }
-                    }
+            // Razão social do cockpit é a chave principal (ver js/utils/match-cliente.js);
+            // aliases razão social → nome fantasia (DATABASE_CLIENTES) só como último recurso
+            let matches = encontrarCards(c, roiWeek);
+            if (matches.length === 0) {
+                const aliasNames = aliases[c.nome.trim().toUpperCase().replace(/[^\w\s]/g, '')] || [];
+                for (const alias of aliasNames) {
+                    matches = encontrarCards({ nome: alias }, roiWeek);
+                    if (matches.length) break;
                 }
-
-                const rNomeClean = rNome.replace(/[^\w\s]/g, '');
-                const rProjClean2 = rProjClean.replace(/[^\w\s]/g, '');
-                if (rNomeClean && (rNomeClean.includes(cClean) || cClean.includes(rNomeClean))) return true;
-                if (rProjClean2 && (rProjClean2.includes(cClean) || cClean.includes(rProjClean2))) return true;
-                return false;
-            });
+            }
 
             if (matches.length === 0) {
                 return {
@@ -88,6 +66,7 @@ export default async function handler(req, res) {
                     fee: c.fee, flag: c.flag, health: c.health,
                     customer_care_status: c.customer_care_status,
                     data_atualizacao: c.data_atualizacao,
+                    razao_social: c.razao_social || '', cnpj: c.cnpj || '',
                     roi: null, preenchido: false
                 };
             }
@@ -105,6 +84,7 @@ export default async function handler(req, res) {
                 fee: c.fee, flag: c.flag, health: c.health,
                 customer_care_status: c.customer_care_status,
                 data_atualizacao: c.data_atualizacao,
+                razao_social: c.razao_social || '', cnpj: c.cnpj || '',
                 roi: {
                     id: roi.id, projeto: roi.projeto,
                     investimento, mc: mcRaw, faturamento, vendas,

@@ -269,6 +269,61 @@
 - **Autor:** opencode
 - **Prevenção:** sempre que uma pessoa mudar de squad/função, atualizar as colunas coordenador/GT da planilha da nova squad (e remover da antiga) — o `validarConsistencia` avisa se a mesma pessoa ficou em 2 squads. Para dados ainda mais assertivos (ex.: rastrear histórico de mudança), considerar futuramente uma planilha/tab de mapeamento Pessoas→Squad/Dupla/Data.
 
+
+### [01/10/2026] - 🐛 Feature/Bug Fix: Cruzamento cockpit × ROI Week pela coluna "Razão Social/Nome card Pipefy"
+- **Descrição:** Os cockpits têm a coluna **"Razão Social/Nome card Pipefy"** (Monsters S/A: "Projeto no Pipefy/Razão Social") + **CNPJ**, que é o nome exato do card no Pipefy. O sistema não a lia e cruzava cliente × card por substring do nome, o que perdia clientes e ligava cards errados.
+- **Causa raiz:**
+  1. Todas as leituras de planilha usavam o intervalo `A1:Z500`, mas a razão social e o CNPJ ficam nas colunas BQ–CG (70–88 colunas por aba).
+  2. `testeMatch` (substring `includes`) duplicado em 3 controllers, mais uma variação em `api/dashboard.js` e outra em `dashboard-local.php`: não casava nomes com tags/acentos/plural/espaço (`X1 - FIBRA` × `X1 FIBRAS`, `Prestek [IS]`, `BOOM FORCE` × `BOOMFORCE`) e casava errado por prefixo (`SLEEP HOUSE` → card da `SLEEP HOUSE IPIRANGA`).
+- **O que mudou:**
+  1. **Novo** `js/utils/match-cliente.js` + espelho PHP **novo** `api/match-cliente.php`: fonte única do cruzamento. Níveis: 1 `razao_social` (igual) → 2 `nome` (igual, sem espaço ou plural) → 3 `prefixo` (palavra a palavra) → 4 `contido` (2+ palavras). `encontrarCards` devolve só os cards do melhor nível. Também `cardPreenchido` (investimento/faturamento/mc/vendas > 0) e `indiceColunaRazao`/`indiceColunaCnpj`.
+  2. Leitura da **aba inteira** (range `'Título'`): `sheets-proxy.php`, `api/sheets-proxy.js`, `sync-cockpits.php`, `api/sync-pipefy.js`, `api/sync-to-backup.js`.
+  3. `js/sheets-service.js`: `normalizeClient` retorna `razaoSocial` e `cnpj`.
+  4. Controllers `dashboard`, `roi` e `roi-report`: `testeMatch` removido, agora usam `encontrarCards` e `cardPreenchido`. No dashboard, o card do período selecionado tem prioridade.
+  5. `sync-cockpits.php` e `api/sync-pipefy.js` gravam `razao_social`/`cnpj` e cruzam via matcher. **Proteção:** se as colunas não existirem no Supabase, salvam sem elas (o `sync-cockpits.php` checa ANTES do DELETE da tabela).
+  6. `dashboard-local.php` e `api/dashboard.js` usam o matcher (aliases de `data/client-aliases.json` só como último recurso) e devolvem `razao_social`/`cnpj`. Removido o `namesMatch`/`normalizeName` local. 🐛 Corrigido `header('Access-Control-Allow-Headers', 'Content-Type')` (vírgula no lugar de `: `), que fazia o endpoint responder **200 com corpo vazio** sob `php -S`.
+  7. `schema.sql`: migração `ALTER TABLE cockpits ADD COLUMN IF NOT EXISTS razao_social / cnpj`. ⚠️ **Pendente de execução no SQL Editor do Supabase.**
+- **Testes:** `tests/fixtures/match-cliente.json` (casos reais, compartilhados) + `node --test tests/js/match-cliente.test.mjs` (6/6) + `php tests/php/match-cliente.test.php` (44/44, paridade JS/PHP). pytest: `tests/test_models` 18/18; controllers/services Python seguem quebrados por `config` ausente (pré-existente).
+- **Validação real (01/10/2026):** Bumps: **index v=29, roi/report v=16**. proxy devolve 70/78/88/81 colunas e acha razão social + CNPJ nas 4 planilhas. ROI Week Set/2026 (Ref: Ago): **52 → 70** clientes identificados com card preenchido (108 ativos). ROI Week Out/2026 (Ref: Set): 0 cards no Pipefy até 11h30 (janela 01–03 recém-aberta).
+- **Dados a corrigir nas planilhas:** COMIN EQUIPAMENTOS com razão social "Ponto da Gastronomia" (provável erro de colagem); razão social vazia em 9 clientes (8 Romans + CF MOTOS).
+- **Status:** ✅ Concluído (⚠️ migração Supabase pendente)
+- **Autor:** Claude Code
+- **Prevenção:** NUNCA ler cockpit com range fixo de colunas (as planilhas crescem para a direita); todo cruzamento cliente × card passa por `match-cliente.js`/`match-cliente.php`, sem `includes` solto. Ao mudar a regra, atualizar os dois e a fixture compartilhada. Preencher sempre a coluna "Razão Social/Nome card Pipefy" com o título exato do card.
+
+### [01/10/2026] - Feature/🐛 Bug Fix: Cobrança só com clientes não identificados, atualizada ao vivo do Pipefy
+- **Descrição:** A lista de cobrança (dashboard e Relatório ROI) mostra só os clientes **ainda não identificados** no Pipefy no ROI Week vigente. Cada cliente sai da lista assim que o GT preenche o card, sem recarregar a página.
+- **O que mudou:**
+  1. **Novo** `js/utils/cobranca.js`: `naoIdentificados`, `agruparPorDupla` e `gerarMensagemCobranca`. É a fonte única da mensagem, que antes estava duplicada em `dashboard-controller.gerarMensagemGTs` e `RoiReportView.gerarMensagem` (esta agora só delega). Clientes sem razão social no cockpit aparecem com "(sem razão social no cockpit)", mas só quando a coluna foi lida (alguém da lista tem razão social), para não marcar todos no caminho Supabase antes da migração.
+  2. `PipefyService.getRoiWeekAtualizadosDesde(desde)`: usa `allCards` com filtro `updated_at > início do mês vigente`, para buscar só os cards novos ou editados em vez do pipe inteiro (~1.556 cards). Mapeamento extraído para `_mapRoiCard`, compartilhado com `getRoiWeek`.
+  3. Dashboard: a seção de cobrança virou o bloco `#cobranca` (`DashboardView.renderCobranca`). A cada 2 min (só com a aba visível) e no botão "Atualizar agora", mescla os cards ao vivo em `roiDataStore` por id e re-renderiza só esse bloco, sem perder filtros. Mostra "X de Y já identificados", o horário da última atualização e eventual erro. No caminho Supabase, que só muda quando o sync roda, a primeira atualização ao vivo dispara logo após carregar.
+  4. Relatório ROI: a mesma atualização ao vivo (re-render completo; filtros ficam no estado do módulo) e o botão "Atualizar agora".
+- **🐛 Bug corrigido:** o `roi-report-controller` só criava os períodos que tinham cards. No início da janela (01/10, 0 cards de outubro) a lista de faltantes do vigente ficava vazia e a tela dizia **"Todos os clientes preencheram"**. Agora o período vigente sempre existe (`classificar()`).
+- **Testes:** `node --test tests/js/cobranca.test.mjs` (6/6) + matcher (6/6) + PHP 44/44 + pytest models 18/18. Smoke real com proxy local: `allCards` desde 01/10 = 0 cards, desde 01/09 = 85; cobrança simulada para setembro = 38 não identificados de 108 (9 marcados sem razão social); outubro = 108/108; views renderizam contador, status e botões. Bumps: **index v=30, roi/report v=17**.
+- **Status:** ✅ Concluído
+- **Autor:** Claude Code
+- **Prevenção:** a mensagem de cobrança vem SEMPRE de `utils/cobranca.js`. O período vigente deve existir mesmo sem cards. Dado que precisa refletir o preenchimento em tempo real não pode depender só do Supabase, que só se atualiza quando o sync roda; usar `getRoiWeekAtualizadosDesde`.
+
+### [01/10/2026] - UX: Card da janela sempre com o ROI Week vigente
+- **Descrição:** O card do topo do dashboard mostrava o período **selecionado no filtro** ("Período selecionado — ROI Week Setembro/2026 · Período histórico"). Como o filtro abre no mês mais recente com cards, no início da janela (01/10, 0 cards de outubro) o card exibia setembro. Agora ele mostra **sempre** o vigente, no formato curto: **"ROI Week Out/2026 · Ref: Set/2026"**, com badge Janela aberta/fechada, data de hoje e pendentes do vigente.
+- **O que mudou:** `js/utils/periodo.js` ganhou `roiWeekCurto`/`referenciaCurta` (ex.: "Out/2026"). `dashboard-view.js`: o card usa só `periodoVigente`; removidos o texto "Período histórico/Período selecionado" e o uso de `metricas.alerta_prazo`, que era do período selecionado. Novo `DashboardView.renderPendentesJanela(faltantesCount, periodoVigente)` no `#janela-pendentes`, atualizado também pela cobrança ao vivo (`renderCobranca` no controller). O cabeçalho "Visão Geral" e o filtro continuam mostrando o período selecionado.
+- **Validação:** `node --check` nos 3 arquivos; render com filtro em Set/2026 → card "ROI Week Out/2026 · Ref: Set/2026 · Janela aberta · hoje 01/10/2026 · Janela aberta: 108 cliente(s) pendente(s) · Dia 1"; testes JS 12/12. Bumps: **index v=31, roi/report v=18**.
+- **Status:** ✅ Concluído
+- **Autor:** Claude Code
+- **Prevenção:** informação de janela e cobrança é SEMPRE do vigente (`getPeriodoRoiWeek()`), nunca do filtro de período.
+
+### [01/10/2026] - UX: Telas fixas no ROI Week vigente + menus ROI/Relatório ocultos
+- **Descrição:** Pedido do usuário: as tabelas sempre abrem com os dados do **período atual** (o histórico será repensado depois), e os menus laterais "ROI" e "Relatório ROI" saem por enquanto.
+- **O que mudou:**
+  1. `periodo.js`: `periodoPadrao()` retorna sempre `getPeriodoRoiWeek()`. Antes escolhia o mês mais recente com cards e, no início da janela, abria em setembro.
+  2. Views (dashboard, ROI e relatório): o `<select id="filtro-periodo">` virou um badge fixo "ROI Week Out/2026 · Ref: Set/2026 (atual)" (`DashboardView.renderPeriodoFixo`). Os listeners de `filtro-periodo` nos controllers ficaram sem efeito, mantidos para quando o histórico voltar.
+  3. 🐛 `roi-controller.js`: o vigente só existia em `keysOrder` se tivesse cards, e a tabela do vigente ficava vazia (mesmo bug já corrigido no relatório). Agora o vigente está sempre presente nos dois caminhos (Supabase e direto).
+  4. Dashboard: a atualização ao vivo (2 min / "Atualizar agora") re-renderiza a tela inteira (quadros, tabela e cobrança) via `renderPreservandoFiltros()`, que guarda e restaura os filtros da tabela.
+  5. `index.html`, `roi.html`, `roi-report.html`: removidos os links "ROI" e "Relatório ROI" da sidebar. As páginas continuam existindo, acessíveis pela URL.
+- **Validação:** navegador (XAMPP `localhost`): dashboard abre em "ROI Week Outubro/2026", 108 elegíveis / 0 preenchidos, tabela toda "Pendente", card "ROI Week Out/2026 · Ref: Set/2026"; filtro squad=ROMANS (32 linhas) mantido após "Atualizar agora", com status "Atualizado do Pipefy às 12:00"; sidebar só com "Visão Geral". Testes JS 12/12. Bumps: **index v=32, roi/report v=19**. Os 404 no console são pré-existentes: `/kloweekpipefy/dashboard` não existe no XAMPP e o front cai no caminho direto.
+- **Status:** ✅ Concluído
+- **Autor:** Claude Code
+- **Prevenção:** ao reativar o histórico, NÃO voltar o `periodoPadrao` para "mais recente com dados": a tela deve abrir no vigente, e o histórico é escolha explícita do usuário.
+
 ---
 
 ## Decisões Arquiteturais
@@ -293,6 +348,7 @@
 - `js/config.js` - Configuração dos squads/abas das planilhas
 - `js/services/pipefy-service.js` - Comunicação com Pipefy API
 - `js/sheets-service.js` - Leitura das planilhas via proxy
+- `js/utils/match-cliente.js` / `api/match-cliente.php` - Cruzamento cliente × card ROI Week (razão social primeiro)
 
 ### Bugs Comuns e Soluções
 _Nenhum bug comum registrado ainda._

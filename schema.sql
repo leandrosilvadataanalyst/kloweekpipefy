@@ -32,6 +32,10 @@ CREATE INDEX idx_cockpits_churn ON cockpits(churn);
 
 COMMENT ON TABLE cockpits IS 'Dados dos 4 cockpits de squads (fonte: Google Sheets)';
 
+-- Migração 01/10/2026: chave de cruzamento com o ROI Week (coluna "Razão Social/Nome card Pipefy" + CNPJ dos cockpits)
+ALTER TABLE cockpits ADD COLUMN IF NOT EXISTS razao_social TEXT DEFAULT '';
+ALTER TABLE cockpits ADD COLUMN IF NOT EXISTS cnpj TEXT DEFAULT '';
+
 -- ============================================================
 -- 2. ROI WEEK (cards do pipe ROI_WEEK - 303444567)
 --    Pipefy → tabela → dashboard cruza com cockpits

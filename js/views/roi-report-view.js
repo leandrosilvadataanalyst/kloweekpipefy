@@ -1,3 +1,5 @@
+import { gerarMensagemCobranca } from '../utils/cobranca.js';
+
 export class RoiReportView {
     static render(data) {
         const { preenchidos, faltantes, metricas, periodo, periodoVigente, periodoOptions, periodoKey, vigenteFaltantes } = data;
@@ -13,9 +15,7 @@ export class RoiReportView {
                 <div class="md:ml-auto flex flex-wrap items-center gap-2">
                     <div class="flex items-center gap-2">
                         <span class="stat-label hidden sm:inline">Período</span>
-                        <select id="filtro-periodo" class="ctl">
-                            ${periodoOptions.map(o => `<option value="${o.key}" ${o.key === periodoKey ? 'selected' : ''}>${o.opcao}</option>`).join('')}
-                        </select>
+                        <span class="badge b-ok" title="Histórico será disponibilizado depois"><span class="dot"></span>ROI Week ${periodoVigente.roiWeekCurto} · Ref: ${periodoVigente.referenciaCurta} (atual)</span>
                     </div>
                     <select id="filtro-squad" class="ctl">
                         <option value="">Todos os squads</option>
@@ -96,17 +96,34 @@ export class RoiReportView {
             <div class="card card-pad mb-6">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
                     <div>
-                        <h3 class="section-title">Mensagem para GTs</h3>
-                        <p class="section-sub">Alerta do ROI Week vigente (${periodoVigente.roiWeek} · Ref: ${periodoVigente.referencia}) pronto para envio</p>
+                        <h3 class="section-title">Mensagem para GTs — ${vigenteFaltantes.length} cliente(s) não identificados no Pipefy</h3>
+                        <p class="section-sub">ROI Week vigente (${periodoVigente.roiWeek} · Ref: ${periodoVigente.referencia}) · cada cliente sai da lista assim que o card é preenchido</p>
+                        <p class="text-xs mt-1 mb-0" style="color:var(--faint)">${this.statusAtualizacao(data)}</p>
                     </div>
-                    <button id="btn-copiar" class="btn btn-primary btn-sm">Copiar mensagem</button>
+                    <div class="flex gap-2">
+                        <button id="btn-atualizar-cobranca" class="btn btn-ghost btn-sm">Atualizar agora</button>
+                        <button id="btn-copiar" class="btn btn-primary btn-sm">Copiar mensagem</button>
+                    </div>
                 </div>
-                <pre class="rounded-lg p-4 text-xs whitespace-pre-wrap mono" style="background:var(--surface-2);border:1px solid var(--border)">${this.gerarMensagem(vigenteFaltantes, periodoVigente)}</pre>
+                <pre class="rounded-lg p-4 text-xs whitespace-pre-wrap mono" style="background:var(--surface-2);border:1px solid var(--border)">${this.gerarMensagem(vigenteFaltantes)}</pre>
             </div>` : `
             <div class="card card-pad mb-6" style="background:var(--green-bg);border-color:var(--green-line)">
-                <p class="text-sm font-bold" style="color:var(--green)">Todos os clientes preencheram o ROI Week vigente (${periodoVigente.roiWeek}) dentro da janela.</p>
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div>
+                        <p class="text-sm font-bold mb-0" style="color:var(--green)">Todos os clientes preencheram o ROI Week vigente (${periodoVigente.roiWeek}).</p>
+                        <p class="text-xs mt-1 mb-0" style="color:var(--muted)">${this.statusAtualizacao(data)}</p>
+                    </div>
+                    <button id="btn-atualizar-cobranca" class="btn btn-ghost btn-sm">Atualizar agora</button>
+                </div>
             </div>`}
         `;
+    }
+
+    static statusAtualizacao({ atualizadoEm, erroAtualizacao }) {
+        if (erroAtualizacao) return `<span style="color:var(--red)">Falha ao atualizar do Pipefy (${erroAtualizacao}) — exibindo últimos dados carregados</span>`;
+        if (!atualizadoEm) return '';
+        const hora = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(atualizadoEm);
+        return `Atualizado do Pipefy às ${hora} · atualiza sozinho a cada 2 min`;
     }
 
     static statusBadge(status) {
@@ -119,31 +136,8 @@ export class RoiReportView {
         return `<span class="badge ${s.cls}"><span class="dot"></span>${s.label}</span>`;
     }
 
+    // Mesma mensagem do dashboard (utils/cobranca.js): só clientes não identificados no Pipefy
     static gerarMensagem(faltantes) {
-        if (!faltantes || faltantes.length === 0) return 'Todos os clientes já preencheram!';
-
-        const norm = (v) => (v || '').toString().trim().replace(/\s+/g, ' ');
-        const grupos = new Map();
-        faltantes.forEach(c => {
-            const squad = norm(c.squad) || 'Sem Squad';
-            const coord = norm(c.coordenador) || 'Sem Coord';
-            const gt = norm(c.gt) || 'Sem GT';
-            const chave = `${squad}||${coord}||${gt}`;
-            if (!grupos.has(chave)) grupos.set(chave, { squad, coord, gt, nomes: [] });
-            grupos.get(chave).nomes.push(c.nome_fantasia);
-        });
-
-        const ordenados = [...grupos.values()].sort((a, b) =>
-            a.squad.localeCompare(b.squad) || a.coord.localeCompare(b.coord) || a.gt.localeCompare(b.gt)
-        );
-
-        let msg = '';
-        ordenados.forEach((g, i) => {
-            if (i > 0) msg += '\n';
-            msg += `${g.squad}: Coord ${g.coord} | GT: ${g.gt}\n`;
-            msg += `Clientes com ROI Week pendente de preenchimento:\n`;
-            g.nomes.forEach(n => msg += `- ${n}\n`);
-        });
-        return msg;
+        return gerarMensagemCobranca(faltantes);
     }
 }

@@ -148,7 +148,7 @@ async function syncRoiWeek() {
 
 async function syncCockpit(cockpit) {
     console.log(`Sync: Buscando ${cockpit.nome}...`);
-    const range = encodeURIComponent(`${cockpit.title}!A1:Z500`);
+    const range = encodeURIComponent(`'${cockpit.title.replace(/'/g, "''")}'`); // aba inteira (todas as colunas)
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${cockpit.id}/values/${range}?key=${GOOGLE_API_KEY}`;
 
     const res = await fetch(url);

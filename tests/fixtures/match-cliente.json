@@ -1,0 +1,80 @@
+{
+    "_doc": "Casos compartilhados entre js/utils/match-cliente.js e api/match-cliente.php (paridade). Casos reais do ROI Week Set/2026.",
+    "normalizar": [
+        { "in": "Prestek [IS]", "out": "PRESTEK" },
+        { "in": "HMD [IS]+[EC]", "out": "HMD" },
+        { "in": "Bolsi Advogados (04/03/2026)", "out": "BOLSI ADVOGADOS" },
+        { "in": "SANTÉ SOLUÇÕES", "out": "SANTE SOLUCOES" },
+        { "in": "JS DISTRIBUIDORA DE PECAS S/A", "out": "JS DISTRIBUIDORA PECAS" },
+        { "in": "MUDE MOBILIARIOS URBANOS DESPORTIVOS S.A", "out": "MUDE MOBILIARIOS URBANOS DESPORTIVOS" },
+        { "in": "HAHNEMANN, MORAES & JORGE ADVOGADOS ASSOCIADOS", "out": "HAHNEMANN MORAES JORGE ADVOGADOS ASSOCIADOS" },
+        { "in": "TARSUS (IDEAL INDUSTRIA)", "out": "TARSUS IDEAL INDUSTRIA" },
+        { "in": "  ", "out": "" },
+        { "in": null, "out": "" }
+    ],
+    "nomesDoCard": [
+        { "card": { "cliente_nome": "MOTO CHEFE CARAGUA ", "projeto": "[\"MOTO CHEFE CARAGUA \"]" }, "out": ["MOTO CHEFE CARAGUA"] },
+        { "card": { "cliente_nome": "FAZENDA X, FAZENDA X", "projeto": "[\"FAZENDA X\", \"FAZENDA Y\"]" }, "out": ["FAZENDA X FAZENDA X", "FAZENDA X", "FAZENDA Y"] },
+        { "card": { "cliente_nome": "ELARA", "projeto": "ELARA" }, "out": ["ELARA"] }
+    ],
+    "match": [
+        { "desc": "razão social exata", "cliente": { "nome": "HMJ ADVOCACIA", "razaoSocial": "HAHNEMANN, MORAES & JORGE ADVOGADOS ASSOCIADOS" }, "card": { "cliente_nome": "HAHNEMANN, MORAES & JORGE ADVOGADOS ASSOCIADOS", "projeto": "" }, "via": "razao_social" },
+        { "desc": "razão social com nome diferente do cockpit", "cliente": { "nome": "JS PEÇAS", "razaoSocial": "JS DISTRIBUIDORA DE PECAS S/A" }, "card": { "cliente_nome": "JS DISTRIBUIDORA DE PECAS S/A", "projeto": "" }, "via": "razao_social" },
+        { "desc": "razão social bate pelo projeto do card", "cliente": { "nome": "RIO PET DA GÁVEA", "razaoSocial": "PAIXAO PET" }, "card": { "cliente_nome": "OUTRO TITULO", "projeto": "[\"PAIXAO PET \"]" }, "via": "razao_social" },
+        { "desc": "nome exato sem razão social", "cliente": { "nome": "ELARA", "razaoSocial": "" }, "card": { "cliente_nome": "ELARA ", "projeto": "" }, "via": "nome" },
+        { "desc": "nome sem espaço", "cliente": { "nome": "BOOM FORCE", "razaoSocial": "" }, "card": { "cliente_nome": "BOOMFORCE", "projeto": "" }, "via": "nome" },
+        { "desc": "plural", "cliente": { "nome": "X1 - FIBRA", "razaoSocial": "" }, "card": { "cliente_nome": "X1 FIBRAS", "projeto": "" }, "via": "nome" },
+        { "desc": "tags do cockpit ignoradas", "cliente": { "nome": "Prestek [IS]", "razaoSocial": "" }, "card": { "cliente_nome": "PRESTEK", "projeto": "" }, "via": "nome" },
+        { "desc": "prefixo de palavras", "cliente": { "nome": "MOTO CHEFE", "razaoSocial": "" }, "card": { "cliente_nome": "MOTO CHEFE CARAGUA", "projeto": "" }, "via": "prefixo" },
+        { "desc": "prefixo via razão social", "cliente": { "nome": "MADEIRA DE DEMOLIÇÃO", "razaoSocial": "NOBRE SUL MOVEIS RUSTICOS LTDA" }, "card": { "cliente_nome": "NOBRE SUL MOVEIS ", "projeto": "" }, "via": "prefixo" },
+        { "desc": "contido com 2+ palavras", "cliente": { "nome": "APOENA EVENTOS", "razaoSocial": "" }, "card": { "cliente_nome": "AUDITÓRIO APOENA EVENTOS", "projeto": "" }, "via": "contido" },
+        { "desc": "falso positivo: palavra única contida", "cliente": { "nome": "Global Segurança", "razaoSocial": "GLOBAL SA" }, "card": { "cliente_nome": "GBC GLOBAL FOODS LTDA", "projeto": "" }, "via": null },
+        { "desc": "falso positivo: substring de palavra", "cliente": { "nome": "MOBI", "razaoSocial": "3S SOLUCOES LTDA" }, "card": { "cliente_nome": "MOBILIARIA SANTOS", "projeto": "" }, "via": null },
+        { "desc": "nomes diferentes", "cliente": { "nome": "CIACOLLOR", "razaoSocial": "CIA COLLOR" }, "card": { "cliente_nome": "TEKSEA", "projeto": "" }, "via": null },
+        { "desc": "card vazio", "cliente": { "nome": "ELARA", "razaoSocial": "" }, "card": { "cliente_nome": "", "projeto": "" }, "via": null }
+    ],
+    "encontrar": [
+        {
+            "desc": "prefere match exato ao prefixo (SLEEP HOUSE x SLEEP HOUSE IPIRANGA)",
+            "cliente": { "nome": "SLEEP HOUSE", "razaoSocial": "" },
+            "cards": [
+                { "id": "1", "cliente_nome": "SLEEP HOUSE IPIRANGA", "projeto": "" },
+                { "id": "2", "cliente_nome": "SLEEP HOUSE", "projeto": "" }
+            ],
+            "ids": ["2"]
+        },
+        {
+            "desc": "razão social vence nome",
+            "cliente": { "nome": "COMIN", "razaoSocial": "COMIN EQUIPAMENTOS INDUSTRIAIS LTDA" },
+            "cards": [
+                { "id": "1", "cliente_nome": "COMIN", "projeto": "" },
+                { "id": "2", "cliente_nome": "COMIN EQUIPAMENTOS INDUSTRIAIS LTDA", "projeto": "" }
+            ],
+            "ids": ["2"]
+        },
+        {
+            "desc": "mais de um card no mesmo nível volta todos",
+            "cliente": { "nome": "ELARA", "razaoSocial": "" },
+            "cards": [
+                { "id": "1", "cliente_nome": "ELARA", "projeto": "" },
+                { "id": "2", "cliente_nome": "TEKSEA", "projeto": "" },
+                { "id": "3", "cliente_nome": "ELARA", "projeto": "" }
+            ],
+            "ids": ["1", "3"]
+        },
+        { "desc": "nenhum", "cliente": { "nome": "ELARA", "razaoSocial": "" }, "cards": [], "ids": [] }
+    ],
+    "preenchido": [
+        { "card": { "investimento": 0, "faturamento": 0, "mc": 0, "vendas": 0 }, "out": false },
+        { "card": { "investimento": 1500, "faturamento": 0, "mc": 0, "vendas": 0 }, "out": true },
+        { "card": { "investimento": 0, "faturamento": 0, "mc": 0, "vendas": 3 }, "out": true },
+        { "card": { "investimento": null, "faturamento": "10", "mc": null }, "out": true },
+        { "card": null, "out": false }
+    ],
+    "colunaRazao": [
+        { "headers": ["id", "name", "Link Contrato", "Razão Social/Nome card Pipefy", "CNPJ"], "razao": 3, "cnpj": 4 },
+        { "headers": ["id", "Nome do Projeto", "Razão social/Nome card pipefy", "CNPJ"], "razao": 2, "cnpj": 3 },
+        { "headers": ["id", "name", "Link Contrato", "Projeto no Pipefy/Razão Social", "CNPJ"], "razao": 3, "cnpj": 4 },
+        { "headers": ["id", "name", "Fee"], "razao": -1, "cnpj": -1 }
+    ]
+}

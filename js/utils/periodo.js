@@ -31,6 +31,8 @@ function montarPeriodo(ano, mesIndex) {
         fim,
         roiWeek: fmtMesAno(mes),
         referencia: fmtMesAno(referencia),
+        roiWeekCurto: fmtMesCurto(mes),
+        referenciaCurta: fmtMesCurto(referencia),
         opcao: `${fmtMesCurto(mes)} · Ref: ${fmtMesCurto(referencia)}${vigente ? ' (atual)' : ''}`,
         dataAtual: fmtData(agora),
         vigente,
@@ -66,9 +68,10 @@ export function periodosDisponiveis(roiLista) {
     return opts.length ? opts : [getPeriodoRoiWeek()];
 }
 
-export function periodoPadrao(options) {
-    const vigente = getPeriodoRoiWeek();
-    return options.find(o => o.key === vigente.key) || options[0] || vigente;
+// Todas as telas abrem SEMPRE no ROI Week vigente, mesmo sem nenhum card ainda (início da janela).
+// Consulta/exibição de histórico será redesenhada depois; `options` mantido por compatibilidade.
+export function periodoPadrao(options) { // eslint-disable-line no-unused-vars
+    return getPeriodoRoiWeek();
 }
 
 export function ehDoRoiWeekAtual(dataObj) {
