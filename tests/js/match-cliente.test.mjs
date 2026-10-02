@@ -3,7 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import {
-    normalizarNome, nomesDoCard, matchCliente, encontrarCards, cardPreenchido, indiceColunaRazao, indiceColunaCnpj
+    normalizarNome, nomesDoCard, matchCliente, encontrarCards, cardPreenchido, cardComValores, indiceColunaRazao, indiceColunaCnpj
 } from '../../js/utils/match-cliente.js';
 
 const F = JSON.parse(readFileSync(new URL('../fixtures/match-cliente.json', import.meta.url), 'utf8'));
@@ -29,8 +29,12 @@ test('encontrarCards', () => {
     }
 });
 
-test('cardPreenchido', () => {
+test('cardPreenchido: card enviado conta, mesmo zerado', () => {
     for (const c of F.preenchido) assert.equal(cardPreenchido(c.card), c.out, JSON.stringify(c.card));
+});
+
+test('cardComValores: só para médias', () => {
+    for (const c of F.comValores) assert.equal(cardComValores(c.card), c.out, JSON.stringify(c.card));
 });
 
 test('colunas razão social / CNPJ', () => {

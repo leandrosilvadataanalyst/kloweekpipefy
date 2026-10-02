@@ -35,6 +35,9 @@ foreach ($F['encontrar'] as $c) {
 foreach ($F['preenchido'] as $c) {
     check(mc_card_preenchido($c['card']) === $c['out'], "preenchido " . json_encode($c['card']));
 }
+foreach ($F['comValores'] as $c) {
+    check(mc_card_com_valores($c['card']) === $c['out'], "comValores " . json_encode($c['card']));
+}
 foreach ($F['colunaRazao'] as $c) {
     check(mc_indice_coluna_razao($c['headers']) === $c['razao'], "colunaRazao " . implode('|', $c['headers']));
     check(mc_indice_coluna_cnpj($c['headers']) === $c['cnpj'], "colunaCnpj " . implode('|', $c['headers']));

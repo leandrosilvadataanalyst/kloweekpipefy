@@ -126,7 +126,13 @@ function mc_encontrar_cards($cliente, $cards) {
     return $out;
 }
 
+/** Card enviado no período = preenchido, mesmo zerado (projeto em Implementação ainda sem mídia). */
 function mc_card_preenchido($card) {
+    return $card !== null;
+}
+
+/** Só para médias: card com algum valor > 0. */
+function mc_card_com_valores($card) {
     if (!$card) return false;
     foreach (['investimento', 'faturamento', 'mc', 'vendas'] as $k) {
         if (floatval($card[$k] ?? 0) > 0) return true;

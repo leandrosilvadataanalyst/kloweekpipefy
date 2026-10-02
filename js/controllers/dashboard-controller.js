@@ -4,7 +4,7 @@ import { fetchAllCockpits } from '../sheets-service.js';
 import { ExportService } from '../services/export-service.js';
 import { getPeriodoRoiWeek, periodoPorChave, periodosDisponiveis, periodoPadrao } from '../utils/periodo.js';
 import { fetchDashboardFromSupabase } from '../supabase-service.js';
-import { encontrarCards, cardPreenchido } from '../utils/match-cliente.js';
+import { encontrarCards, cardPreenchido, cardComValores } from '../utils/match-cliente.js';
 import { gerarMensagemCobranca, naoIdentificados } from '../utils/cobranca.js';
 
 let CLIENTES_ELEGIVEIS = [];
@@ -51,8 +51,8 @@ function calcularPrazo(dataObj, preenchido, periodo) {
 function processarDados(roiData, periodo) {
     return CLIENTES_ELEGIVEIS.map(c => {
         const roi = encontrarRoi(c, roiData, periodo);
-        const temValores = cardPreenchido(roi);
-        const preenchido = temValores && periodo.ehDoPeriodo(roi.data_obj);
+        // Card enviado no período = preenchido (sai da cobrança), mesmo zerado; médias usam só `comValores`
+        const preenchido = cardPreenchido(roi) && periodo.ehDoPeriodo(roi.data_obj);
         if (preenchido) {
             const { roiVal, roasVal, cacVal, faturamento, investimento } = calcularMetricasCliente(roi);
             const prazo = calcularPrazo(roi.data_obj, true, periodo);
@@ -61,6 +61,7 @@ function processarDados(roiData, periodo) {
                 faturamento, investimento, mc: roi.mc, vendas: roi.vendas,
                 roi: roiVal, roas: roasVal, cac: cacVal,
                 preenchido: true,
+                comValores: cardComValores(roi),
                 prazo: prazo.status,
                 prazoClasse: prazo.classe,
                 prazoLabel: prazo.label,
@@ -73,6 +74,7 @@ function processarDados(roiData, periodo) {
             ...c,
             faturamento: 0, investimento: 0, mc: 0, vendas: 0, roi: 0, roas: 0, cac: 0,
             preenchido: false,
+            comValores: false,
             prazo: 'Pendente', prazoClasse: 'pendente', prazoLabel: 'Pendente',
             card_url: '', data_obj: null, data_str: ''
         };
@@ -84,13 +86,16 @@ function calcularMetricasGerais(lista) {
     const preenchidos = lista.filter(c => c.preenchido);
     const p = preenchidos.length;
     const f = total - p;
-    const roiMaior1 = preenchidos.filter(c => c.roi > 1).length;
+    // Médias só sobre cards com valores (card zerado, ex.: projeto em Implementação, não puxa a média)
+    const comValores = preenchidos.filter(c => c.comValores);
+    const pv = comValores.length;
+    const roiMaior1 = comValores.filter(c => c.roi > 1).length;
     const noPrazo = lista.filter(c => c.prazo === 'No prazo').length;
     const foraPrazo = preenchidos.filter(c => c.prazo === 'Fora do prazo').length;
-    const roasMedio = p > 0 ? preenchidos.reduce((a, c) => a + c.roas, 0) / p : 0;
-    const cacList = preenchidos.filter(c => c.cac > 0);
+    const roasMedio = pv > 0 ? comValores.reduce((a, c) => a + c.roas, 0) / pv : 0;
+    const cacList = comValores.filter(c => c.cac > 0);
     const cacMedio = cacList.length > 0 ? cacList.reduce((a, c) => a + c.cac, 0) / cacList.length : 0;
-    const roiMedio = p > 0 ? preenchidos.reduce((a, c) => a + c.roi, 0) / p : 0;
+    const roiMedio = pv > 0 ? comValores.reduce((a, c) => a + c.roi, 0) / pv : 0;
     const faturamentoTotal = preenchidos.reduce((a, c) => a + c.faturamento, 0);
     const investimentoTotal = preenchidos.reduce((a, c) => a + c.investimento, 0);
     const hoje = new Date();
@@ -100,7 +105,7 @@ function calcularMetricasGerais(lista) {
     return {
         total_elegiveis: total, total_preenchidos: p, total_faltantes: f,
         pct_preenchimento: total > 0 ? (p / total) * 100 : 0,
-        total_roi_maior_1: roiMaior1, pct_roi_maior_1: p > 0 ? (roiMaior1 / p) * 100 : 0,
+        total_roi_maior_1: roiMaior1, pct_roi_maior_1: pv > 0 ? (roiMaior1 / pv) * 100 : 0,
         roas_medio: roasMedio, cac_medio: cacMedio, roi_medio: roiMedio,
         faturamento_total: faturamentoTotal, investimento_total: investimentoTotal,
         no_prazo: noPrazo, fora_prazo: foraPrazo,
@@ -109,7 +114,7 @@ function calcularMetricasGerais(lista) {
 }
 
 function calcularTopGTs(lista) {
-    const preenchidos = lista.filter(c => c.preenchido && c.gt);
+    const preenchidos = lista.filter(c => c.comValores && c.gt);
     const map = {};
     preenchidos.forEach(c => {
         const key = c.gt.trim();
@@ -142,8 +147,10 @@ function calcularSquadStats(lista) {
         const preenchidos = todos.filter(c => c.preenchido);
         const total = todos.length;
         const p = preenchidos.length;
-        const roiMedio = p > 0 ? preenchidos.reduce((a, c) => a + c.roi, 0) / p : 0;
-        const roasMedio = p > 0 ? preenchidos.reduce((a, c) => a + c.roas, 0) / p : 0;
+        const comValores = preenchidos.filter(c => c.comValores);
+        const pv = comValores.length;
+        const roiMedio = pv > 0 ? comValores.reduce((a, c) => a + c.roi, 0) / pv : 0;
+        const roasMedio = pv > 0 ? comValores.reduce((a, c) => a + c.roas, 0) / pv : 0;
         const faturamento = preenchidos.reduce((a, c) => a + c.faturamento, 0);
         const investimento = preenchidos.reduce((a, c) => a + c.investimento, 0);
         return { nome: squad, total, preenchidos: p, pctPreenchimento: total > 0 ? (p / total) * 100 : 0, roiMedio, roasMedio, faturamento, investimento };
@@ -151,7 +158,7 @@ function calcularSquadStats(lista) {
 }
 
 function calcularCharts(lista, stats) {
-    const preenchidos = lista.filter(c => c.preenchido);
+    const preenchidos = lista.filter(c => c.comValores); // séries/Pareto/estatística: só cards com valores
     const porMes = {};
     preenchidos.forEach(c => {
         if (!c.data_obj) return;

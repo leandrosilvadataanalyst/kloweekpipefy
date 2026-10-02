@@ -64,7 +64,15 @@
         },
         { "desc": "nenhum", "cliente": { "nome": "ELARA", "razaoSocial": "" }, "cards": [], "ids": [] }
     ],
+    "_preenchido": "Card enviado no período = preenchido, mesmo zerado (ex.: CIA COLLOR em Implementação, Out/2026)",
     "preenchido": [
+        { "card": { "investimento": 0, "faturamento": 0, "mc": 0, "vendas": 0 }, "out": true },
+        { "card": { "investimento": 1500, "faturamento": 0, "mc": 0, "vendas": 0 }, "out": true },
+        { "card": {}, "out": true },
+        { "card": null, "out": false }
+    ],
+    "_comValores": "Usado só nas médias (ROI/ROAS/CAC): card com algum valor > 0",
+    "comValores": [
         { "card": { "investimento": 0, "faturamento": 0, "mc": 0, "vendas": 0 }, "out": false },
         { "card": { "investimento": 1500, "faturamento": 0, "mc": 0, "vendas": 0 }, "out": true },
         { "card": { "investimento": 0, "faturamento": 0, "mc": 0, "vendas": 3 }, "out": true },

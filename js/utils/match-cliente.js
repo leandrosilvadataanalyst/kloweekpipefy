@@ -89,7 +89,14 @@ export function encontrarCards(cliente, cards) {
     return comMatch.filter(x => x.m.nivel === melhor).map(x => x.card);
 }
 
+// Card enviado no período = cliente preenchido/identificado, mesmo com tudo zerado:
+// projeto em Implementação, por exemplo, ainda não tem mídia (caso CIA COLLOR, Out/2026).
 export function cardPreenchido(card) {
+    return !!card;
+}
+
+// Só para médias (ROI/ROAS/CAC/Top GT): card com algum valor > 0, para não puxar as médias para zero.
+export function cardComValores(card) {
     if (!card) return false;
     return ['investimento', 'faturamento', 'mc', 'vendas'].some(k => Number(card[k]) > 0);
 }

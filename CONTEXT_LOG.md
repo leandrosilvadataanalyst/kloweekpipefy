@@ -324,6 +324,18 @@
 - **Autor:** Claude Code
 - **Prevenção:** ao reativar o histórico, NÃO voltar o `periodoPadrao` para "mais recente com dados": a tela deve abrir no vigente, e o histórico é escolha explícita do usuário.
 
+### [02/10/2026] - 🐛 Bug Fix: Card zerado continuava na cobrança (CIA COLLOR)
+- **Sintoma:** CIA COLLOR enviou o card do ROI Week Out/2026 (02/10, 11h11), mas seguia na mensagem de cobrança.
+- **Causa raiz:** `cardPreenchido` exigia algum valor > 0 (investimento/faturamento/mc/vendas). O card da CIA COLLOR está na etapa **Implementação**, com todos os valores 0, uma resposta válida para quem ainda não tem mídia. O cruzamento estava correto (razão social "CIA COLLOR" × card "CIA COLLOR").
+- **O que mudou:**
+  1. `js/utils/match-cliente.js` / `api/match-cliente.php`: `cardPreenchido` = **card enviado no período** (existe), mesmo zerado. Novo `cardComValores` / `mc_card_com_valores` (regra antiga, algum valor > 0), usado só em médias.
+  2. `dashboard-controller.js`: `preenchido` = card do período existe (sai da cobrança e dos pendentes), mais o campo `comValores`. ROI médio, ROAS médio, CAC médio, % ROI > 1, Top 5 GT, ROI/ROAS por squad e gráficos (série, Pareto, estatística) usam só `comValores`, para que um projeto em Implementação não puxe as médias para zero. Contagens (preenchidos, % preenchimento, pizza, prazo) usam todos os preenchidos.
+  3. ROI e Relatório ROI herdam a nova regra via `cardPreenchido` (card zerado aparece em "Preenchidos" com ROI 0%).
+- **Testes:** fixture com `preenchido` (zerado = true) e `comValores`; JS 13/13 (+cobrança), PHP 48/48. Validação real (02/10): 11 cards de outubro → 11 preenchidos (10 com valores), 97 na cobrança, CIA COLLOR fora da mensagem. Bumps: **index v=33, roi/report v=20**.
+- **Status:** ✅ Concluído
+- **Autor:** Claude Code
+- **Prevenção:** "preenchido" (o GT enviou o card) ≠ "tem valores" (entra nas médias). Nunca usar valores > 0 para decidir cobrança.
+
 ---
 
 ## Decisões Arquiteturais
