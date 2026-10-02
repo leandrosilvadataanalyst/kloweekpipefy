@@ -364,3 +364,24 @@ CREATE INDEX IF NOT EXISTS idx_client_aliases_pipefy ON client_aliases (pipefy_n
 
 ALTER TABLE client_aliases ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow all" ON client_aliases FOR ALL USING (true);
+
+-- ============================================================
+-- JANELA DE PREENCHIMENTO DO ROI WEEK (migração 02/10/2026)
+--   chave = 'padrao' (vale para todos os meses) ou 'AAAA-MM' (exceção do mês do ROI Week)
+--   Lida/gravada por janela.php (XAMPP) e api/janela.js (Vercel). Sem linhas → 01 a 03.
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS config_janela (
+    chave       TEXT PRIMARY KEY CHECK (chave = 'padrao' OR chave ~ '^\d{4}-(0[1-9]|1[0-2])$'),
+    dia_inicio  SMALLINT NOT NULL CHECK (dia_inicio BETWEEN 1 AND 31),
+    dia_fim     SMALLINT NOT NULL CHECK (dia_fim BETWEEN 1 AND 31),
+    motivo      TEXT DEFAULT '',
+    updated_at  TIMESTAMPTZ DEFAULT NOW(),
+    CHECK (dia_fim >= dia_inicio)
+);
+
+INSERT INTO config_janela (chave, dia_inicio, dia_fim, motivo)
+VALUES ('padrao', 1, 3, 'Padrão histórico')
+ON CONFLICT (chave) DO NOTHING;
+
+COMMENT ON TABLE config_janela IS 'Janela de preenchimento do ROI Week: padrão mensal + exceções por mês';

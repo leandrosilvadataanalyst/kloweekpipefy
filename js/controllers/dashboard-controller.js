@@ -6,6 +6,8 @@ import { getPeriodoRoiWeek, periodoPorChave, periodosDisponiveis, periodoPadrao 
 import { fetchDashboardFromSupabase } from '../supabase-service.js';
 import { encontrarCards, cardPreenchido, cardComValores } from '../utils/match-cliente.js';
 import { gerarMensagemCobranca, naoIdentificados } from '../utils/cobranca.js';
+import { validarJanela } from '../utils/janela.js';
+import { JanelaService } from '../services/janela-service.js';
 
 let CLIENTES_ELEGIVEIS = [];
 let roiDataStore = [];
@@ -40,11 +42,10 @@ export function formatarMc(mc) {
     return mc > 1 ? mc : mc * 100;
 }
 
+// "No prazo" = card dentro da janela configurada do mês (config_janela; padrão 01 a 03)
 function calcularPrazo(dataObj, preenchido, periodo) {
     if (!preenchido || !dataObj || isNaN(dataObj)) return { status: 'Pendente', label: 'Pendente', classe: 'pendente' };
-    const inicio = new Date(periodo.ano, periodo.mes, 1);
-    const fim = new Date(periodo.ano, periodo.mes, 3, 23, 59, 59);
-    if (dataObj >= inicio && dataObj <= fim) return { status: 'No prazo', label: 'No prazo', classe: 'prazo' };
+    if (periodo.noPrazo(dataObj)) return { status: 'No prazo', label: 'No prazo', classe: 'prazo' };
     return { status: 'Fora do prazo', label: 'Fora do prazo', classe: 'fora' };
 }
 
@@ -98,10 +99,10 @@ function calcularMetricasGerais(lista) {
     const roiMedio = pv > 0 ? comValores.reduce((a, c) => a + c.roi, 0) / pv : 0;
     const faturamentoTotal = preenchidos.reduce((a, c) => a + c.faturamento, 0);
     const investimentoTotal = preenchidos.reduce((a, c) => a + c.investimento, 0);
-    const hoje = new Date();
-    const dia = hoje.getDate();
-    const dentroJanela = dia >= 1 && dia <= 3;
-    const alertaPrazo = !dentroJanela && f > 0 ? `${f} cliente(s) pendente(s) fora da janela 01-03` : dentroJanela && f > 0 ? `Janela aberta (01-03): ${f} pendente(s)` : '';
+    const vigente = getPeriodoRoiWeek();
+    const dia = new Date().getDate();
+    const dentroJanela = vigente.dentroJanela;
+    const alertaPrazo = !dentroJanela && f > 0 ? `${f} cliente(s) pendente(s) fora da janela ${vigente.janelaRotulo}` : dentroJanela && f > 0 ? `Janela aberta (${vigente.janelaRotulo}): ${f} pendente(s)` : '';
     return {
         total_elegiveis: total, total_preenchidos: p, total_faltantes: f,
         pct_preenchimento: total > 0 ? (p / total) * 100 : 0,
@@ -243,6 +244,57 @@ function bindCobranca(mensagem) {
     document.getElementById('btn-atualizar-cobranca')?.addEventListener('click', () => atualizarCobranca());
 }
 
+// ─── Ajuste da janela de preenchimento ────────────────────
+// Padrão (todos os meses) + exceção por mês, salvos no Supabase (config_janela) via JanelaService.
+let janelaConfig = null;
+let janelaAviso = '';
+let janelaPainelAberto = false;
+
+function valorCampo(id) {
+    return document.getElementById(id)?.value ?? '';
+}
+
+function mostrarMsgJanela(texto, erro = false) {
+    const el = document.getElementById('janela-msg');
+    if (!el) return;
+    el.textContent = texto;
+    el.style.color = erro ? 'var(--red)' : 'var(--green)';
+}
+
+async function aplicarJanela(acao) {
+    try {
+        await acao();
+        ({ config: janelaConfig, aviso: janelaAviso } = await JanelaService.carregar());
+        periodoSelecionado = getPeriodoRoiWeek();
+        renderPreservandoFiltros();
+        mostrarMsgJanela('Janela atualizada.');
+    } catch (e) {
+        mostrarMsgJanela(e.message, true);
+    }
+}
+
+function bindJanela() {
+    document.getElementById('btn-ajustar-janela')?.addEventListener('click', () => {
+        janelaPainelAberto = !janelaPainelAberto;
+        document.getElementById('painel-janela')?.classList.toggle('hidden', !janelaPainelAberto);
+    });
+    document.getElementById('btn-salvar-padrao')?.addEventListener('click', () => {
+        const j = { inicio: valorCampo('janela-padrao-inicio'), fim: valorCampo('janela-padrao-fim') };
+        const erro = validarJanela(j);
+        if (erro) return mostrarMsgJanela(erro, true);
+        aplicarJanela(() => JanelaService.salvar({ chave: 'padrao', ...j }));
+    });
+    document.getElementById('btn-salvar-excecao')?.addEventListener('click', () => {
+        const j = { inicio: valorCampo('janela-exc-inicio'), fim: valorCampo('janela-exc-fim') };
+        const erro = validarJanela(j);
+        if (erro) return mostrarMsgJanela(erro, true);
+        aplicarJanela(() => JanelaService.salvar({ chave: valorCampo('janela-exc-mes'), ...j, motivo: valorCampo('janela-exc-motivo') }));
+    });
+    document.querySelectorAll('[data-remover-excecao]').forEach(btn => {
+        btn.addEventListener('click', () => aplicarJanela(() => JanelaService.removerExcecao(btn.dataset.removerExcecao)));
+    });
+}
+
 // A tela inteira mostra o ROI Week vigente: a atualização ao vivo re-renderiza tudo (quadros, tabela
 // e cobrança), preservando os filtros que o usuário escolheu na tabela.
 const FILTROS_TABELA = ['filtro-busca', 'filtro-squad', 'filtro-gt', 'filtro-status', 'filtro-roi', 'filtro-prazo'];
@@ -324,6 +376,7 @@ function render() {
         metricas, topGTs, squadStats, squadsList, gtsList,
         mensagemGTs: mensagem, clientes: clientesConsolidados, faltantesCount,
         totalVigente: totalClientes, cobrancaAtualizadaEm, cobrancaErro,
+        janelaConfig, janelaAviso, janelaPainelAberto,
         chartData,
         periodo: periodoSelecionado, periodoVigente: vigente,
         periodoOptions, periodoKey: periodoSelecionado.key
@@ -346,6 +399,7 @@ function render() {
         render();
     });
     bindCobranca(mensagem);
+    bindJanela();
     document.getElementById('btn-recarregar')?.addEventListener('click', () => {
         const select = document.getElementById('filtro-meses');
         mesesRetroativos = parseInt(select.value);
@@ -384,6 +438,10 @@ async function carregarDados(meses = 3) {
     `;
     try {
         const progressEl = document.getElementById('progresso');
+
+        // Janela de preenchimento configurada (padrão + exceção do mês) antes de montar qualquer período
+        progressEl.textContent = 'Carregando janela de preenchimento...';
+        ({ config: janelaConfig, aviso: janelaAviso } = await JanelaService.carregar());
 
         // Tentar Supabase primeiro
         try {

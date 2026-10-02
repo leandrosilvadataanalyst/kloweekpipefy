@@ -18,6 +18,10 @@
         { "card": { "cliente_nome": "ELARA", "projeto": "ELARA" }, "out": ["ELARA"] }
     ],
     "match": [
+        { "desc": "vários nomes na coluna separados por ' / ' (TARSUS, Out/2026)", "cliente": { "nome": "TARSUS (IDEAL INDUSTRIA)", "razaoSocial": "IDEAL INDUSTRIA E COMERCIO DE FERRAGENS LTDA / IDEAL TELAS" }, "card": { "cliente_nome": "IDEAL TELAS", "projeto": "[\"IDEAL TELAS\"]" }, "via": "razao_social" },
+        { "desc": "vários nomes: primeiro nome também casa", "cliente": { "nome": "TARSUS", "razaoSocial": "IDEAL INDUSTRIA E COMERCIO DE FERRAGENS LTDA / IDEAL TELAS" }, "card": { "cliente_nome": "IDEAL INDUSTRIA E COMERCIO DE FERRAGENS LTDA", "projeto": "" }, "via": "razao_social" },
+        { "desc": "separadores ; e |", "cliente": { "nome": "X", "razaoSocial": "AAA LTDA; BBB TELAS | CCC MOVEIS" }, "card": { "cliente_nome": "CCC MOVEIS", "projeto": "" }, "via": "razao_social" },
+        { "desc": "S/A não é separador", "cliente": { "nome": "JS", "razaoSocial": "JS DISTRIBUIDORA DE PECAS S/A" }, "card": { "cliente_nome": "JS DISTRIBUIDORA DE PECAS", "projeto": "" }, "via": "razao_social" },
         { "desc": "razão social exata", "cliente": { "nome": "HMJ ADVOCACIA", "razaoSocial": "HAHNEMANN, MORAES & JORGE ADVOGADOS ASSOCIADOS" }, "card": { "cliente_nome": "HAHNEMANN, MORAES & JORGE ADVOGADOS ASSOCIADOS", "projeto": "" }, "via": "razao_social" },
         { "desc": "razão social com nome diferente do cockpit", "cliente": { "nome": "JS PEÇAS", "razaoSocial": "JS DISTRIBUIDORA DE PECAS S/A" }, "card": { "cliente_nome": "JS DISTRIBUIDORA DE PECAS S/A", "projeto": "" }, "via": "razao_social" },
         { "desc": "razão social bate pelo projeto do card", "cliente": { "nome": "RIO PET DA GÁVEA", "razaoSocial": "PAIXAO PET" }, "card": { "cliente_nome": "OUTRO TITULO", "projeto": "[\"PAIXAO PET \"]" }, "via": "razao_social" },

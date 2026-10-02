@@ -59,7 +59,7 @@ export class ExportService {
                             <th>ROI</th>
                             <th>ROAS</th>
                             <th>CAC (R$)</th>
-                            <th>Prazo (01-03)</th>
+                            <th>Prazo (janela)</th>
                             <th>Status</th>
                             <th>Link Pipefy</th>
                         </tr>

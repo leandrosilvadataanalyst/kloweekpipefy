@@ -66,14 +66,22 @@ function ehContido(a, b) {
     return curto.split(' ').length >= 2 && ` ${longo} `.includes(` ${curto} `);
 }
 
+// A coluna "Razão Social/Nome card Pipefy" pode ter vários nomes: "RAZÃO LTDA / NOME DO CARD"
+// (ex.: TARSUS → "IDEAL INDUSTRIA ... LTDA / IDEAL TELAS"). Separadores: " / " (com espaços,
+// para não quebrar S/A e S/S), ";" e "|".
+export function razoesDoCliente(cliente) {
+    const bruto = String(cliente?.razaoSocial ?? cliente?.razao_social ?? '');
+    return [...new Set(bruto.split(/\s+\/\s+|[;|]/).map(normalizarNome).filter(Boolean))];
+}
+
 export function matchCliente(cliente, card) {
     const nomesCard = nomesDoCard(card);
     if (!cliente || !nomesCard.length) return null;
-    const razao = normalizarNome(cliente.razaoSocial ?? cliente.razao_social);
+    const razoes = razoesDoCliente(cliente);
     const nome = normalizarNome(cliente.nome);
-    const variantes = [nome, razao].filter(Boolean);
+    const variantes = [nome, ...razoes].filter(Boolean);
 
-    if (razao && nomesCard.some(n => iguais(razao, n))) return { via: 'razao_social', nivel: 1 };
+    if (razoes.some(r => nomesCard.some(n => iguais(r, n)))) return { via: 'razao_social', nivel: 1 };
     if (variantes.some(v => nomesCard.some(n => iguais(v, n) || singular(v) === singular(n)))) return { via: 'nome', nivel: 2 };
     if (variantes.some(v => nomesCard.some(n => ehPrefixo(v, n)))) return { via: 'prefixo', nivel: 3 };
     if (variantes.some(v => nomesCard.some(n => ehContido(v, n)))) return { via: 'contido', nivel: 4 };

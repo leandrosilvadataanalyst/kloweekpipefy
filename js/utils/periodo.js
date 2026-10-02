@@ -1,3 +1,5 @@
+import { resolverJanela, estaNaJanela, rotuloJanela } from './janela.js';
+
 function fmtMesAno(d) {
     const mes = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(d);
     return `${mes.charAt(0).toUpperCase()}${mes.slice(1)}/${d.getFullYear()}`;
@@ -17,14 +19,28 @@ function ehVigente(mes) {
     return mes.getFullYear() === agora.getFullYear() && mes.getMonth() === agora.getMonth();
 }
 
+// Janela de preenchimento configurável (Supabase config_janela). Os controllers chamam
+// definirConfigJanelas() após carregar; até lá vale o padrão 01 a 03.
+let configJanelas = null;
+
+export function definirConfigJanelas(config) {
+    configJanelas = config;
+}
+
+export function getConfigJanelas() {
+    return configJanelas;
+}
+
 function montarPeriodo(ano, mesIndex) {
     const mes = new Date(ano, mesIndex, 1);
     const agora = new Date();
     const vigente = ehVigente(mes);
     const fim = vigente ? agora : new Date(ano, mesIndex + 1, 0, 23, 59, 59);
     const referencia = new Date(ano, mesIndex - 1, 1);
+    const key = `${ano}-${String(mesIndex + 1).padStart(2, '0')}`;
+    const janela = resolverJanela(configJanelas, key);
     return Object.freeze({
-        key: `${ano}-${String(mesIndex + 1).padStart(2, '0')}`,
+        key,
         ano,
         mes: mesIndex,
         inicio: mes,
@@ -36,7 +52,10 @@ function montarPeriodo(ano, mesIndex) {
         opcao: `${fmtMesCurto(mes)} · Ref: ${fmtMesCurto(referencia)}${vigente ? ' (atual)' : ''}`,
         dataAtual: fmtData(agora),
         vigente,
-        dentroJanela: vigente && agora.getDate() >= 1 && agora.getDate() <= 3,
+        janela,                                   // { inicio, fim, origem: 'padrao'|'excecao', motivo }
+        janelaRotulo: rotuloJanela(janela),       // "01 a 03"
+        dentroJanela: vigente && estaNaJanela(agora, janela, ano, mesIndex),
+        noPrazo: (d) => estaNaJanela(d, janela, ano, mesIndex),
         ehDoPeriodo: (d) => d instanceof Date && !isNaN(d) && d >= mes && d <= fim
     });
 }

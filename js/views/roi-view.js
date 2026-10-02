@@ -7,7 +7,7 @@ export class RoiView {
             <div class="card card-pad flex flex-col md:flex-row md:items-center gap-4 mb-6">
                 <div>
                     <h2 class="section-title">Análise ROI — ROI Week ${periodo.roiWeek}</h2>
-                    <p class="section-sub mt-1">Ref: ${periodo.referencia} · período ${periodo.vigente ? `vigente em ${periodo.dataAtual}` : 'histórico'} · % sobre investimento · janela 01–03</p>
+                    <p class="section-sub mt-1">Ref: ${periodo.referencia} · período ${periodo.vigente ? `vigente em ${periodo.dataAtual}` : 'histórico'} · % sobre investimento · janela ${periodo.janelaRotulo}</p>
                 </div>
                 <div class="md:ml-auto flex flex-wrap items-center gap-2">
                     <div class="flex items-center gap-2">
@@ -35,7 +35,7 @@ export class RoiView {
                     <h3 class="section-title">${periodo.vigente ? 'Janela de preenchimento' : 'Período selecionado'} — ROI Week ${periodo.roiWeek}</h3>
                     <p class="section-sub mt-1">
                         ${periodo.vigente
-                            ? `Dados vigentes em <strong style="color:var(--text)">${periodo.dataAtual}</strong> · janela de preenchimento 01 a 03 de cada mês (referente ao mês anterior).`
+                            ? `Dados vigentes em <strong style="color:var(--text)">${periodo.dataAtual}</strong> · janela de preenchimento dias ${periodo.janelaRotulo} (referente ao mês anterior).`
                             : `Período histórico. Os dados abaixo correspondem ao ROI Week ${periodo.roiWeek} (Ref: ${periodo.referencia}).`}
                     </p>
                 </div>

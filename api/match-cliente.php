@@ -94,14 +94,25 @@ function mc_algum($variantes, $nomesCard, $fn) {
     return false;
 }
 
+/** Vários nomes na coluna de razão social: " / " (com espaços; preserva S/A), ";" e "|". */
+function mc_razoes_do_cliente($cliente) {
+    $bruto = (string)($cliente['razaoSocial'] ?? ($cliente['razao_social'] ?? ''));
+    $out = [];
+    foreach (preg_split('/\s+\/\s+|[;|]/u', $bruto) as $parte) {
+        $n = mc_normalizar_nome($parte);
+        if ($n !== '' && !in_array($n, $out, true)) $out[] = $n;
+    }
+    return $out;
+}
+
 function mc_match_cliente($cliente, $card) {
     $nomesCard = mc_nomes_do_card($card);
     if (!$cliente || !$nomesCard) return null;
-    $razao = mc_normalizar_nome($cliente['razaoSocial'] ?? ($cliente['razao_social'] ?? ''));
+    $razoes = mc_razoes_do_cliente($cliente);
     $nome = mc_normalizar_nome($cliente['nome'] ?? '');
-    $variantes = array_values(array_filter([$nome, $razao]));
+    $variantes = array_values(array_filter(array_merge([$nome], $razoes)));
 
-    if ($razao !== '' && mc_algum([$razao], $nomesCard, 'mc_iguais')) return ['via' => 'razao_social', 'nivel' => 1];
+    if ($razoes && mc_algum($razoes, $nomesCard, 'mc_iguais')) return ['via' => 'razao_social', 'nivel' => 1];
     if (mc_algum($variantes, $nomesCard, function ($v, $n) { return mc_iguais($v, $n) || mc_singular($v) === mc_singular($n); })) {
         return ['via' => 'nome', 'nivel' => 2];
     }

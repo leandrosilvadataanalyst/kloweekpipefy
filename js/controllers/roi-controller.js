@@ -2,6 +2,7 @@ import { RoiView } from '../views/roi-view.js';
 import { PipefyService } from '../services/pipefy-service.js';
 import { fetchAllCockpits } from '../sheets-service.js';
 import { encontrarCards, cardPreenchido } from '../utils/match-cliente.js';
+import { JanelaService } from '../services/janela-service.js';
 import { getPeriodoRoiWeek, periodoPorChave, periodoPadrao } from '../utils/periodo.js';
 import { fetchDashboardFromSupabase } from '../supabase-service.js';
 
@@ -68,6 +69,7 @@ async function init() {
 
     try {
         const progressEl = document.getElementById('progresso');
+        await JanelaService.carregar(); // janela de preenchimento configurada (padrão 01 a 03 se indisponível)
 
         // Tentar Supabase primeiro
         try {

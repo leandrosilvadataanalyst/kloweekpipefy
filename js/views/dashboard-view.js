@@ -23,12 +23,18 @@ export class DashboardView {
                         <span class="badge ${pv.dentroJanela ? 'b-ok' : 'b-care'}"><span class="dot"></span>${pv.dentroJanela ? 'Janela aberta' : 'Janela fechada'}</span>
                     </div>
                     <p class="section-sub mt-1">
-                        Janela de preenchimento: 01 a 03 de cada mês (referente ao mês anterior) · hoje ${pv.dataAtual}
+                        Janela de preenchimento: <strong style="color:var(--text)">dias ${pv.janelaRotulo}</strong>
+                        ${pv.janela.origem === 'excecao' ? `(ajuste deste mês${pv.janela.motivo ? `: ${this.esc(pv.janela.motivo)}` : ''})` : '(padrão mensal)'}
+                        · referente ao mês anterior · hoje ${pv.dataAtual}
                         <span id="janela-pendentes">${this.renderPendentesJanela(faltantesCount, pv)}</span>
                     </p>
                 </div>
-                <span class="badge b-care shrink-0">Dia ${metricas.dia_atual}</span>
-            </div>`;
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="badge b-care">Dia ${metricas.dia_atual}</span>
+                    <button id="btn-ajustar-janela" class="btn btn-ghost btn-sm">Ajustar período</button>
+                </div>
+            </div>
+            ${this.renderPainelJanela(data)}`;
 
         return `
             <div class="card card-pad flex flex-col md:flex-row md:items-center gap-4 mb-6">
@@ -207,7 +213,7 @@ export class DashboardView {
                 <div class="px-5 py-4 border-b flex flex-col lg:flex-row lg:items-center justify-between gap-3" style="border-color:var(--border)">
                     <div>
                         <h3 class="section-title">Tabela Resumo Consolidada — ROI Week ${periodo.roiWeek}</h3>
-                        <p class="section-sub">Ref: ${periodo.referencia} · filtros e exportação · janela de prazo 01–03 evidenciada</p>
+                        <p class="section-sub">Ref: ${periodo.referencia} · filtros e exportação · janela de prazo ${periodo.janelaRotulo} evidenciada</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <button id="btn-export-json" class="btn btn-ghost btn-sm">JSON</button>
@@ -246,11 +252,72 @@ export class DashboardView {
         return `<span class="badge b-ok" title="Histórico será disponibilizado depois"><span class="dot"></span>ROI Week ${periodoVigente.roiWeekCurto} · Ref: ${periodoVigente.referenciaCurta} (atual)</span>`;
     }
 
+    static esc(s) {
+        return String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
+
+    // Painel "Ajustar período": padrão mensal + exceção por mês (salvo no Supabase via JanelaService)
+    static renderPainelJanela({ periodoVigente: pv, janelaConfig, janelaAviso, janelaPainelAberto }) {
+        const cfg = janelaConfig || { padrao: { inicio: 1, fim: 3 }, excecoes: {} };
+        const fmtMes = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: 'numeric' });
+        const meses = [0, 1, 2].map(off => {
+            const d = new Date(pv.ano, pv.mes + off, 1);
+            const m = fmtMes.format(d).replace('.', '').replace(' de ', '/');
+            return { key: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`, label: `ROI Week ${m.charAt(0).toUpperCase()}${m.slice(1)}${off === 0 ? ' (atual)' : ''}` };
+        });
+        const excAtual = cfg.excecoes[pv.key];
+        const excecoes = Object.entries(cfg.excecoes).sort(([a], [b]) => b.localeCompare(a));
+        const dia = (id, valor) => `<input id="${id}" type="number" min="1" max="31" value="${valor}" class="ctl" style="width:5rem">`;
+        return `
+            <div id="painel-janela" class="card card-pad mb-6 ${janelaPainelAberto ? '' : 'hidden'}">
+                <h3 class="section-title">Ajustar período de preenchimento</h3>
+                <p class="section-sub mt-1 mb-4">Vale para todos os usuários. A exceção do mês tem prioridade sobre o padrão; "No prazo", "Janela aberta" e alertas passam a usar a nova janela.</p>
+                ${janelaAviso ? `<p class="text-xs mb-3" style="color:var(--red)">${this.esc(janelaAviso)}</p>` : ''}
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="stat-label mb-2">Padrão mensal</p>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xs">do dia</span>${dia('janela-padrao-inicio', cfg.padrao.inicio)}
+                            <span class="text-xs">ao dia</span>${dia('janela-padrao-fim', cfg.padrao.fim)}
+                            <button id="btn-salvar-padrao" class="btn btn-primary btn-sm">Salvar padrão</button>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="stat-label mb-2">Exceção para um mês</p>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select id="janela-exc-mes" class="ctl md:w-auto">
+                                ${meses.map(m => `<option value="${m.key}">${m.label}</option>`).join('')}
+                            </select>
+                            <span class="text-xs">do dia</span>${dia('janela-exc-inicio', excAtual?.inicio ?? pv.janela.inicio)}
+                            <span class="text-xs">ao dia</span>${dia('janela-exc-fim', excAtual?.fim ?? pv.janela.fim)}
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 mt-2">
+                            <input id="janela-exc-motivo" type="text" maxlength="200" placeholder="Motivo (ex.: feriado 12/10)" value="${this.esc(excAtual?.motivo || '')}" class="ctl flex-1">
+                            <button id="btn-salvar-excecao" class="btn btn-primary btn-sm">Salvar exceção</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <p class="stat-label mb-2">Exceções cadastradas</p>
+                    ${excecoes.length === 0
+                        ? '<p class="text-xs" style="color:var(--faint)">Nenhuma exceção — todos os meses usam o padrão.</p>'
+                        : `<ul class="text-sm space-y-1">${excecoes.map(([key, j]) => `
+                            <li class="flex items-center gap-3">
+                                <span class="mono">${key}</span>
+                                <span>dias ${String(j.inicio).padStart(2, '0')} a ${String(j.fim).padStart(2, '0')}</span>
+                                ${j.motivo ? `<span style="color:var(--muted)">· ${this.esc(j.motivo)}</span>` : ''}
+                                <button class="btn btn-ghost btn-sm" data-remover-excecao="${key}">Remover</button>
+                            </li>`).join('')}</ul>`}
+                </div>
+                <p id="janela-msg" class="text-xs mt-3 mb-0"></p>
+            </div>`;
+    }
+
     static renderPendentesJanela(faltantesCount, periodoVigente) {
         if (!faltantesCount) return '';
         const texto = periodoVigente.dentroJanela
             ? `Janela aberta: ${faltantesCount} cliente(s) pendente(s)`
-            : `${faltantesCount} cliente(s) pendente(s) fora da janela 01-03`;
+            : `${faltantesCount} cliente(s) pendente(s) fora da janela ${periodoVigente.janelaRotulo}`;
         return ` · <strong style="color:var(--red)">${texto}</strong>`;
     }
 

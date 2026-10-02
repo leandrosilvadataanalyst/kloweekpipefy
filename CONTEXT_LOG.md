@@ -338,6 +338,31 @@
 - **🐛 Ajuste (02/10):** o Top 5 GT filtrava a lista de clientes por `comValores`, e a CIA COLLOR (Felipe Campos) sumia do detalhe do GT. Agora a lista e o total de clientes do GT incluem todos os preenchidos; só `roiMedio`/`roasMedio` do GT usam `comValores`. Bump **index v=34**.
 - **Prevenção (lista × média):** `comValores` filtra só o CÁLCULO de médias; listas e contagens exibidas ao usuário usam sempre `preenchido`.
 
+### [02/10/2026] - Feature: Período de preenchimento ajustável (padrão + exceção por mês)
+- **Descrição:** A janela do ROI Week (antes fixa em 01 a 03 em 8 pontos do código) agora é configurável pela tela: **padrão mensal** + **exceção para um mês específico** (ex.: Out/2026 de 01 a 07 por feriado), salvos no Supabase e válidos para todos os usuários.
+- **O que mudou:**
+  1. **Novo** `js/utils/janela.js` (lógica pura): `JANELA_PADRAO` (01–03), `normalizarConfig(rows)`, `resolverJanela(config, 'AAAA-MM')` (exceção > padrão > 01–03; fim limitado ao último dia do mês), `validarJanela`, `estaNaJanela`, `rotuloJanela`.
+  2. `js/utils/periodo.js`: estado `definirConfigJanelas/getConfigJanelas`; cada período ganha `janela`, `janelaRotulo`, `noPrazo(data)`, e `dentroJanela` passa a usar a janela configurada.
+  3. **Novo** `janela.php` (XAMPP) + **novo** `api/janela.js` (Vercel): GET (lista), POST (upsert `padrao`/`AAAA-MM`, com validação no servidor), DELETE `?chave=AAAA-MM` (o padrão não pode ser removido). Usam a service role key só no servidor. Tabela ausente: GET devolve `rows: []` + aviso e o POST devolve 409.
+  4. **Novo** `js/services/janela-service.js` (`carregar` nunca derruba a tela: em falha usa 01–03 e mostra aviso; `salvar`; `removerExcecao`) + `janelaEndpoint()` em `api-base.js`.
+  5. Dashboard: a configuração é carregada antes do primeiro render. `calcularPrazo` usa `periodo.noPrazo`. Alertas e textos usam `janelaRotulo`. O card mostra "dias 01 a 07 (ajuste deste mês: motivo)" ou "(padrão mensal)" e ganhou o botão **"Ajustar período"**, que abre um painel (`DashboardView.renderPainelJanela`) com padrão, exceção (mês atual + 2 próximos, com motivo) e lista de exceções com "Remover". Motivo escapado (`DashboardView.esc`). ROI e Relatório também carregam a configuração e os textos "01–03" foram trocados. Exportação: "Prazo (janela)".
+  6. `schema.sql`: tabela `config_janela` (CHECKs de chave/dias, seed `padrao` 1–3). ⚠️ **Pendente de execução no SQL Editor do Supabase.**
+- **Testes:** `node --test tests/js/janela.test.mjs` (6/6) + matcher/cobrança (13/13) + PHP 48/48. Endpoint via `php -S`: GET sem tabela → rows [] + aviso; validações 400 (fim < início, chave inválida, dia 32, DELETE padrao); POST válido sem tabela → 409; PUT → 405. Render: exceção Out/2026 01–07 → card "dias 01 a 07 (ajuste deste mês…)", 04/10 no prazo, 08/10 fora, seletor "Out/2026 (atual) | Nov/2026 | Dez/2026", XSS escapado. Bumps: **index v=35, roi/report v=21**.
+- **Limitação conhecida:** o endpoint não tem autenticação (mesmo nível do restante do painel interno); qualquer pessoa com acesso ao painel pode alterar a janela. A view `dashboard_consolidado` do `schema.sql` ainda calcula prazo com dias fixos (não é usada pelo front).
+- **Status:** ✅ Concluído (⚠️ migração Supabase pendente)
+- **Autor:** Claude Code
+- **Prevenção:** nunca reintroduzir dias fixos de janela; usar sempre `periodo.janela`/`periodo.noPrazo`/`janelaRotulo`. Controllers devem chamar `JanelaService.carregar()` antes de montar períodos.
+
+### [02/10/2026] - 🐛 Bug Fix: Vários nomes na coluna "Razão Social/Nome card Pipefy" (TARSUS × IDEAL TELAS)
+- **Sintoma:** TARSUS (IDEAL INDUSTRIA), da Monsters S/A, preencheu o ROI Week Out/2026 (card "IDEAL TELAS", 02/10), mas não aparecia como preenchida.
+- **Causa raiz:** a célula foi atualizada para `IDEAL INDUSTRIA E COMERCIO DE FERRAGENS LTDA / IDEAL TELAS` (razão + nome do card) e o matcher tratava a célula como um nome único. No máximo casaria pelo nível fraco "contido".
+- **O que mudou:** `razoesDoCliente` (JS) / `mc_razoes_do_cliente` (PHP) dividem a célula em vários nomes por ` / ` (barra com espaços, preservando S/A e S/S), `;` ou `|`. Cada nome é testado no nível 1 (`razao_social`) e como variante dos níveis seguintes.
+- **Testes:** 4 casos novos na fixture (barra, primeiro nome, `;`/`|`, S/A não separa): JS 19/19, PHP 52/52. Bumps: **index v=36, roi/report v=22**.
+- **Revisão completa das planilhas (02/10, 48 cards com data de outubro):** 106 ativos (eram 108), 46 preenchidos, 60 pendentes. TARSUS → IDEAL TELAS [razao_social]. 11 casamentos por nome/prefixo conferidos (todos corretos, ex.: MADEIRA DE DEMOLIÇÃO → NOBRE SUL MOVEIS). Zerados: CIACOLLOR, STOP FIRE, ELETRO COMBO. ⚠️ UNIVERSE enviou **2 cards** "UNIVERSE S/A" em outubro (duplicado no Pipefy). ⚠️ Card "BELONIA CONSULTORIA" sem cliente em nenhum cockpit (nem como churn).
+- **Status:** ✅ Concluído
+- **Autor:** Claude Code
+- **Prevenção:** a coluna de razão social pode listar vários nomes. Ao cadastrar, usar ` / ` entre eles e incluir o título exato do card do Pipefy.
+
 ---
 
 ## Decisões Arquiteturais

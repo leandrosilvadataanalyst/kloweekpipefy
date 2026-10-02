@@ -14,3 +14,6 @@ export function pipefyEndpoint() {
 export function sheetsEndpoint() {
     return onXampp() ? '/kloweekpipefy/sheets-proxy.php' : '/api/sheets-proxy';
 }
+export function janelaEndpoint() {
+    return onXampp() ? '/kloweekpipefy/janela.php' : '/api/janela';
+}
