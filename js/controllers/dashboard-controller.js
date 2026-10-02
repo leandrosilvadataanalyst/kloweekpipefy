@@ -114,7 +114,9 @@ function calcularMetricasGerais(lista) {
 }
 
 function calcularTopGTs(lista) {
-    const preenchidos = lista.filter(c => c.comValores && c.gt);
+    // Lista do GT mostra todos que enviaram o card (inclusive zerados, ex.: Implementação);
+    // só o ROI/ROAS médio do GT ignora os zerados.
+    const preenchidos = lista.filter(c => c.preenchido && c.gt);
     const map = {};
     preenchidos.forEach(c => {
         const key = c.gt.trim();
@@ -123,8 +125,9 @@ function calcularTopGTs(lista) {
         map[key].faturamento += c.faturamento;
     });
     const gtLista = Object.values(map).map(g => {
-        const avgRoi = g.clientes.reduce((a, c) => a + c.roi, 0) / g.clientes.length;
-        const avgRoas = g.clientes.reduce((a, c) => a + c.roas, 0) / g.clientes.length;
+        const comValores = g.clientes.filter(c => c.comValores);
+        const avgRoi = comValores.length ? comValores.reduce((a, c) => a + c.roi, 0) / comValores.length : 0;
+        const avgRoas = comValores.length ? comValores.reduce((a, c) => a + c.roas, 0) / comValores.length : 0;
         const clientesSorted = g.clientes
             .map(c => ({
                 nome: c.nome,

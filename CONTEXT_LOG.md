@@ -335,6 +335,8 @@
 - **Status:** ✅ Concluído
 - **Autor:** Claude Code
 - **Prevenção:** "preenchido" (o GT enviou o card) ≠ "tem valores" (entra nas médias). Nunca usar valores > 0 para decidir cobrança.
+- **🐛 Ajuste (02/10):** o Top 5 GT filtrava a lista de clientes por `comValores`, e a CIA COLLOR (Felipe Campos) sumia do detalhe do GT. Agora a lista e o total de clientes do GT incluem todos os preenchidos; só `roiMedio`/`roasMedio` do GT usam `comValores`. Bump **index v=34**.
+- **Prevenção (lista × média):** `comValores` filtra só o CÁLCULO de médias; listas e contagens exibidas ao usuário usam sempre `preenchido`.
 
 ---
 
