@@ -18,6 +18,8 @@
         { "card": { "cliente_nome": "ELARA", "projeto": "ELARA" }, "out": ["ELARA"] }
     ],
     "match": [
+        { "desc": "vínculo manual (tela Ajustes) vence tudo", "cliente": { "nome": "BEITY", "razaoSocial": "BEITY 2 MOVEIS E DECORACAO LTDA", "vinculos": ["BEITY "] }, "card": { "cliente_nome": "BEITY", "projeto": "[\"BEITY\"]" }, "via": "vinculo_manual" },
+        { "desc": "vínculo manual com nome totalmente diferente", "cliente": { "nome": "STOP FIRE", "razaoSocial": "MASC METAIS", "vinculos": ["STOPFIRE EXTINTORES"] }, "card": { "cliente_nome": "STOPFIRE EXTINTORES", "projeto": "" }, "via": "vinculo_manual" },
         { "desc": "vários nomes na coluna separados por ' / ' (TARSUS, Out/2026)", "cliente": { "nome": "TARSUS (IDEAL INDUSTRIA)", "razaoSocial": "IDEAL INDUSTRIA E COMERCIO DE FERRAGENS LTDA / IDEAL TELAS" }, "card": { "cliente_nome": "IDEAL TELAS", "projeto": "[\"IDEAL TELAS\"]" }, "via": "razao_social" },
         { "desc": "vários nomes: primeiro nome também casa", "cliente": { "nome": "TARSUS", "razaoSocial": "IDEAL INDUSTRIA E COMERCIO DE FERRAGENS LTDA / IDEAL TELAS" }, "card": { "cliente_nome": "IDEAL INDUSTRIA E COMERCIO DE FERRAGENS LTDA", "projeto": "" }, "via": "razao_social" },
         { "desc": "separadores ; e |", "cliente": { "nome": "X", "razaoSocial": "AAA LTDA; BBB TELAS | CCC MOVEIS" }, "card": { "cliente_nome": "CCC MOVEIS", "projeto": "" }, "via": "razao_social" },
@@ -44,6 +46,15 @@
             "cards": [
                 { "id": "1", "cliente_nome": "SLEEP HOUSE IPIRANGA", "projeto": "" },
                 { "id": "2", "cliente_nome": "SLEEP HOUSE", "projeto": "" }
+            ],
+            "ids": ["2"]
+        },
+        {
+            "desc": "vínculo manual vence razão social de outro card",
+            "cliente": { "nome": "COMIN", "razaoSocial": "PONTO DA GASTRONOMIA", "vinculos": ["COMIN EQUIPAMENTOS"] },
+            "cards": [
+                { "id": "1", "cliente_nome": "PONTO DA GASTRONOMIA", "projeto": "" },
+                { "id": "2", "cliente_nome": "COMIN EQUIPAMENTOS", "projeto": "" }
             ],
             "ids": ["2"]
         },

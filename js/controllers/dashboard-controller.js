@@ -8,6 +8,8 @@ import { encontrarCards, cardPreenchido, cardComValores } from '../utils/match-c
 import { gerarMensagemCobranca, naoIdentificados } from '../utils/cobranca.js';
 import { validarJanela } from '../utils/janela.js';
 import { JanelaService } from '../services/janela-service.js';
+import { VinculoService } from '../services/vinculo-service.js';
+import { aplicarVinculos } from '../utils/vinculos.js';
 
 let CLIENTES_ELEGIVEIS = [];
 let roiDataStore = [];
@@ -265,6 +267,8 @@ async function aplicarJanela(acao) {
     try {
         await acao();
         ({ config: janelaConfig, aviso: janelaAviso } = await JanelaService.carregar());
+        // Vínculos manuais da tela Ajustes (cliente → título do card) entram no cruzamento
+        const { rows: vinculosRows } = await VinculoService.carregar();
         periodoSelecionado = getPeriodoRoiWeek();
         renderPreservandoFiltros();
         mostrarMsgJanela('Janela atualizada.');
@@ -447,7 +451,7 @@ async function carregarDados(meses = 3) {
         try {
             progressEl.textContent = 'Carregando dados do Supabase...';
             const data = await fetchDashboardFromSupabase(meses);
-            CLIENTES_ELEGIVEIS = data.clientes.filter(c => !c.roi || c.preenchido);
+            CLIENTES_ELEGIVEIS = aplicarVinculos(data.clientes.filter(c => !c.roi || c.preenchido), vinculosRows);
             roiDataStore = data.clientes
                 .filter(c => c.roi)
                 .map(c => ({
@@ -474,7 +478,7 @@ async function carregarDados(meses = 3) {
 
         // Fallback: método original (Google Sheets + Pipefy)
         progressEl.textContent = 'Etapa 1/2: Buscando cockpits dos squads...';
-        CLIENTES_ELEGIVEIS = await fetchAllCockpits(progressEl);
+        CLIENTES_ELEGIVEIS = aplicarVinculos(await fetchAllCockpits(progressEl), vinculosRows);
         progressEl.textContent = `Etapa 2/2: Buscando ROI Week (${meses} meses)...`;
         roiDataStore = await PipefyService.getRoiWeek(progressEl, meses);
         cobrancaAtualizadaEm = new Date();

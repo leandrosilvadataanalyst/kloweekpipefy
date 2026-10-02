@@ -2,6 +2,7 @@ const { getSupabase } = require('./supabase-client');
 const fs = require('fs');
 const path = require('path');
 import { encontrarCards } from '../js/utils/match-cliente.js';
+import { aplicarVinculos } from '../js/utils/vinculos.js';
 
 // Carregar aliases de nomes
 let aliases = {};
@@ -45,6 +46,10 @@ export default async function handler(req, res) {
             .order('data_obj', { ascending: false });
 
         if (roiErr) throw new Error(`ROI Week: ${roiErr.message}`);
+
+        // Vínculos manuais da tela Ajustes (cliente → título do card); tabela ausente = sem vínculos
+        const { data: vinculosRows } = await supabase.from('vinculo_card').select('cliente_chave,card_titulo');
+        cockpits.splice(0, cockpits.length, ...aplicarVinculos(cockpits, vinculosRows || []));
 
         // Montar resposta
         const clientes = cockpits.map(c => {

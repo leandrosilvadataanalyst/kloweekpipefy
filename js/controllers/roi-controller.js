@@ -3,6 +3,8 @@ import { PipefyService } from '../services/pipefy-service.js';
 import { fetchAllCockpits } from '../sheets-service.js';
 import { encontrarCards, cardPreenchido } from '../utils/match-cliente.js';
 import { JanelaService } from '../services/janela-service.js';
+import { VinculoService } from '../services/vinculo-service.js';
+import { aplicarVinculos } from '../utils/vinculos.js';
 import { getPeriodoRoiWeek, periodoPorChave, periodoPadrao } from '../utils/periodo.js';
 import { fetchDashboardFromSupabase } from '../supabase-service.js';
 
@@ -70,12 +72,13 @@ async function init() {
     try {
         const progressEl = document.getElementById('progresso');
         await JanelaService.carregar(); // janela de preenchimento configurada (padrão 01 a 03 se indisponível)
+        const { rows: vinculosRows } = await VinculoService.carregar();
 
         // Tentar Supabase primeiro
         try {
             progressEl.textContent = 'Carregando dados do Supabase...';
             const data = await fetchDashboardFromSupabase(3);
-            const elegiveis = data.clientes;
+            const elegiveis = aplicarVinculos(data.clientes, vinculosRows);
             const roi = data.clientes
                 .filter(c => c.roi)
                 .map(c => ({
@@ -133,10 +136,11 @@ async function init() {
         }
 
         // Fallback: método original
-        const [elegiveis, roiData] = await Promise.all([
+        const [elegiveisBase, roiData] = await Promise.all([
             fetchAllCockpits(progressEl),
             PipefyService.getRoiWeek(progressEl, 3)
         ]);
+        const elegiveis = aplicarVinculos(elegiveisBase, vinculosRows);
 
         const grupos = {};
         (roiData || []).forEach(x => {

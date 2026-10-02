@@ -108,6 +108,11 @@ function mc_razoes_do_cliente($cliente) {
 function mc_match_cliente($cliente, $card) {
     $nomesCard = mc_nomes_do_card($card);
     if (!$cliente || !$nomesCard) return null;
+
+    // Nível 0: vínculo manual feito na tela Ajustes (cliente → título do card)
+    $vinculos = array_values(array_filter(array_map('mc_normalizar_nome', $cliente['vinculos'] ?? [])));
+    if ($vinculos && mc_algum($vinculos, $nomesCard, 'mc_iguais')) return ['via' => 'vinculo_manual', 'nivel' => 0];
+
     $razoes = mc_razoes_do_cliente($cliente);
     $nome = mc_normalizar_nome($cliente['nome'] ?? '');
     $variantes = array_values(array_filter(array_merge([$nome], $razoes)));

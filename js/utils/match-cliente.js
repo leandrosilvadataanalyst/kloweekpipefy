@@ -3,6 +3,7 @@
 // e para tests/fixtures/match-cliente.json (testes de paridade JS/PHP).
 //
 // Níveis (menor = mais confiável):
+//   0 vinculo_manual → vínculo feito na tela Ajustes (cliente.vinculos = títulos de card; ver utils/vinculos.js)
 //   1 razao_social → coluna "Razão Social/Nome card Pipefy" do cockpit == título/projeto do card
 //   2 nome         → nome (ou razão) igual após normalizar, ignorando espaços ou plural
 //   3 prefixo      → um nome é o início do outro, palavra por palavra (ex.: MOTO CHEFE → MOTO CHEFE CARAGUA)
@@ -10,7 +11,7 @@
 
 const STOPWORDS = new Set(['LTDA', 'EIRELI', 'ME', 'EPP', 'SA', 'MEI', 'CIA', 'COMERCIO', 'DE', 'DA', 'DO', 'DOS', 'DAS', 'E']);
 
-export const NIVEIS = Object.freeze({ razao_social: 1, nome: 2, prefixo: 3, contido: 4 });
+export const NIVEIS = Object.freeze({ vinculo_manual: 0, razao_social: 1, nome: 2, prefixo: 3, contido: 4 });
 
 function semAcento(s) {
     return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -77,6 +78,10 @@ export function razoesDoCliente(cliente) {
 export function matchCliente(cliente, card) {
     const nomesCard = nomesDoCard(card);
     if (!cliente || !nomesCard.length) return null;
+    // Nível 0: vínculo manual feito na tela Ajustes (cliente → título do card)
+    const vinculos = (cliente.vinculos || []).map(normalizarNome).filter(Boolean);
+    if (vinculos.some(v => nomesCard.some(n => iguais(v, n)))) return { via: 'vinculo_manual', nivel: 0 };
+
     const razoes = razoesDoCliente(cliente);
     const nome = normalizarNome(cliente.nome);
     const variantes = [nome, ...razoes].filter(Boolean);

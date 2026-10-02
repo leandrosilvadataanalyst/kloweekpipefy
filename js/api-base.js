@@ -17,3 +17,7 @@ export function sheetsEndpoint() {
 export function janelaEndpoint() {
     return onXampp() ? '/kloweekpipefy/janela.php' : '/api/janela';
 }
+
+export function vinculoEndpoint() {
+    return onXampp() ? '/kloweekpipefy/vinculo.php' : '/api/vinculo';
+}

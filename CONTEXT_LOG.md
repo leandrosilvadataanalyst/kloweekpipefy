@@ -381,6 +381,22 @@
 - **Autor:** Claude Code
 - **Prevenção:** rótulos de métricas do ROI Week vêm SEMPRE de `CAMPOS_ROI` (nunca texto solto). Não criar métricas derivadas com nome de campo do card (ex.: chamar fat × MC de "Receita").
 
+### [02/10/2026] - Feature: Tela "Ajustes" — buscar o card certo no Pipefy e vincular ao cliente
+- **Contexto:** BEITY (razão "BEITY 2 MOVEIS E DECORACAO LTDA", card "BEITY") já era identificada pelo nome do cockpit (nível 2; card de 02/10 encontrado). O usuário pediu uma forma de corrigir esses casos pela interface, sem editar a planilha.
+- **O que mudou:**
+  1. **Novo nível 0 no matcher** (`vinculo_manual`), em JS e PHP: `cliente.vinculos` (títulos de card) vence razão social e nome. **Novo** `js/utils/vinculos.js` (`chaveCliente` = nome normalizado, `aplicarVinculos(clientes, rows)` sem mutar a lista).
+  2. **Nova tabela** `vinculo_card` (`schema.sql`): `cliente_chave` (PK), `cliente_nome`, `squad`, `card_titulo`, `card_id`. O vínculo é pelo **título** do card, que vale para todos os meses porque o card é recriado com o mesmo nome. ⚠️ **Pendente de execução no Supabase.**
+  3. **Novo** `vinculo.php` (XAMPP) + **novo** `api/vinculo.js` (Vercel): GET/POST (upsert por cliente)/DELETE. Validação no servidor; tabela ausente → GET `rows: []` + aviso, POST 409. **Novo** `js/services/vinculo-service.js` (carregar nunca derruba a tela) + `vinculoEndpoint()`.
+  4. `PipefyService.buscarCardsPorTitulo(termo)`: `cards(search: { title })` com o termo serializado via `JSON.stringify` (sem injeção na query GraphQL), agrupado por título (último card, data e quantidade).
+  5. **Nova página** `ajustes.html` + `js/app-ajustes.js` + `js/controllers/ajustes-controller.js` + `js/views/ajustes-view.js`: contadores (identificados / não identificados / vínculos manuais); filtros (Não identificados [padrão] · Identificados por aproximação · Com vínculo manual · Todos), squad e texto; tabela com cliente, razão social da planilha, card do ROI Week vigente (link e data) e "Identificado por" (Vínculo manual / Razão social / Nome do cockpit / Início do nome / Nome contido); "Buscar card" abre a busca no Pipefy com resultados e "Vincular"; "Remover vínculo". Tudo escapado (`AjustesView.esc`).
+  6. Menu lateral: item **Ajustes** em `index.html`, `roi.html`, `roi-report.html` e `ajustes.html`.
+  7. Vínculos aplicados onde os clientes são carregados: dashboard (Supabase e direto), ROI, Relatório, `dashboard-local.php` e `api/dashboard.js`.
+- **Testes:** fixture com 3 casos de vínculo manual (vence razão social de outro card) + `tests/js/vinculos.test.mjs`: JS 22/22, PHP 55/55. Endpoint via `php -S`: GET sem tabela → rows [] + aviso; 400 (sem card_titulo / DELETE sem chave); POST sem tabela → 409. Busca real: "BEITY" → BEITY (12 cards, último 02/10/2026); "IDEAL" → IDEAL TELAS; "collor" → CIA COLLOR; termo com aspas/chaves → nenhum resultado, sem erro. Render real: 51 de 106 identificados, 55 pendentes, painel de busca, XSS escapado. Bumps: **index v=39, roi/report v=24, ajustes v=1**.
+- **Limitação:** sem autenticação (mesmo nível do restante do painel).
+- **Status:** ✅ Concluído (⚠️ migração Supabase pendente)
+- **Autor:** Claude Code
+- **Prevenção:** correção de cliente × card sem mexer na planilha = vínculo manual na tela Ajustes. Nunca hardcodar mapeamentos no código (o antigo MANUAL do script de análise foi descartado por isso).
+
 ---
 
 ## Decisões Arquiteturais

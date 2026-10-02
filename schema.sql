@@ -385,3 +385,20 @@ VALUES ('padrao', 1, 3, 'Padrão histórico')
 ON CONFLICT (chave) DO NOTHING;
 
 COMMENT ON TABLE config_janela IS 'Janela de preenchimento do ROI Week: padrão mensal + exceções por mês';
+
+-- ============================================================
+-- VÍNCULO MANUAL CLIENTE → CARD DO ROI WEEK (migração 02/10/2026)
+--   Tela Ajustes: liga o cliente do cockpit (cliente_chave = nome normalizado) ao TÍTULO do card
+--   no Pipefy (o card é recriado todo mês com o mesmo título). Vence razão social e nome no matcher.
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS vinculo_card (
+    cliente_chave TEXT PRIMARY KEY,
+    cliente_nome  TEXT NOT NULL DEFAULT '',
+    squad         TEXT DEFAULT '',
+    card_titulo   TEXT NOT NULL,
+    card_id       TEXT DEFAULT '',
+    updated_at    TIMESTAMPTZ DEFAULT NOW()
+);
+
+COMMENT ON TABLE vinculo_card IS 'Vínculo manual cliente (cockpit) → título do card do ROI Week (tela Ajustes)';

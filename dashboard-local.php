@@ -76,7 +76,14 @@ if ($roiWeek === null) {
 
 // ─── Montar clientes consolidados ──────────────────────────
 $clientes = [];
+// Vínculos manuais da tela Ajustes (cliente → título do card); tabela ausente = sem vínculos
+$vinculosPorChave = [];
+foreach (supabaseGet('vinculo_card?select=cliente_chave,card_titulo') ?: [] as $v) {
+    $vinculosPorChave[$v['cliente_chave']][] = $v['card_titulo'];
+}
+
 foreach ($cockpits as $c) {
+    $c['vinculos'] = $vinculosPorChave[mc_normalizar_nome($c['nome'])] ?? [];
     // Razão social do cockpit é a chave principal; ver api/match-cliente.php
     $matches = mc_encontrar_cards($c, $roiWeek);
 

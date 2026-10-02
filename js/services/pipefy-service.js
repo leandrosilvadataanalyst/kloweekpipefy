@@ -95,6 +95,27 @@ export class PipefyService {
         return cards;
     }
 
+    // Busca cards do ROI Week pelo título (tela Ajustes). Agrupa por título, pois o card é recriado
+    // todo mês com o mesmo nome: devolve [{ titulo, id (mais recente), ultimaData, total }].
+    static async buscarCardsPorTitulo(termo) {
+        const t = String(termo || '').trim();
+        if (t.length < 2) return [];
+        const q = `{ cards(pipe_id: "${CONFIG.PIPES.ROI_WEEK}", first: 50, search: { title: ${JSON.stringify(t)} }) { edges { node { id title createdAt fields { name value float_value datetime_value } } } } }`;
+        const r = await this.query(q);
+        const grupos = new Map();
+        (r?.cards?.edges || []).forEach(({ node }) => {
+            const card = this._mapRoiCard(node);
+            const titulo = String(node.title || '').trim();
+            const g = grupos.get(titulo) || { titulo, id: card.cliente_id, ultimaData: null, ultimaDataStr: '', total: 0 };
+            g.total++;
+            if (card.data_obj && (!g.ultimaData || card.data_obj > g.ultimaData)) {
+                Object.assign(g, { id: card.cliente_id, ultimaData: card.data_obj, ultimaDataStr: card.data_atualizacao });
+            }
+            grupos.set(titulo, g);
+        });
+        return [...grupos.values()].sort((a, b) => (b.ultimaData || 0) - (a.ultimaData || 0));
+    }
+
     static _mapRoiCard(node) {
         const dataRaw = this._getField(node, CAMPOS_ROI.data) || node.createdAt;
         const dataObj = this._parseDate(dataRaw) || new Date(dataRaw);
