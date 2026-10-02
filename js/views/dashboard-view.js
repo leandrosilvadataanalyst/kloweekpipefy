@@ -121,7 +121,7 @@ export class DashboardView {
                                                 <thead>
                                                     <tr style="color:var(--faint);border-bottom:1px solid var(--border)">
                                                         <th class="text-left py-1 pr-2 font-semibold">Cliente</th>
-                                                        <th class="text-right py-1 px-2 font-semibold">Faturamento</th>
+                                                        <th class="text-right py-1 px-2 font-semibold">Investimento</th>
                                                         <th class="text-right py-1 px-2 font-semibold">MC</th>
                                                         <th class="text-right py-1 px-2 font-semibold">Receita</th>
                                                         <th class="text-right py-1 px-2 font-semibold">ROAS</th>
@@ -132,7 +132,7 @@ export class DashboardView {
                                                     ${g.clientes.map(c => `
                                                         <tr style="border-bottom:1px solid var(--border)">
                                                             <td class="py-1.5 pr-2 font-medium max-w-[140px] truncate" title="${c.nome}">${c.nome}</td>
-                                                            <td class="text-right py-1.5 px-2">R$ ${c.faturamento.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
+                                                            <td class="text-right py-1.5 px-2">R$ ${(c.investimento || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                                             <td class="text-right py-1.5 px-2">${(c.mc * 100).toFixed(0)}%</td>
                                                             <td class="text-right py-1.5 px-2">R$ ${c.receita.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
                                                             <td class="text-right py-1.5 px-2" style="color:${c.roas > 1 ? 'var(--green)' : 'var(--red)'}">${c.roas.toFixed(2)}x</td>

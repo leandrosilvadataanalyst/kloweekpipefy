@@ -133,6 +133,7 @@ function calcularTopGTs(lista) {
             .map(c => ({
                 nome: c.nome,
                 faturamento: c.faturamento,
+                investimento: c.investimento,
                 mc: c.mc,
                 receita: c.faturamento * c.mc,
                 roas: c.roas,
