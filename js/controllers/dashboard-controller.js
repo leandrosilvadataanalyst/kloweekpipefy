@@ -267,8 +267,6 @@ async function aplicarJanela(acao) {
     try {
         await acao();
         ({ config: janelaConfig, aviso: janelaAviso } = await JanelaService.carregar());
-        // Vínculos manuais da tela Ajustes (cliente → título do card) entram no cruzamento
-        const { rows: vinculosRows } = await VinculoService.carregar();
         periodoSelecionado = getPeriodoRoiWeek();
         renderPreservandoFiltros();
         mostrarMsgJanela('Janela atualizada.');
@@ -446,6 +444,8 @@ async function carregarDados(meses = 3) {
         // Janela de preenchimento configurada (padrão + exceção do mês) antes de montar qualquer período
         progressEl.textContent = 'Carregando janela de preenchimento...';
         ({ config: janelaConfig, aviso: janelaAviso } = await JanelaService.carregar());
+        // Vínculos manuais da tela Ajustes (cliente → título do card) entram no cruzamento
+        const { rows: vinculosRows } = await VinculoService.carregar();
 
         // Tentar Supabase primeiro
         try {

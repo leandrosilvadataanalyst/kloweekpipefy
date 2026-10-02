@@ -396,6 +396,8 @@
 - **Status:** ✅ Concluído (⚠️ migração Supabase pendente)
 - **Autor:** Claude Code
 - **Prevenção:** correção de cliente × card sem mexer na planilha = vínculo manual na tela Ajustes. Nunca hardcodar mapeamentos no código (o antigo MANUAL do script de análise foi descartado por isso).
+- **🐛 Correção (02/10):** a Visão Geral quebrava com "vinculosRows is not defined". O script de inserção substituiu a PRIMEIRA ocorrência de `JanelaService.carregar()`, que fica em `aplicarJanela`, e não a de `carregarDados`; o `const vinculosRows` ficou fora do escopo das linhas que o usam. Movido para `carregarDados`. Validado no navegador (`php -S`): Visão Geral 51 preenchidos / 106, cobrança 55, sem erro; Ajustes 51 de 106 identificados. Bump **index v=40**.
+- **Prevenção (scripts de edição):** ao inserir código por "achar e substituir", conferir se o trecho-âncora é único no arquivo; testar o carregamento real da tela, não só `node --check` (sintaxe válida não pega variável fora de escopo).
 
 ---
 
