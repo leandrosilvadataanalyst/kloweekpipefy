@@ -363,6 +363,12 @@
 - **Autor:** Claude Code
 - **Prevenção:** a coluna de razão social pode listar vários nomes. Ao cadastrar, usar ` / ` entre eles e incluir o título exato do card do Pipefy.
 
+### [02/10/2026] - UX: Top 5 GT mostra Investimento no lugar de Faturamento
+- **O que mudou:** no detalhe de clientes de cada GT (Top 5 GT por ROI médio), a coluna "Faturamento" virou **"Investimento"** (`R$ 32.390,50`, 2 casas). `calcularTopGTs` passou a incluir `investimento` em `clientesSorted`. As colunas MC, Receita, ROAS e ROI não mudaram; o faturamento total do GT segue no objeto (não exibido nessa tabela).
+- **Validação:** `node --check`; render com FINO INOX → "Investimento … R$ 32.390,50". Bump **index v=37**.
+- **Status:** ✅ Concluído
+- **Autor:** Claude Code
+
 ---
 
 ## Decisões Arquiteturais
