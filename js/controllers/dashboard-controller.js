@@ -135,7 +135,6 @@ function calcularTopGTs(lista) {
                 faturamento: c.faturamento,
                 investimento: c.investimento,
                 mc: c.mc,
-                receita: c.faturamento * c.mc,
                 roas: c.roas,
                 roi: c.roi
             }))

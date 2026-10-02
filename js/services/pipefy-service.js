@@ -1,4 +1,5 @@
 import { CONFIG } from '../config.js';
+import { CAMPOS_ROI } from '../utils/campos-roi.js';
 import { pipefyEndpoint } from '../api-base.js';
 
 export class PipefyService {
@@ -65,7 +66,7 @@ export class PipefyService {
 
         return edges
             .filter(e => {
-                const v = this._getField(e.node, 'Data de Atualização') || e.node.createdAt;
+                const v = this._getField(e.node, CAMPOS_ROI.data) || e.node.createdAt;
                 if (!v) return false;
                 const d = this._parseDate(v) || new Date(v);
                 return d && !isNaN(d) && d >= dataLimite;
@@ -95,16 +96,16 @@ export class PipefyService {
     }
 
     static _mapRoiCard(node) {
-        const dataRaw = this._getField(node, 'Data de Atualização') || node.createdAt;
+        const dataRaw = this._getField(node, CAMPOS_ROI.data) || node.createdAt;
         const dataObj = this._parseDate(dataRaw) || new Date(dataRaw);
         return {
             cliente_id: node.id,
             cliente_nome: node.title,
-            projeto: this._getField(node, 'Projeto [USAR ESTE]'),
-            investimento: this._getFieldFloat(node, 'Investimento em mídia no mês'),
-            mc: this._getFieldFloat(node, 'Margem de contribuição'),
-            faturamento: this._getFieldFloat(node, 'Faturamento (vendas V4)'),
-            vendas: this._getFieldFloat(node, 'Vendas realizadas (apenas geradas pela V4)'),
+            projeto: this._getField(node, CAMPOS_ROI.projeto),
+            investimento: this._getFieldFloat(node, CAMPOS_ROI.investimento),
+            mc: this._getFieldFloat(node, CAMPOS_ROI.mc),
+            faturamento: this._getFieldFloat(node, CAMPOS_ROI.faturamento),
+            vendas: this._getFieldFloat(node, CAMPOS_ROI.vendas),
             data_atualizacao: dataRaw,
             data_obj: isNaN(dataObj) ? null : dataObj,
             card_url: `https://app.pipefy.com/open-cards/${node.id}`,

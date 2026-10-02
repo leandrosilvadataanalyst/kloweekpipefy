@@ -1,3 +1,5 @@
+import { CAMPOS_ROI, mcPercentual } from '../utils/campos-roi.js';
+
 let _chartData = null;
 const _charts = [];
 
@@ -85,12 +87,12 @@ export class DashboardView {
                 <div class="card card-pad card-hover">
                     <div class="flex items-center justify-between mb-2"><span class="stat-label">ROAS Médio</span><span class="stat-icon"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125L10.5 21l7.5-7.875M12 3v17.25"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5"/></svg></span></div>
                     <p class="stat-value">${metricas.roas_medio.toFixed(2)}x</p>
-                    <p class="stat-hint">Faturamento / Invest.</p>
+                    <p class="stat-hint">${CAMPOS_ROI.faturamento} / ${CAMPOS_ROI.investimento}</p>
                 </div>
                 <div class="card card-pad card-hover">
                     <div class="flex items-center justify-between mb-2"><span class="stat-label">CAC Médio</span><span class="stat-icon"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12 12 12 12 12s-1.536 0-2.121.659c-1.172.879-1.172 2.303 0 3.182l.879.659z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z"/></svg></span></div>
                     <p class="stat-value">${metricas.cac_medio > 0 ? `R$ ${metricas.cac_medio.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}` : '—'}</p>
-                    <p class="stat-hint">Invest. / Vendas</p>
+                    <p class="stat-hint">${CAMPOS_ROI.investimento} / ${CAMPOS_ROI.vendas}</p>
                 </div>
             </div>
 
@@ -121,9 +123,9 @@ export class DashboardView {
                                                 <thead>
                                                     <tr style="color:var(--faint);border-bottom:1px solid var(--border)">
                                                         <th class="text-left py-1 pr-2 font-semibold">Cliente</th>
-                                                        <th class="text-right py-1 px-2 font-semibold">Investimento</th>
-                                                        <th class="text-right py-1 px-2 font-semibold">MC</th>
-                                                        <th class="text-right py-1 px-2 font-semibold">Receita</th>
+                                                        <th class="text-right py-1 px-2 font-semibold">${CAMPOS_ROI.investimento}</th>
+                                                        <th class="text-right py-1 px-2 font-semibold">${CAMPOS_ROI.mc}</th>
+                                                        <th class="text-right py-1 px-2 font-semibold">${CAMPOS_ROI.faturamento}</th>
                                                         <th class="text-right py-1 px-2 font-semibold">ROAS</th>
                                                         <th class="text-right py-1 pl-2 font-semibold">ROI</th>
                                                     </tr>
@@ -133,8 +135,8 @@ export class DashboardView {
                                                         <tr style="border-bottom:1px solid var(--border)">
                                                             <td class="py-1.5 pr-2 font-medium max-w-[140px] truncate" title="${c.nome}">${c.nome}</td>
                                                             <td class="text-right py-1.5 px-2">R$ ${(c.investimento || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                                                            <td class="text-right py-1.5 px-2">${(c.mc * 100).toFixed(0)}%</td>
-                                                            <td class="text-right py-1.5 px-2">R$ ${c.receita.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
+                                                            <td class="text-right py-1.5 px-2">${mcPercentual(c.mc).toFixed(0)}%</td>
+                                                            <td class="text-right py-1.5 px-2">R$ ${(c.faturamento || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                                             <td class="text-right py-1.5 px-2" style="color:${c.roas > 1 ? 'var(--green)' : 'var(--red)'}">${c.roas.toFixed(2)}x</td>
                                                             <td class="text-right py-1.5 pl-2 font-bold" style="color:${c.roi > 1 ? 'var(--green)' : 'var(--red)'}">${c.roi.toFixed(2)}x</td>
                                                         </tr>
@@ -161,7 +163,7 @@ export class DashboardView {
                                 <div class="grid grid-cols-3 gap-3 mt-3 pt-3 border-t" style="border-color:var(--border)">
                                     <div><p class="text-xs stat-label">ROI médio</p><p class="text-sm font-extrabold" style="color:${s.roiMedio > 1 ? 'var(--green)' : 'var(--red)'}">${s.roiMedio.toFixed(2)}x</p></div>
                                     <div><p class="text-xs stat-label">ROAS</p><p class="text-sm font-bold" style="color:var(--text)">${s.roasMedio.toFixed(2)}x</p></div>
-                                    <div><p class="text-xs stat-label">Faturamento</p><p class="text-sm font-bold" style="color:var(--text)">R$ ${s.faturamento.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</p></div>
+                                    <div><p class="text-xs stat-label">${CAMPOS_ROI.faturamento}</p><p class="text-sm font-bold" style="color:var(--text)">R$ ${s.faturamento.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</p></div>
                                 </div>
                             </div>`).join('')}
                     </div>
@@ -174,7 +176,7 @@ export class DashboardView {
                     <canvas id="chart-temporal" height="160"></canvas>
                 </div>
                 <div class="card p-5">
-                    <h3 class="section-title mb-3">Faturamento vs Investimento por Squad</h3>
+                    <h3 class="section-title mb-3">${CAMPOS_ROI.faturamento} vs ${CAMPOS_ROI.investimento} por Squad</h3>
                     <canvas id="chart-barras" height="160"></canvas>
                 </div>
             </div>
@@ -234,7 +236,7 @@ export class DashboardView {
                         <thead>
                             <tr>
                                 <th>Squad</th><th>Coordenador</th><th>Account</th><th>GT</th><th>Cliente</th>
-                                <th class="text-right">Faturamento</th><th class="text-right">Margem de Contribuição</th><th class="text-right">Investimento</th><th class="text-center">ROI</th>
+                                <th class="text-right">${CAMPOS_ROI.investimento}</th><th class="text-right">${CAMPOS_ROI.mc}</th><th class="text-right">${CAMPOS_ROI.faturamento}</th><th class="text-center">ROI</th>
                                 <th class="text-center">ROAS</th><th class="text-right">CAC</th><th class="text-center">Prazo</th><th class="text-center">Pipefy</th>
                             </tr>
                         </thead>
@@ -383,9 +385,9 @@ export class DashboardView {
                     <td class="whitespace-nowrap">${c.account || '-'}</td>
                     <td class="font-medium whitespace-nowrap" style="color:var(--text)">${c.gt || '-'}</td>
                     <td class="font-bold min-w-[180px]" style="color:var(--text)">${c.nome}</td>
-                    <td class="text-right whitespace-nowrap">${c.faturamento > 0 ? `R$ ${c.faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}</td>
-                    <td class="text-right whitespace-nowrap font-semibold" style="color:var(--text)">${c.preenchido ? fmtMc(c.mc) : '-'}</td>
                     <td class="text-right whitespace-nowrap">${c.investimento > 0 ? `R$ ${c.investimento.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}</td>
+                    <td class="text-right whitespace-nowrap font-semibold" style="color:var(--text)">${c.preenchido ? fmtMc(c.mc) : '-'}</td>
+                    <td class="text-right whitespace-nowrap">${c.faturamento > 0 ? `R$ ${c.faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}</td>
                     <td class="text-center font-bold whitespace-nowrap" style="color:${c.roi > 1 ? 'var(--green)' : c.roi > 0 ? 'var(--text)' : 'var(--red)'}">${c.preenchido ? `${c.roi.toFixed(2)}x` : '-'}</td>
                     <td class="text-center font-semibold whitespace-nowrap">${c.preenchido && c.roas > 0 ? `${c.roas.toFixed(2)}x` : '-'}</td>
                     <td class="text-right whitespace-nowrap">${c.preenchido && c.cac > 0 ? `R$ ${c.cac.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '-'}</td>
@@ -438,8 +440,8 @@ export class DashboardView {
                 data: {
                     labels: chartData.barras.labels,
                     datasets: [
-                        { label: 'Faturamento', data: chartData.barras.faturamento, backgroundColor: palette.text },
-                        { label: 'Investimento', data: chartData.barras.investimento, backgroundColor: palette.faint }
+                        { label: CAMPOS_ROI.faturamento, data: chartData.barras.faturamento, backgroundColor: palette.text },
+                        { label: CAMPOS_ROI.investimento, data: chartData.barras.investimento, backgroundColor: palette.faint }
                     ]
                 },
                 options: baseOptions()

@@ -1,3 +1,5 @@
+import { CAMPOS_ROI } from '../utils/campos-roi.js';
+
 export class ExportService {
     static exportToJSON(data, filename = 'relatorio_roi.json') {
         const jsonStr = JSON.stringify(data, null, 2);
@@ -8,16 +10,17 @@ export class ExportService {
     static exportToCSV(data, filename = 'relatorio_roi.csv') {
         if (!data || data.length === 0) return;
         
-        const headers = ['Squad', 'Coordenador', 'Account', 'GT', 'Cliente', 'Faturamento (R$)', 'Margem de Contribuição (%)', 'Investimento Mídia (R$)', 'ROI', 'ROAS', 'CAC (R$)', 'Prazo', 'Status', 'Link Pipefy'];
+        // Mesmos nomes e ordem da Tabela Resumo (campos do card do Pipefy)
+        const headers = ['Squad', 'Coordenador', 'Account', 'GT', 'Cliente', `${CAMPOS_ROI.investimento} (R$)`, `${CAMPOS_ROI.mc} (%)`, `${CAMPOS_ROI.faturamento} (R$)`, 'ROI', 'ROAS', 'CAC (R$)', 'Prazo', 'Status', 'Link Pipefy'];
         const rows = data.map(item => [
             `"${item.squad || ''}"`,
             `"${item.coordenador || ''}"`,
             `"${item.account || ''}"`,
             `"${item.gt || ''}"`,
             `"${item.nome || ''}"`,
-            item.faturamento ? item.faturamento.toFixed(2) : '0.00',
-            item.preenchido && item.mc ? (item.mc > 1 ? item.mc : item.mc * 100).toFixed(2) : '0.00',
             item.investimento ? item.investimento.toFixed(2) : '0.00',
+            item.preenchido && item.mc ? (item.mc > 1 ? item.mc : item.mc * 100).toFixed(2) : '0.00',
+            item.faturamento ? item.faturamento.toFixed(2) : '0.00',
             item.roi ? item.roi.toFixed(2) : '0.00',
             item.roas ? item.roas.toFixed(2) : '0.00',
             item.cac ? item.cac.toFixed(2) : '0.00',
@@ -53,9 +56,9 @@ export class ExportService {
                             <th>Account</th>
                             <th>GT</th>
                             <th>Cliente</th>
-                            <th>Faturamento (R$)</th>
-                            <th>Margem de Contribuição (%)</th>
-                            <th>Investimento em Mídia (R$)</th>
+                            <th>${CAMPOS_ROI.investimento} (R$)</th>
+                            <th>${CAMPOS_ROI.mc} (%)</th>
+                            <th>${CAMPOS_ROI.faturamento} (R$)</th>
                             <th>ROI</th>
                             <th>ROAS</th>
                             <th>CAC (R$)</th>
@@ -75,9 +78,9 @@ export class ExportService {
                     <td>${item.account || ''}</td>
                     <td>${item.gt || ''}</td>
                     <td>${item.nome || ''}</td>
-                    <td class="number">${item.faturamento ? item.faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}</td>
-                    <td class="number">${item.preenchido && item.mc ? (item.mc > 1 ? item.mc : item.mc * 100).toFixed(2) + '%' : '0,00%'}</td>
                     <td class="number">${item.investimento ? item.investimento.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}</td>
+                    <td class="number">${item.preenchido && item.mc ? (item.mc > 1 ? item.mc : item.mc * 100).toFixed(2) + '%' : '0,00%'}</td>
+                    <td class="number">${item.faturamento ? item.faturamento.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}</td>
                     <td class="number">${item.roi ? item.roi.toFixed(2) + 'x' : '0,00x'}</td>
                     <td class="number">${item.roas ? item.roas.toFixed(2) + 'x' : '0,00x'}</td>
                     <td class="number">${item.cac ? item.cac.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}</td>

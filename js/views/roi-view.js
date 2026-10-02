@@ -1,3 +1,5 @@
+import { CAMPOS_ROI } from '../utils/campos-roi.js';
+
 export class RoiView {
     static render(data) {
         const { metricas, clientes, periodo, periodoVigente, periodoOptions, periodoKey } = data;
@@ -80,7 +82,7 @@ export class RoiView {
                         <thead>
                             <tr>
                                 <th>Cliente</th><th>Squad</th>
-                                <th class="text-right">Investimento</th><th class="text-right">Faturamento</th>
+                                <th class="text-right">${CAMPOS_ROI.investimento}</th><th class="text-right">${CAMPOS_ROI.faturamento}</th>
                                 <th class="text-center">ROI</th><th class="text-center">Status</th>
                             </tr>
                         </thead>

@@ -369,6 +369,18 @@
 - **Status:** ✅ Concluído
 - **Autor:** Claude Code
 
+### [02/10/2026] - 🐛 Bug Fix/UX: "Receita" era Faturamento × MC + nomenclatura igual ao card do Pipefy
+- **Causa raiz:** no detalhe do Top 5 GT, a coluna "Receita" era calculada como `faturamento × mc` (margem em R$; ex.: CONCREART 90.000 × 35% = 31.500). No card do Pipefy, receita é o próprio **"Faturamento (vendas V4)"**. Além disso, a nomenclatura variava pelo sistema ("Faturamento", "Invest.", "MC", "Margem de Contribuição", "Investimento Mídia").
+- **O que mudou:**
+  1. **Novo** `js/utils/campos-roi.js`: `CAMPOS_ROI` com os nomes EXATOS dos campos do card (`Investimento em mídia no mês`, `Margem de contribuição`, `Faturamento (vendas V4)`, `Vendas realizadas (apenas geradas pela V4)`, `Data de Atualização`, `Projeto [USAR ESTE]`) + `mcPercentual` (35 ou 0.35 → 35%).
+  2. `PipefyService` LÊ os campos por `CAMPOS_ROI`, a mesma fonte dos rótulos, ligando campo do card e rótulo da tela.
+  3. Top 5 GT: removida a "Receita" (fat × MC) e o campo `receita` do controller. Colunas: **Investimento em mídia no mês · Margem de contribuição · Faturamento (vendas V4) · ROAS · ROI**. MC exibida via `mcPercentual` (antes `mc*100` quebrava se viesse 35).
+  4. Tabela Resumo: mesmos nomes e **mesma ordem** (Investimento → Margem → Faturamento), cabeçalho e células. Exportações CSV e Excel idem. Dicas dos KPIs (ROAS = Faturamento (vendas V4) / Investimento em mídia no mês; CAC = Investimento / Vendas realizadas), cards de squad, gráfico "Faturamento (vendas V4) vs Investimento em mídia no mês por Squad" e tabela da tela ROI usam `CAMPOS_ROI`.
+- **Validação:** render: Top GT e Resumo com títulos do card na ordem Investimento/Margem/Faturamento; CONCREART → R$ 3.477,50 · 35% · R$ 90.000,00; "Receita" não aparece mais; CSV com os mesmos títulos/ordem. Testes JS 19/19. Bumps: **index v=38, roi/report v=23**.
+- **Status:** ✅ Concluído
+- **Autor:** Claude Code
+- **Prevenção:** rótulos de métricas do ROI Week vêm SEMPRE de `CAMPOS_ROI` (nunca texto solto). Não criar métricas derivadas com nome de campo do card (ex.: chamar fat × MC de "Receita").
+
 ---
 
 ## Decisões Arquiteturais
